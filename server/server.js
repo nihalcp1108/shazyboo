@@ -6,16 +6,9 @@ import rateLimit from 'express-rate-limit';
 import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import cookieParser from 'cookie-parser';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// DB
 import connectDB from './config/database.js';
 await connectDB();
 
@@ -30,11 +23,10 @@ import mainCategoryRoutes from './routes/mainCategoryRoute.js';
 import contactRoutes from './routes/contactRoute.js';
 
 import { protect } from './middlewares/auth.js';
-import ErrorResponse from './utils/errorResponse.js';
 
 const app = express();
 
-// ================= CORS FIX (FINAL) =================
+// ================= FIXED CORS =================
 const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:5173',
@@ -49,7 +41,7 @@ app.use(cors({
             return callback(null, true);
         }
 
-        return callback(null, true); // (safe mode for production testing)
+        return callback(new Error('CORS not allowed for this origin: ' + origin));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -58,7 +50,7 @@ app.use(cors({
 
 app.options('*', cors());
 
-// ================= MIDDLEWARE =================
+// ================= SECURITY =================
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -93,19 +85,9 @@ app.get('/health', (req, res) => {
     });
 });
 
-// ================= ERROR =================
-app.use((err, req, res, next) => {
-    console.error(err);
-
-    res.status(err.statusCode || 500).json({
-        success: false,
-        message: err.message || 'Server Error'
-    });
-});
-
 // ================= SERVER =================
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });
