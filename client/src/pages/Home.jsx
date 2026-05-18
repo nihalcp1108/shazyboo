@@ -86,15 +86,15 @@ const HeroSection = () => {
     <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ef63a4 0%, #f585b9 0%, #e4f1f6 100%)', minHeight: 380 }}>
       <FontStyle />
       <div className="absolute inset-0 pointer-events-none select-none">
-        <Star size={28} color="#FFD84D" style={{ position: 'absolute', top: 28, left: '12%', animation: 'floatStar 3s ease-in-out infinite' }} />
-        <Star size={16} color="#FF6B8A" style={{ position: 'absolute', top: 60, left: '22%', animation: 'floatStar 2.5s ease-in-out infinite 0.5s' }} />
-        <Star size={22} color="#4BC98A" style={{ position: 'absolute', top: 18, right: '18%', animation: 'floatStar 3.5s ease-in-out infinite 0.3s' }} />
-        <Star size={22} color="#644bc9" style={{ position: 'absolute', top: 200, right: '25%', animation: 'floatStar 3.5s ease-in-out infinite 0.3s' }} />
+        <Star size={28} color="#FFD84D" style={{ position: 'absolute', top: 110, left: '8%', animation: 'floatStar 3s ease-in-out infinite' }} />
+        <Star size={16} color="#FF6B8A" style={{ position: 'absolute', top: 160, left: '22%', animation: 'floatStar 2.5s ease-in-out infinite 0.5s' }} />
+        <Star size={22} color="#4BC98A" style={{ position: 'absolute', top: 120, right: '15%', animation: 'floatStar 3.5s ease-in-out infinite 0.3s' }} />
+        <Star size={22} color="#644bc9" style={{ position: 'absolute', top: 220, right: '22%', animation: 'floatStar 3.5s ease-in-out infinite 0.3s' }} />
       </div>
 
       <div className="container mx-auto px-6 md:px-12 py-8 relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex-1 text-center md:text-left flex flex-col items-center md:items-start md:pl-8">
+          <div className="flex-1 text-center md:text-left flex flex-col items-center md:items-start pl-0">
             <motion.div
               initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}
               className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-2 mb-6 text-sm font-medium w-max bg-white/20 backdrop-blur-sm border border-white/30"
@@ -107,7 +107,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
               src={logoImg}
               alt="ShazyBoo Logo"
-              className="w-72 md:w-96 object-contain mb-5 drop-shadow-xl"
+              className="w-64 sm:w-72 md:w-[380px] object-contain mb-5 drop-shadow-xl md:-ml-6"
             />
 
             <motion.div
@@ -115,7 +115,7 @@ const HeroSection = () => {
               className="mb-7"
             >
               <p
-                className="fredoka text-2xl md:text-4xl font-bold tracking-wide"
+                className="fredoka text-2xl sm:text-3xl md:text-4xl font-bold tracking-wide"
                 style={{ color: '#c7106a' }}
               >
                 Your happy little corner 🎀
@@ -134,8 +134,7 @@ const HeroSection = () => {
 
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex-1 w-full flex justify-center items-center relative"
-            style={{ maxWidth: 300, height: 280 }}
+            className="flex-1 w-full flex justify-center items-center relative max-w-[280px] sm:max-w-[340px] md:max-w-[400px] h-[240px] sm:h-[300px] md:h-[360px]"
           >
             <AnimatePresence mode="wait">
               <motion.img
@@ -146,7 +145,7 @@ const HeroSection = () => {
                 transition={{ duration: 1.2, ease: "easeInOut" }}
                 src={images[currentImage]}
                 alt="ShazyBoo Collection"
-                className="absolute z-10 rounded-2xl w-full h-full object-cover"
+                className="absolute z-10 rounded-3xl w-full h-full object-cover border-4 border-white/40"
                 onError={handleImageError}
               />
             </AnimatePresence>

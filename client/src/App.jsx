@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/Auth/ProtectedRoute";
 // Layout Components
 import Header from "./components/Layout/Header";
 import Footer from "./components/Layout/Footer";
+import ScrollToTop from "./components/Layout/ScrollToTop";
 
 // Pages
 import Home from "./pages/Home";
@@ -40,6 +41,7 @@ import ProductDetail from "./components/Products/ProductDetails";
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <CartProvider>
         <WishlistProvider>
           <AuthProvider>

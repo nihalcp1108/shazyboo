@@ -18,12 +18,12 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // ── Logo ─────────────────────────────────────────────────────────────────────
 const Logo = () => (
-  <Link to="/" className="flex items-center group flex-shrink-0 z-10">
+  <Link to="/" className="flex items-center group flex-shrink-0 z-10 pl-2 sm:pl-0">
     <div className="relative flex items-center">
       <img
         src="/logo.png"
         alt="ShazyBoo"
-        className="logo-image h-14 sm:h-50 md:h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+        className="logo-image w-auto object-contain transition-transform duration-300 group-hover:scale-105"
       />
     </div>
   </Link>
@@ -173,14 +173,24 @@ const Header = () => {
         }
 
         /* Logo responsive styles */
+        .logo-image {
+          height: 3.5rem !important;
+          transition: all 0.3s ease;
+          filter: drop-shadow(0 2px 8px rgba(255, 107, 138, 0.15));
+        }
         @media (max-width: 640px) {
           .logo-image {
-            height: 3.5rem !important;
+            height: 3.0rem !important;
           }
         }
-        @media (min-width: 641px) and (max-width: 768px) {
+        @media (min-width: 641px) and (max-width: 1024px) {
           .logo-image {
-            height: 4rem !important;
+            height: 3.6rem !important;
+          }
+        }
+        @media (min-width: 1025px) {
+          .logo-image {
+            height: 4.4rem !important;
           }
         }
 
@@ -191,28 +201,26 @@ const Header = () => {
       `}</style>
 
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 overflow-hidden ${scrolled ? "py-1" : "py-2"
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 overflow-hidden ${scrolled ? "py-1 shadow-lg" : "py-3 shadow-none"
           }`}
         style={{
           background: "linear-gradient(135deg, #f585b9 0%, #f585b9 0%, #e4f1f6 100%)",
           backdropFilter: scrolled ? "blur(20px)" : "none",
-          boxShadow: scrolled ? "0 4px 20px rgba(0,0,0,0.08)" : "none",
           fontFamily: "'Nunito', sans-serif",
-          height: scrolled ? "62px" : "64px"
+          height: scrolled ? "68px" : "84px"
         }}
       >
-        <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
-          <div className="flex items-center justify-between gap-2 sm:gap-3 w-full h-16 md:h-20">
-            {/* ── Logo with Image ── */}
-            <div className="flex items-center gap-4 lg:gap-8">
-              <Logo />
-              {/* ── Desktop Nav ── */}
-              <nav className="hidden lg:flex items-center gap-2">
-                {navLinks.map((link) => (
-                  <NavLink key={link.path} to={link.path} label={link.label} />
-                ))}
-              </nav>
-            </div>
+        <div className="container mx-auto px-6 md:px-8 max-w-7xl h-full">
+          <div className="flex items-center justify-between gap-4 sm:gap-6 w-full h-full">
+            {/* ── Logo with Image (Left Column) ── */}
+            <Logo />
+
+            {/* ── Desktop Nav (Center Column) ── */}
+            <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+              {navLinks.map((link) => (
+                <NavLink key={link.path} to={link.path} label={link.label} />
+              ))}
+            </nav>
 
             {/* ── Right Controls ── */}
             <div className="flex items-center gap-1 sm:gap-2">
@@ -794,7 +802,7 @@ const Header = () => {
       </header>
 
       {/* Spacer so content doesn't hide behind fixed header */}
-      <div className={scrolled ? "h-[64px]" : "h-[62px]"} aria-hidden />
+      <div style={{ height: scrolled ? "68px" : "84px" }} aria-hidden />
     </>
   );
 };
