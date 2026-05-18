@@ -1,8 +1,9 @@
 import axios from 'axios'
 
 // Use environment variable or fallback to localhost
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5001/api'
-
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  'http://127.0.0.1:5001/api'
 export const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -16,14 +17,14 @@ export const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     console.log(`📤 API Request: ${config.method.toUpperCase()} ${config.url}`)
-    
+
     // Add auth token if exists
     const token = localStorage.getItem('token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
       console.log('🔑 Token added to request headers')
     }
-    
+
     // CRITICAL FIX: If sending FormData, let browser set the Content-Type with boundary
     if (config.data instanceof FormData) {
       console.log('📦 Sending FormData - removing Content-Type header')
@@ -40,7 +41,7 @@ api.interceptors.request.use(
     } else {
       console.log('Request data:', config.data)
     }
-    
+
     return config
   },
   (error) => {
@@ -64,66 +65,66 @@ api.interceptors.response.use(
     console.error('Data:', error.response?.data)
     console.error('Message:', error.message)
     console.error('Config:', error.config)
-    
+
     // Check if it's a network error
     if (error.code === 'ECONNABORTED') {
       console.error('Request timeout')
       error.customMessage = 'Request timed out. Please check your connection.'
     } else if (error.message === 'Network Error') {
       console.error('Network error - backend might be down')
-      error.customMessage = 'Cannot connect to server. Please make sure the backend is running on port 5001'
-    }
-    
-    // Handle specific error cases
-    if (error.response?.status === 401) {
-      console.log('🔐 Unauthorized - Checking if verification needed')
-      
-      // Check if this is a verification needed case
-      if (error.response?.data?.needsVerification) {
-        console.log('📧 Verification needed - not clearing session')
-        // Don't clear session for verification needed
-      } else {
-        console.log('Clearing session due to unauthorized')
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        delete api.defaults.headers.common['Authorization']
-        
-        // Only redirect if not already on login page or verification page
-        if (!window.location.pathname.includes('/login') && 
+      error.customMessage =
+        'Cannot connect to server. Please check backend connection.'
+
+      // Handle specific error cases
+      if (error.response?.status === 401) {
+        console.log('🔐 Unauthorized - Checking if verification needed')
+
+        // Check if this is a verification needed case
+        if (error.response?.data?.needsVerification) {
+          console.log('📧 Verification needed - not clearing session')
+          // Don't clear session for verification needed
+        } else {
+          console.log('Clearing session due to unauthorized')
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          delete api.defaults.headers.common['Authorization']
+
+          // Only redirect if not already on login page or verification page
+          if (!window.location.pathname.includes('/login') &&
             !window.location.pathname.includes('/verify-otp') &&
             !window.location.pathname.includes('/register')) {
-          window.location.href = '/login'
+            window.location.href = '/login'
+          }
         }
       }
+
+      // Handle 400 Bad Request - show detailed error
+      if (error.response?.status === 400) {
+        console.error('❌ Bad Request - Check your input data')
+        const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Invalid data provided'
+        console.error('Error details:', errorMessage)
+      }
+
+      // Handle 500 Server Error
+      if (error.response?.status === 500) {
+        console.error('🔥 Server Error - Check backend logs')
+      }
+
+      // Handle CORS errors
+      if (error.message?.includes('CORS')) {
+        console.error('CORS error - check backend CORS settings')
+        error.customMessage = 'CORS error. Please check backend configuration.'
+      }
+
+      // Enhance error object with custom message
+      if (error.customMessage) {
+        error.response = error.response || {}
+        error.response.data = error.response.data || {}
+        error.response.data.message = error.customMessage
+      }
+
+      return Promise.reject(error)
     }
-    
-    // Handle 400 Bad Request - show detailed error
-    if (error.response?.status === 400) {
-      console.error('❌ Bad Request - Check your input data')
-      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Invalid data provided'
-      console.error('Error details:', errorMessage)
-    }
-    
-    // Handle 500 Server Error
-    if (error.response?.status === 500) {
-      console.error('🔥 Server Error - Check backend logs')
-    }
-    
-    // Handle CORS errors
-    if (error.message?.includes('CORS')) {
-      console.error('CORS error - check backend CORS settings')
-      error.customMessage = 'CORS error. Please check backend configuration.'
-    }
-    
-    // Enhance error object with custom message
-    if (error.customMessage) {
-      error.response = error.response || {}
-      error.response.data = error.response.data || {}
-      error.response.data.message = error.customMessage
-    }
-    
-    return Promise.reject(error)
-  }
 )
 
 // Helper function to test API connection
@@ -163,7 +164,7 @@ export const testProductCreation = async (formData) => {
       console.error('No token found')
       return { success: false, error: 'No authentication token' }
     }
-    
+
     console.log('Testing product creation...')
     const response = await axios.post(`${API_URL}/admin/products`, formData, {
       headers: {

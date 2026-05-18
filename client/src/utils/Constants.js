@@ -1,4 +1,6 @@
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+export const API_URL =
+  import.meta.env.VITE_API_URL ||
+  'http://127.0.0.1:5001/api'
 export const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID
 export const CLIENT_URL = import.meta.env.VITE_CLIENT_URL || 'http://localhost:3000'
 
