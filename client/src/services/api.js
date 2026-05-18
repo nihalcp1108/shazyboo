@@ -69,62 +69,73 @@ api.interceptors.response.use(
     // Check if it's a network error
     if (error.code === 'ECONNABORTED') {
       console.error('Request timeout')
-      error.customMessage = 'Request timed out. Please check your connection.'
+      error.customMessage =
+        'Request timed out. Please check your connection.'
     } else if (error.message === 'Network Error') {
       console.error('Network error - backend might be down')
       error.customMessage =
         'Cannot connect to server. Please check backend connection.'
+    }
 
-      // Handle specific error cases
-      if (error.response?.status === 401) {
-        console.log('🔐 Unauthorized - Checking if verification needed')
+    // Handle specific error cases
+    if (error.response?.status === 401) {
+      console.log('🔐 Unauthorized - Checking if verification needed')
 
-        // Check if this is a verification needed case
-        if (error.response?.data?.needsVerification) {
-          console.log('📧 Verification needed - not clearing session')
-          // Don't clear session for verification needed
-        } else {
-          console.log('Clearing session due to unauthorized')
-          localStorage.removeItem('token')
-          localStorage.removeItem('user')
-          delete api.defaults.headers.common['Authorization']
+      if (error.response?.data?.needsVerification) {
+        console.log('📧 Verification needed - not clearing session')
+      } else {
+        console.log('Clearing session due to unauthorized')
 
-          // Only redirect if not already on login page or verification page
-          if (!window.location.pathname.includes('/login') &&
-            !window.location.pathname.includes('/verify-otp') &&
-            !window.location.pathname.includes('/register')) {
-            window.location.href = '/login'
-          }
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+
+        delete api.defaults.headers.common['Authorization']
+
+        if (
+          !window.location.pathname.includes('/login') &&
+          !window.location.pathname.includes('/verify-otp') &&
+          !window.location.pathname.includes('/register')
+        ) {
+          window.location.href = '/login'
         }
       }
-
-      // Handle 400 Bad Request - show detailed error
-      if (error.response?.status === 400) {
-        console.error('❌ Bad Request - Check your input data')
-        const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Invalid data provided'
-        console.error('Error details:', errorMessage)
-      }
-
-      // Handle 500 Server Error
-      if (error.response?.status === 500) {
-        console.error('🔥 Server Error - Check backend logs')
-      }
-
-      // Handle CORS errors
-      if (error.message?.includes('CORS')) {
-        console.error('CORS error - check backend CORS settings')
-        error.customMessage = 'CORS error. Please check backend configuration.'
-      }
-
-      // Enhance error object with custom message
-      if (error.customMessage) {
-        error.response = error.response || {}
-        error.response.data = error.response.data || {}
-        error.response.data.message = error.customMessage
-      }
-
-      return Promise.reject(error)
     }
+
+    // Handle 400 Bad Request
+    if (error.response?.status === 400) {
+      console.error('❌ Bad Request - Check your input data')
+
+      const errorMessage =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        'Invalid data provided'
+
+      console.error('Error details:', errorMessage)
+    }
+
+    // Handle 500 Server Error
+    if (error.response?.status === 500) {
+      console.error('🔥 Server Error - Check backend logs')
+    }
+
+    // Handle CORS errors
+    if (error.message?.includes('CORS')) {
+      console.error('CORS error - check backend CORS settings')
+
+      error.customMessage =
+        'CORS error. Please check backend configuration.'
+    }
+
+    // Enhance error object with custom message
+    if (error.customMessage) {
+      error.response = error.response || {}
+      error.response.data = error.response.data || {}
+
+      error.response.data.message = error.customMessage
+    }
+
+    return Promise.reject(error)
+  }
 )
 
 // Helper function to test API connection
