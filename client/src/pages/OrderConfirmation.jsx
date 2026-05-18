@@ -1,7 +1,7 @@
 // pages/OrderConfirmation.js
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../Context/AuthContext';
 import { api } from '../services/api';
 import { toast } from 'react-hot-toast';
 import { FaCheckCircle, FaTruck, FaCalendarAlt, FaMapMarkerAlt, FaBox, FaRupeeSign, FaPrint, FaHome } from 'react-icons/fa';

@@ -1,5 +1,5 @@
 // pages/CartPage.js
-import { useCart } from "../context/CartContext";
+import { useCart } from "../Context/CartContext";
 import CartItem from "../components/cart/CartItem";
 import CartSummary from "../components/cart/CartSummery";
 import { Link, useNavigate } from "react-router-dom";

@@ -8,9 +8,9 @@ import {
 } from 'react-icons/fa'
 import { toast } from 'react-hot-toast'
 import { api } from '../../services/api'
-import { useCart } from '../../context/CartContext'
-import { useAuth } from '../../context/AuthContext'
-import { useWishlist } from '../../context/WishlistContext'
+import { useCart } from '../../Context/CartContext'
+import { useAuth } from '../../Context/AuthContext'
+import { useWishlist } from '../../Context/WishlistContext'
 import { getImageUrl, handleImageError, getFallbackImage } from '../../utils/imageUtils'
 
 const ProductDetail = () => {

@@ -1,8 +1,8 @@
 // pages/CheckoutPage.js
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
+import { useCart } from '../Context/CartContext';
+import { useAuth } from '../Context/AuthContext';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { FaArrowLeft, FaCheckCircle, FaTruck, FaShieldAlt, FaCreditCard, FaWhatsapp } from 'react-icons/fa';

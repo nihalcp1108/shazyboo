@@ -1,4 +1,4 @@
-import { useWishlist } from '../context/WishlistContext';
+import { useWishlist } from '../Context/WishlistContext';
 import ProductCard from '../components/Products/ProductsCard';
 import { FaHeart, FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';

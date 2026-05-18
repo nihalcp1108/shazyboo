@@ -1,4 +1,4 @@
-import { useCart } from "../../context/CartContext";
+import { useCart } from "../../Context/CartContext";
 import { Link } from "react-router-dom";
 import { FaArrowRight, FaGift, FaTags, FaShieldAlt } from "react-icons/fa";
 

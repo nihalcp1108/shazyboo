@@ -9,7 +9,7 @@ import {
 import { api } from '../services/api';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../Context/CartContext';
 
 const MainCategory = () => {
     const { slug } = useParams();

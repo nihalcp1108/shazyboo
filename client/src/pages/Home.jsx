@@ -20,9 +20,9 @@ import { MdVerified } from 'react-icons/md';
 import { api } from '../services/api';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
-import { useWishlist } from '../context/WishlistContext';
+import { useCart } from '../Context/CartContext';
+import { useAuth } from '../Context/AuthContext';
+import { useWishlist } from '../Context/WishlistContext';
 import { getImageUrl, handleImageError, getFallbackImage } from '../utils/imageUtils';
 
 import heroImg1 from '../assets/WhatsApp Image 2026-05-16 at 6.18.22 PM.jpeg';

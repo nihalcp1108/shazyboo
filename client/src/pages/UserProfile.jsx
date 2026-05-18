@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../Context/AuthContext'
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaSave, FaLock, FaShieldAlt, FaCalendar, FaCheck, FaMagic, FaHeart, FaCrown } from 'react-icons/fa'
 import { GiCottonFlower } from 'react-icons/gi'
 

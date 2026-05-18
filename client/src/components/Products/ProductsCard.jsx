@@ -2,8 +2,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FaStar, FaShoppingCart, FaHeart, FaEye } from 'react-icons/fa'
-import { useCart } from '../../context/CartContext'
-import { useWishlist } from '../../context/WishlistContext'
+import { useCart } from '../../Context/CartContext'
+import { useWishlist } from '../../Context/WishlistContext'
 import { toast } from 'react-hot-toast'
 import { getImageUrl, getFallbackImage, handleImageError } from '../../utils/imageUtils'
 

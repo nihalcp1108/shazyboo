@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FaTrash, FaPlus, FaMinus, FaPalette } from 'react-icons/fa';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../Context/CartContext';
 import { toast } from 'react-hot-toast';
 
 const CartItem = ({ item }) => {
