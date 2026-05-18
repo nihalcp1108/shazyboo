@@ -11,9 +11,9 @@ import { WishlistProvider } from "./Context/WishlistContext";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 
 // Layout Components
-import Header from "./components/Layout/Header";
-import Footer from "./components/Layout/Footer";
-import ScrollToTop from "./components/Layout/ScrollToTop";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
+import ScrollToTop from "./components/layout/ScrollToTop";
 
 // Pages
 import Home from "./pages/Home";
