@@ -39,6 +39,9 @@ export const adminCreateProduct = asyncHandler(async (req, res) => {
         console.log(`  ${key}: ${req.body[key]} (${typeof req.body[key]})`);
     }
     console.log(`Files: ${req.files ? req.files.length : 0} images`);
+console.log('DEBUG: req.body', req.body);
+console.log('DEBUG: req.file', req.file);
+console.log('DEBUG: req.files', req.files);
 
     try {
         // Extract values with safe trimming
