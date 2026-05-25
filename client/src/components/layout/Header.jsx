@@ -268,10 +268,10 @@ const Header = () => {
                 )}
               </AnimatePresence>
 
-              {/* Wishlist — hidden on mobile (accessible via menu) */}
+              {/* Wishlist — visible on mobile */}
               <Link
                 to="/wishlist"
-                className="icon-btn hidden sm:flex"
+                className="icon-btn"
                 style={iconBtnStyle}
                 aria-label="Wishlist"
               >
@@ -306,7 +306,7 @@ const Header = () => {
 
               {/* User account */}
               {user ? (
-                <div className="relative">
+                <div className="relative hidden lg:block">
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full transition-all duration-200 hover:shadow-md"
@@ -455,7 +455,7 @@ const Header = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-white text-xs sm:text-sm font-black shadow-md transition-all hover:scale-105 hover:shadow-lg active:scale-95"
+                  className="hidden lg:flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-white text-xs sm:text-sm font-black shadow-md transition-all hover:scale-105 hover:shadow-lg active:scale-95"
                   style={{
                     background: "linear-gradient(135deg, #f9a5b7, #cebaf8)",
                     boxShadow: "0 4px 16px rgba(155,107,255,0.3)",
