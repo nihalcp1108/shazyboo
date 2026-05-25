@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getImageUrl, getFallbackImage, handleImageError } from "../../utils/imageUtils";
+import { getImageUrl, handleImageError, getFallbackImage } from "../../utils/imageUtils";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   FaArrowLeft,

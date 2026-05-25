@@ -5,6 +5,7 @@ import Category from '../models/categoryModel.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { uploadToCloudinary, deleteFromCloudinary } from '../utils/cloudinary.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -145,12 +146,16 @@ console.log('DEBUG: req.files', req.files);
         // Build images array
         let images = [];
         if (hasUploadedFiles) {
-            images = req.files.map((file, index) => ({
-                public_id: file.filename,
-                url: `/uploads/products/${file.filename}`,
+            // Upload each file to Cloudinary
+            const uploadResults = await Promise.all(req.files.map(file => uploadToCloudinary(file.path)));
+            images = uploadResults.map((res, index) => ({
+                public_id: res.public_id,
+                url: res.secure_url,
                 alt: name,
                 isDefault: index === 0
             }));
+            // Delete local temporary files
+            req.files.forEach(file => deleteFile(file.path));
         } else if (hasBase64Images) {
             try {
                 const base64Array = JSON.parse(req.body.images);
@@ -325,17 +330,20 @@ export const adminUpdateProduct = asyncHandler(async (req, res) => {
         // Handle images
         const existingImages = product.images || [];
         if (req.files && req.files.length > 0) {
-            const newImages = req.files.map((file) => ({
-                public_id: file.filename,
-                url: `/uploads/products/${file.filename}`,
-                alt: req.body.name || product.name,
-                isDefault: false
-            }));
-            updateData.images = [...existingImages, ...newImages];
-        } else {
-            // No new files uploaded – keep existing images
-            updateData.images = existingImages;
-        }
+                const uploadResults = await Promise.all(req.files.map(file => uploadToCloudinary(file.path)));
+                const newImages = uploadResults.map((res, index) => ({
+                    public_id: res.public_id,
+                    url: res.secure_url,
+                    alt: req.body.name || product.name,
+                    isDefault: false
+                }));
+                // Delete local files after upload
+                req.files.forEach(file => deleteFile(file.path));
+                updateData.images = [...existingImages, ...newImages];
+            } else {
+                // No new files uploaded – keep existing images
+                updateData.images = existingImages;
+            }
 
         // Handle deleted images
         if (req.body.deletedImages) {
@@ -344,7 +352,8 @@ export const adminUpdateProduct = asyncHandler(async (req, res) => {
                 deletedImages.forEach(imageId => {
                     const imageIndex = updateData.images.findIndex(img => img.public_id === imageId);
                     if (imageIndex !== -1) {
-                        deleteFile(updateData.images[imageIndex].url);
+                        // Delete from Cloudinary
+                        deleteFromCloudinary(updateData.images[imageIndex].public_id);
                         updateData.images.splice(imageIndex, 1);
                     }
                 });
@@ -393,7 +402,9 @@ export const adminDeleteProduct = asyncHandler(async (req, res) => {
         const product = await Product.findById(req.params.id);
         if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
 
-        if (product.images) product.images.forEach(img => deleteFile(img.url));
+        if (product.images) {
+                await Promise.all(product.images.map(img => deleteFromCloudinary(img.public_id)));
+            }
 
         await product.deleteOne();
         res.json({ success: true, message: 'Product deleted successfully' });

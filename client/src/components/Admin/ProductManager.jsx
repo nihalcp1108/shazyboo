@@ -9,7 +9,7 @@ import {
     FaSave, FaUndo, FaClone, FaPrint
 } from 'react-icons/fa'
 import { toast } from 'react-hot-toast'
-import { api } from '../../services/api'; import { getFallbackImage } from '../../utils/imageUtils';
+import { api } from '../../services/api'; import { getImageUrl, handleImageError, getFallbackImage } from '../../utils/imageUtils';
 
 const ProductManager = () => {
     const navigate = useNavigate()

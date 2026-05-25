@@ -6,45 +6,7 @@ import { api } from '../services/api';
 import { toast } from 'react-hot-toast';
 import { FaCheckCircle, FaTruck, FaCalendarAlt, FaMapMarkerAlt, FaBox, FaRupeeSign, FaPrint, FaHome } from 'react-icons/fa';
 
-import { handleImageError, getFallbackImage } from '../utils/imageUtils';
-const getImageUrl = (image) => {
-  if (!image) {
-    return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=300&h=300&fit=crop&q=80';
-  }
-  
-  if (typeof image === 'string') {
-    if (image.startsWith('http://') || image.startsWith('https://')) {
-      return image;
-    }
-    if (image.startsWith('/uploads/')) {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-      const BASE_URL = API_URL.replace('/api', '');
-      return `${BASE_URL}${image}`;
-    }
-    return image;
-  }
-  
-  if (image && typeof image === 'object') {
-    if (image.url) {
-      if (image.url.startsWith('http://') || image.url.startsWith('https://')) {
-        return image.url;
-      }
-      if (image.url.startsWith('/uploads/')) {
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-        const BASE_URL = API_URL.replace('/api', '');
-        return `${BASE_URL}${image.url}`;
-      }
-      return image.url;
-    }
-    if (image.public_id) {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-      const BASE_URL = API_URL.replace('/api', '');
-      return `${BASE_URL}/uploads/products/${image.public_id}`;
-    }
-  }
-  
-  return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=300&h=300&fit=crop&q=80';
-};
+import { getImageUrl, handleImageError } from "../utils/imageUtils";
 
 const OrderConfirmation = () => {
   const { id } = useParams();
