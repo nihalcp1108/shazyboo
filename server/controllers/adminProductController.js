@@ -38,7 +38,7 @@ export const adminCreateProduct = asyncHandler(async (req, res) => {
     for (let key in req.body) {
         console.log(`  ${key}: ${req.body[key]} (${typeof req.body[key]})`);
     }
-    console.log(`Files: ${req.files ? req.files.length : 0} images`);
+    // Debug logs removed
 console.log('DEBUG: req.body', req.body);
 console.log('DEBUG: req.file', req.file);
 console.log('DEBUG: req.files', req.files);
