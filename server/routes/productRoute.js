@@ -1,6 +1,6 @@
 import express from 'express';
 import { protect, authorize } from '../middlewares/auth.js';
-import { uploadAnyImage } from '../middlewares/upload.js';
+import { uploadProductImages } from '../middlewares/upload.js';
 import {
     getProducts,
     getProduct,
@@ -46,8 +46,8 @@ router.delete('/:id/reviews/:reviewId', protect, deleteReview);
 router.put('/bulk-update', protect, authorize('admin'), bulkUpdateProducts);
 
 // Product management - NOTE: The order matters! Place specific routes before dynamic routes
-router.post('/admin', protect, authorize('admin'), uploadAnyImage, adminCreateProduct);
-router.put('/admin/:id', protect, authorize('admin'), uploadAnyImage, adminUpdateProduct);
+router.post('/admin', protect, authorize('admin'), uploadProductImages, adminCreateProduct);
+router.put('/admin/:id', protect, authorize('admin'), uploadProductImages, adminUpdateProduct);
 router.delete('/admin/:id', protect, authorize('admin'), adminDeleteProduct);
 
 // Toggle routes
