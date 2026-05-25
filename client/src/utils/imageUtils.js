@@ -1,8 +1,10 @@
 // src/utils/imageUtils.js
 
 const getBackendUrl = () => {
+  // Build base URL from env (default to local dev API)
   const API_URL = import.meta.env?.VITE_API_URL || 'http://localhost:5001/api';
-  const BASE_URL = API_URL.replace('/api', '');
+  // Remove trailing '/api' only
+  const BASE_URL = API_URL.replace(/\/api$/, '');
   return BASE_URL;
 };
 
@@ -15,44 +17,38 @@ export const getImageUrl = (image) => {
 
   // Helper to construct full URL from path
   const constructUrl = (path) => {
-    if (!path) return getFallbackImage();
+      if (!path) return getFallbackImage();
 
-    // If it's a localhost absolute URL, extract its pathname
-    let cleanPath = path;
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      if (path.includes('localhost:') || path.includes('127.0.0.1:')) {
+      // If already a full URL (e.g., Cloudinary), return it directly
+      if (path.startsWith('http://') || path.startsWith('https://')) {
+        // Allow Cloudinary or any external CDN URLs
+        if (!path.includes('localhost')) return path;
+        // For localhost URLs, extract pathname to use static server
         try {
           const urlObj = new URL(path);
-          cleanPath = urlObj.pathname; // e.g. "/uploads/categories/filename.jpg"
+          path = urlObj.pathname;
         } catch (e) {
-          console.error('Failed to parse localhost URL:', path);
+          console.error('Failed to parse URL:', path);
         }
-      } else {
-        return path;
       }
-    }
 
-    if (cleanPath.startsWith('data:')) return cleanPath;
+      if (path.startsWith('data:')) return path;
 
-    // Ensure path starts with /uploads/ or uploads/
-    let normalizedPath = cleanPath;
-    if (!normalizedPath.startsWith('/') && !normalizedPath.startsWith('uploads/')) {
-      normalizedPath = `/uploads/products/${normalizedPath}`;
-    }
+      // Ensure the path points to the uploads folder
+      let normalizedPath = path;
+      if (!normalizedPath.startsWith('/') && !normalizedPath.startsWith('uploads/')) {
+        normalizedPath = `/uploads/products/${normalizedPath}`;
+      }
 
-    // In development (Vite dev server on port 3000), use relative URLs to leverage proxy
-    const isDev = typeof window !== 'undefined' && window.location.port === '3000';
-    if (isDev) {
-      // Return path relative to same origin (proxy will forward to backend)
-      return normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
-    }
+      // Development environment (Vite dev server on port 3000) – use relative path
+      const isDev = typeof window !== 'undefined' && window.location.port === '3000';
+      if (isDev) {
+        return normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
+      }
 
-    // Combine with BASE_URL for production or non‑dev environments
-    if (normalizedPath.startsWith('/')) {
+      // Production – prepend backend base URL
       return `${BASE_URL}${normalizedPath}`;
-    }
-    return `${BASE_URL}/${normalizedPath}`;
-  };
+    };
 
   // If image is a string
   if (typeof image === 'string') {
@@ -70,7 +66,7 @@ export const getImageUrl = (image) => {
 };
 
 export const getFallbackImage = () => {
-  return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+  return 'https://via.placeholder.com/400?text=No+Image';
 };
 
 export const handleImageError = (e) => {
