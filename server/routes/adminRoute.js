@@ -100,8 +100,8 @@ router.delete('/users/:id', deleteUser);
 // NOTE: Keep specific routes before dynamic /:id routes to avoid conflicts
 router.get('/products', getAdminProducts);
 router.get('/products/:id', getAdminProduct);
-router.post('/products', uploadProductImages, adminCreateProduct);
-router.put('/products/:id', uploadProductImages, adminUpdateProduct);
+router.post('/products', uploadProductImages, multerErrorHandler, logMulter, adminCreateProduct);
+router.put('/products/:id', uploadProductImages, multerErrorHandler, logMulter, adminUpdateProduct);
 router.delete('/products/:id', adminDeleteProduct);
 router.put('/products/:id/toggle-active', toggleProductActive);
 router.put('/products/:id/toggle-featured', toggleProductFeatured);

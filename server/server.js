@@ -106,6 +106,23 @@ app.get('/health', (req, res) => {
 // ================= SERVER =================
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+// ================= GLOBAL ERROR HANDLER =================
+import multer from 'multer';
+app.use((err, req, res, next) => {
+    // Multer-specific errors
+    if (err instanceof multer.MulterError) {
+        let message = err.message;
+        if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+            message = 'Maximum of 20 images allowed';
+        } else if (err.code === 'LIMIT_FILE_SIZE') {
+            message = 'One or more images exceed the 5 MB size limit';
+        }
+        return res.status(400).json({ success: false, error: message });
+    }
+    // Other errors (e.g., fileFilter rejection)
+    if (err) {
+        const message = err.message || 'File upload error';
+        return res.status(400).json({ success: false, error: message });
+    }
+    next();
 });

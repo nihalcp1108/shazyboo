@@ -134,13 +134,11 @@ console.log('DEBUG: req.files', req.files);
         const parsedStock = parseInt(stock);
         if (isNaN(parsedStock) || parsedStock < 0) return res.status(400).json({ success: false, error: 'Valid stock quantity is required' });
 
-// Validate that at least one image is provided.
-// Accept uploaded files (req.files or req.file) or a JSON array of base64 images in req.body.images.
-const hasUploadedFiles = (req.files && req.files.length > 0) || req.file;
-const hasBase64Images = req.body.images && typeof req.body.images === 'string' && req.body.images.trim().startsWith('[');
-if (!hasUploadedFiles && !hasBase64Images) {
-    return res.status(400).json({ success: false, error: 'At least one product image is required' });
-}
+    // ---- Image validation ----
+    const hasUploadedFiles = Array.isArray(req.files) && req.files.length > 0;
+    if (!hasUploadedFiles) {
+        return res.status(400).json({ success: false, error: 'At least one product image is required' });
+    }
 
         // ============ PROCESS DATA ============
         // Build images array from uploaded files or base64 data.

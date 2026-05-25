@@ -77,13 +77,35 @@ export const uploadProductImages = multer({
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
     fileFilter: fileFilter
 }).array('images', 20);
+// Helper to log Multer parsing results – useful for debugging uploads
+export const logMulter = (req, res, next) => {
+    console.log('Multer parsed body keys:', Object.keys(req.body));
+    console.log('Multer parsed files count:', req.files?.length ?? 0);
+    if (req.files) {
+        console.log('Files received:', req.files.map(f => f.filename));
+    }
+    next();
+};
 
 // Fallback middleware that accepts any file field for backward compatibility
-export const uploadAnyImage = multer({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 },
-    fileFilter: fileFilter
-}).any();
+export const multerErrorHandler = (err, req, res, next) => {
+    // Multer-specific errors
+    if (err instanceof multer.MulterError) {
+        let message = err.message;
+        if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+            message = 'Maximum of 20 images allowed';
+        } else if (err.code === 'LIMIT_FILE_SIZE') {
+            message = 'One or more images exceed the 5 MB size limit';
+        }
+        return res.status(400).json({ success: false, error: message });
+    }
+    // Other errors (e.g., fileFilter)
+    if (err) {
+        const message = err.message || 'File upload error';
+        return res.status(400).json({ success: false, error: message });
+    }
+    next();
+};
 
 // Optional: Export a single image upload middleware
 export const uploadSingleImage = multer({
