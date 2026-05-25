@@ -120,7 +120,7 @@ const AdminProductDetails = () => {
 
   const getImageUrl = (image) => {
     if (!image) {
-      return "https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80";
+      return "https://via.placeholder.com/400?text=No+Image";
     }
 
     const BASE_URL = getBackendUrl();
