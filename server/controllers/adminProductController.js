@@ -134,8 +134,7 @@ console.log('DEBUG: req.files', req.files);
         const parsedStock = parseInt(stock);
         if (isNaN(parsedStock) || parsedStock < 0) return res.status(400).json({ success: false, error: 'Valid stock quantity is required' });
 
-        const hasUploadedFiles = req.files && req.files.length > 0;
-        const hasBase64Images = req.body.images && req.body.images !== 'undefined' && req.body.images !== '[]';
+
 
         // ============ PROCESS DATA ===========
         // Debug: Log Multer parsing results
@@ -167,29 +166,8 @@ console.log('DEBUG: req.files', req.files);
             }
         }
 
-        // Build images array from uploaded files or base64 data.
-        let images = [];
-        if (hasUploadedFiles) {
-            images = req.files.map((file, index) => ({
-                public_id: file.filename,
-                url: `/uploads/products/${file.filename}`,
-                alt: name,
-                isDefault: index === 0
-            }));
-        } else if (hasBase64Images) {
-            try {
-                const base64Array = JSON.parse(req.body.images);
-                images = base64Array.map((data, index) => ({
-                    public_id: `base64-${Date.now()}-${index}`,
-                    url: data, // Assuming data is a data URI or already uploaded URL
-                    alt: name,
-                    isDefault: index === 0
-                }));
-            } catch (e) {
-                console.error('Failed to parse base64 images', e);
-                return res.status(400).json({ success: false, error: 'Invalid images format' });
-            }
-        }
+        
+
 
         let discountPriceValue = 0;
         if (req.body.discountPrice && req.body.discountPrice !== 'undefined') {
@@ -345,6 +323,7 @@ export const adminUpdateProduct = asyncHandler(async (req, res) => {
         });
 
         // Handle images
+        const existingImages = product.images || [];
         if (req.files && req.files.length > 0) {
             const newImages = req.files.map((file) => ({
                 public_id: file.filename,
@@ -352,9 +331,10 @@ export const adminUpdateProduct = asyncHandler(async (req, res) => {
                 alt: req.body.name || product.name,
                 isDefault: false
             }));
-            updateData.images = [...product.images, ...newImages];
+            updateData.images = [...existingImages, ...newImages];
         } else {
-            updateData.images = product.images;
+            // No new files uploaded – keep existing images
+            updateData.images = existingImages;
         }
 
         // Handle deleted images
