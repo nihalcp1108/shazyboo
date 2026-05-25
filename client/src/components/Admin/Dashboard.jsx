@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { FaUsers, FaBox, FaShoppingCart, FaRupeeSign, FaExclamationTriangle, FaStar, FaFire, FaTag } from 'react-icons/fa'
+import { FaUsers, FaBox, FaShoppingCart, FaRupeeSign, FaExclamationTriangle, FaStar, FaFire, FaTag } from 'react-icons/fa';
+import { getFallbackImage } from '../../utils/imageUtils.js';
 import { api } from '../../services/api'
 
 const Dashboard = () => {
@@ -19,7 +20,7 @@ const Dashboard = () => {
     // Image URL helper function (same as ProductManager)
     const getImageUrl = (image) => {
         if (!image || !image.url) {
-            return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+            return getFallbackImage();
         }
         
         const BASE_URL = getBaseUrl();
@@ -52,7 +53,7 @@ const Dashboard = () => {
         }
         
         // Fallback to cute placeholder
-        return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+        return getFallbackImage();
     };
 
     const fetchDashboardData = async () => {
@@ -180,7 +181,7 @@ const Dashboard = () => {
                                                         alt={order.user.name} 
                                                         className="w-8 h-8 rounded-full mr-3" 
                                                         onError={(e) => {
-                                                            e.target.src = 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+                                                            e.target.src = getFallbackImage();
                                                             e.target.onerror = null;
                                                         }}
                                                     />
@@ -234,7 +235,7 @@ const Dashboard = () => {
                                         alt={product.name}
                                         className="w-full h-full object-cover"
                                         onError={(e) => {
-                                            e.target.src = 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+                                            e.target.src = getFallbackImage();
                                             e.target.onerror = null;
                                         }}
                                     />
@@ -288,7 +289,7 @@ const Dashboard = () => {
                                             alt={product.name}
                                             className="w-full h-full object-cover"
                                             onError={(e) => {
-                                                e.target.src = 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+                                                e.target.src = getFallbackImage();
                                                 e.target.onerror = null;
                                             }}
                                         />
@@ -338,7 +339,7 @@ const Dashboard = () => {
                                             alt={product.name}
                                             className="w-full h-full object-cover"
                                             onError={(e) => {
-                                                e.target.src = 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+                                                e.target.src = getFallbackImage();
                                                 e.target.onerror = null;
                                             }}
                                         />
@@ -406,7 +407,7 @@ const Dashboard = () => {
                                                     alt={user.name}
                                                     className="w-8 h-8 rounded-full mr-3"
                                                     onError={(e) => {
-                                                        e.target.src = 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+                                                        e.target.src = getFallbackImage();
                                                         e.target.style.display = 'none';
                                                     }}
                                                 />

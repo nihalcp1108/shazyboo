@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { FaSearch, FaStar, FaHeart, FaMagic, FaArrowRight, FaSpinner } from 'react-icons/fa';
-import { getImageUrl } from '../utils/imageUtils';
+import { getImageUrl, handleImageError, getFallbackImage } from '../utils/imageUtils';
 
 const CategoriesPage = () => {
     const [categories, setCategories] = useState([]);
@@ -126,7 +126,7 @@ const CategoriesPage = () => {
                                                     alt={category.name}
                                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                                     onError={(e) => {
-                                                        e.target.src = 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+                                                        handleImageError(e);
                                                     }}
                                                 />
                                             ) : (
@@ -193,7 +193,7 @@ const CategoriesPage = () => {
                                                     alt={category.name}
                                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                                     onError={(e) => {
-                                                        e.target.src = 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+                                                        handleImageError(e);
                                                     }}
                                                 />
                                             ) : (

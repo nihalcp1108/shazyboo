@@ -9,7 +9,7 @@ import {
     FaSave, FaUndo, FaClone, FaPrint
 } from 'react-icons/fa'
 import { toast } from 'react-hot-toast'
-import { api } from '../../services/api'
+import { api } from '../../services/api'; import { getFallbackImage } from '../../utils/imageUtils';
 
 const ProductManager = () => {
     const navigate = useNavigate()
@@ -236,7 +236,7 @@ const ProductManager = () => {
     }, [colors]);
 
     const getImageUrl = (image) => {
-        if (!image) return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+        if (!image) return getFallbackImage();
         if (image.url && (image.url.startsWith('http://') || image.url.startsWith('https://'))) return image.url;
         if (image.public_id && image.url && image.url.includes('cloudinary')) return image.url;
         if (image.url && image.url.startsWith('data:')) return image.url;
@@ -245,11 +245,11 @@ const ProductManager = () => {
             return `${BASE_URL}/${imagePath}`;
         }
         if (image.public_id) return `${BASE_URL}/uploads/products/${image.public_id}`;
-        return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+        return getFallbackImage();
     };
 
     const handleImageError = (e) => {
-        e.target.src = 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+        e.target.src = getFallbackImage();
         e.target.onerror = null;
     }
 

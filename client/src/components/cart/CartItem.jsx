@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FaTrash, FaPlus, FaMinus, FaPalette } from 'react-icons/fa';
 import { useCart } from '../../Context/CartContext';
-import { toast } from 'react-hot-toast';
+import { getFallbackImage, handleImageError } from '../../utils/imageUtils';
 
 const CartItem = ({ item }) => {
   const { updateQuantity, removeFromCart, getCartItemKey } = useCart();
@@ -15,7 +15,7 @@ const CartItem = ({ item }) => {
     }
 
     if (!image) {
-      return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=300&h=300&fit=crop&q=80';
+      return getFallbackImage();
     }
     
     // Handle if the image is just a string (path or URL)
@@ -54,7 +54,7 @@ const CartItem = ({ item }) => {
       }
     }
     
-    return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=300&h=300&fit=crop&q=80';
+    return getFallbackImage();
   };
 
   const handleQuantityChange = async (newQuantity) => {
@@ -87,7 +87,7 @@ const CartItem = ({ item }) => {
           alt={item.name}
           className="w-full h-full object-cover rounded-lg shadow-md"
           onError={(e) => {
-            e.target.src = 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=300&h=300&fit=crop&q=80';
+            handleImageError(e);
           }}
         />
       </div>

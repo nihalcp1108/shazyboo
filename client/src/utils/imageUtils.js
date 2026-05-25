@@ -40,13 +40,7 @@ export const getImageUrl = (image) => {
         normalizedPath = `/uploads/products/${normalizedPath}`;
       }
 
-      // Development environment (Vite dev server on port 3000) – use relative path
-      const isDev = typeof window !== 'undefined' && window.location.port === '3000';
-      if (isDev) {
-        return normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
-      }
-
-      // Production – prepend backend base URL
+      // Production – prepend backend base URL (also used in development)
       return `${BASE_URL}${normalizedPath}`;
     };
 

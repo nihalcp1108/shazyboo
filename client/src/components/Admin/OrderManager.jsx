@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { FaSearch, FaEye, FaTruck, FaCheck, FaTimes, FaPrint, FaDownload, FaWhatsapp } from 'react-icons/fa'
 import { toast } from 'react-hot-toast'
-import { api } from '../../services/api'
+import { api } from '../../services/api';
+import { getFallbackImage, handleImageError } from '../../utils/imageUtils';
 
 const OrderManager = () => {
     const [orders, setOrders] = useState([])
@@ -22,7 +23,7 @@ const OrderManager = () => {
     // Image URL helper function (same as ProductManager)
     const getImageUrl = (image) => {
         if (!image || !image.url) {
-            return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+            return getFallbackImage();
         }
         
         const BASE_URL = getBaseUrl();
@@ -55,7 +56,7 @@ const OrderManager = () => {
         }
         
         // Fallback to cute placeholder
-        return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
+        return getFallbackImage();
     };
 
     // Helper function for user avatars
@@ -519,8 +520,8 @@ const OrderManager = () => {
                                                                         alt={item.product?.name}
                                                                         className="w-12 h-12 object-cover rounded mr-3"
                                                                         onError={(e) => {
-                                                                            e.target.src = 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
-                                                                            e.target.onerror = null;
+                                                                            handleImageError(e);
+                                                                            
                                                                         }}
                                                                     />
                                                                 )}

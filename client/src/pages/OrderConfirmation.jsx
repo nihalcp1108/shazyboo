@@ -6,7 +6,7 @@ import { api } from '../services/api';
 import { toast } from 'react-hot-toast';
 import { FaCheckCircle, FaTruck, FaCalendarAlt, FaMapMarkerAlt, FaBox, FaRupeeSign, FaPrint, FaHome } from 'react-icons/fa';
 
-// Helper function to get image URL (same as in ProductCard)
+import { handleImageError, getFallbackImage } from '../utils/imageUtils';
 const getImageUrl = (image) => {
   if (!image) {
     return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=300&h=300&fit=crop&q=80';
@@ -149,7 +149,7 @@ const OrderConfirmation = () => {
                       alt={item.name}
                       className="w-20 h-20 object-cover rounded-lg"
                       onError={(e) => {
-                        e.target.src = 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=300&h=300&fit=crop&q=80';
+                        handleImageError(e);
                       }}
                     />
                     <div className="flex-1">
