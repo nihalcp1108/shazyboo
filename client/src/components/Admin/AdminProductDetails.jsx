@@ -114,7 +114,7 @@ const AdminProductDetails = () => {
 
   const getBackendUrl = () => {
     const API_URL = import.meta.env?.VITE_API_URL || 'http://localhost:5001/api';
-    const BASE_URL = API_URL.replace('/api', '');
+    const BASE_URL = API_URL.replace(/\/api$/, '');
     return BASE_URL;
   };
 
@@ -129,7 +129,7 @@ const AdminProductDetails = () => {
       if (image.startsWith('http://') || image.startsWith('https://')) {
         return image;
       }
-      if (image.startsWith('/uploads/')) {
+      if (image.startsWith('/')) {
         return `${BASE_URL}${image}`;
       }
       return `${BASE_URL}/uploads/products/${image}`;
@@ -151,8 +151,8 @@ const AdminProductDetails = () => {
           return url;
         }
         
-        const imagePath = url.startsWith('/') ? url.substring(1) : url;
-        const fullUrl = `${BASE_URL}/${imagePath}`;
+        const imagePath = url.startsWith('/') ? url : `/${url}`;
+        const fullUrl = `${BASE_URL}${imagePath}`;
         return fullUrl;
       }
       
