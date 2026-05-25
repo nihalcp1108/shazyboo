@@ -137,7 +137,36 @@ console.log('DEBUG: req.files', req.files);
         const hasUploadedFiles = req.files && req.files.length > 0;
         const hasBase64Images = req.body.images && req.body.images !== 'undefined' && req.body.images !== '[]';
 
-        // ============ PROCESS DATA ============
+        // ============ PROCESS DATA ===========
+        // Debug: Log Multer parsing results
+        console.log('🔎 Multer Debug - req.files:', req.files);
+        const hasUploadedFiles = req.files && req.files.length > 0;
+        const hasBase64Images = req.body.images && typeof req.body.images === 'string' && req.body.images.trim().length > 0;
+        console.log('🔎 hasUploadedFiles:', hasUploadedFiles, 'hasBase64Images:', hasBase64Images);
+        // Build images array
+        let images = [];
+        if (hasUploadedFiles) {
+            images = req.files.map((file, index) => ({
+                public_id: file.filename,
+                url: `/uploads/products/${file.filename}`,
+                alt: name,
+                isDefault: index === 0
+            }));
+        } else if (hasBase64Images) {
+            try {
+                const base64Array = JSON.parse(req.body.images);
+                images = base64Array.map((data, index) => ({
+                    public_id: `base64-${Date.now()}-${index}`,
+                    url: data,
+                    alt: name,
+                    isDefault: index === 0
+                }));
+            } catch (e) {
+                console.error('Failed to parse base64 images', e);
+                return res.status(400).json({ success: false, error: 'Invalid images format' });
+            }
+        }
+
         // Build images array from uploaded files or base64 data.
         let images = [];
         if (hasUploadedFiles) {
