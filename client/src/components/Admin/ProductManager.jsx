@@ -235,23 +235,9 @@ const ProductManager = () => {
         }
     }, [colors]);
 
-    const getImageUrl = (image) => {
-        if (!image) return getFallbackImage();
-        if (image.url && (image.url.startsWith('http://') || image.url.startsWith('https://'))) return image.url;
-        if (image.public_id && image.url && image.url.includes('cloudinary')) return image.url;
-        if (image.url && image.url.startsWith('data:')) return image.url;
-        if (image.url) {
-            const imagePath = image.url.startsWith('/') ? image.url.substring(1) : image.url;
-            return `${BASE_URL}/${imagePath}`;
-        }
-        if (image.public_id) return `${BASE_URL}/uploads/products/${image.public_id}`;
-        return getFallbackImage();
-    };
 
-    const handleImageError = (e) => {
-        e.target.src = getFallbackImage();
-        e.target.onerror = null;
-    }
+
+
 
     const handleLocalImageUpload = (e) => {
         const files = Array.from(e.target.files);
