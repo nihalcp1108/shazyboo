@@ -1,48 +1,8 @@
 import { Link } from 'react-router-dom';
 import { FaArrowRight, FaHeart, FaGift } from 'react-icons/fa';
+import { getImageUrl } from '../utils/imageUtils';
 
 const CategoryCard = ({ category }) => {
-    // Function to get image URL
-    const getImageUrl = (image) => {
-        if (!image) {
-            return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
-        }
-        
-        if (typeof image === 'string') {
-            if (image.startsWith('http://') || image.startsWith('https://')) {
-                return image;
-            }
-            if (image.startsWith('/uploads/')) {
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-                const BASE_URL = API_URL.replace('/api', '');
-                return `${BASE_URL}${image}`;
-            }
-        }
-        
-        if (image && typeof image === 'object') {
-            if (image.url) {
-                const url = image.url;
-                if (url.startsWith('http://') || url.startsWith('https://')) {
-                    return url;
-                }
-                if (url.includes('cloudinary')) {
-                    return url;
-                }
-                if (url.startsWith('/uploads/')) {
-                    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-                    const BASE_URL = API_URL.replace('/api', '');
-                    return `${BASE_URL}${url}`;
-                }
-            }
-            
-            if (image.public_id) {
-                return `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5001'}/uploads/categories/${image.public_id}`;
-            }
-        }
-        
-        return 'https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80';
-    };
-
     // Function to get category icon
     const getCategoryIcon = (categoryName) => {
         if (!categoryName) return '📦';

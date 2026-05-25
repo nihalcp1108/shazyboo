@@ -5,6 +5,7 @@ import {
     FaCrown
 } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
+import { getImageUrl } from '../../utils/imageUtils';
 
 const MainCategoryManager = () => {
     const [categories, setCategories] = useState([]);
@@ -103,14 +104,7 @@ const MainCategoryManager = () => {
         }
     };
 
-    const getImageUrl = (image) => {
-        if (!image) return '';
-        if (image.startsWith('http')) return image;
-        if (image.startsWith('/uploads/')) {
-            return `${BASE_URL}${image}`;
-        }
-        return image;
-    };
+    // Using getImageUrl from imageUtils
 
     const handleImageSelect = (e) => {
         const file = e.target.files[0];

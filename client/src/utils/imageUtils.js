@@ -16,11 +16,26 @@ export const getImageUrl = (image) => {
   // Helper to construct full URL from path
   const constructUrl = (path) => {
     if (!path) return getFallbackImage();
-    if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    if (path.startsWith('data:')) return path;
+
+    // If it's a localhost absolute URL, extract its pathname
+    let cleanPath = path;
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      if (path.includes('localhost:') || path.includes('127.0.0.1:')) {
+        try {
+          const urlObj = new URL(path);
+          cleanPath = urlObj.pathname; // e.g. "/uploads/categories/filename.jpg"
+        } catch (e) {
+          console.error('Failed to parse localhost URL:', path);
+        }
+      } else {
+        return path;
+      }
+    }
+
+    if (cleanPath.startsWith('data:')) return cleanPath;
 
     // Ensure path starts with /uploads/ or uploads/
-    let normalizedPath = path;
+    let normalizedPath = cleanPath;
     if (!normalizedPath.startsWith('/') && !normalizedPath.startsWith('uploads/')) {
       normalizedPath = `/uploads/products/${normalizedPath}`;
     }

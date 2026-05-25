@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { FaSearch, FaStar, FaHeart, FaMagic, FaArrowRight, FaSpinner } from 'react-icons/fa';
+import { getImageUrl } from '../utils/imageUtils';
 
 const CategoriesPage = () => {
     const [categories, setCategories] = useState([]);
@@ -38,29 +39,6 @@ const CategoriesPage = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    const getImageUrl = (image) => {
-        if (!image) return null;
-        if (typeof image === 'string') {
-            if (image.startsWith('http')) return image;
-            if (image.startsWith('/uploads/')) {
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-                const BASE_URL = API_URL.replace('/api', '');
-                return `${BASE_URL}${image}`;
-            }
-            return image;
-        }
-        if (image && typeof image === 'object' && image.url) {
-            if (image.url.startsWith('http')) return image.url;
-            if (image.url.startsWith('/uploads/')) {
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-                const BASE_URL = API_URL.replace('/api', '');
-                return `${BASE_URL}${image.url}`;
-            }
-            return image.url;
-        }
-        return null;
     };
 
     const filteredCategories = categories.filter(category =>

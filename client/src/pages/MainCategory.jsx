@@ -10,6 +10,7 @@ import { api } from '../services/api';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useCart } from '../Context/CartContext';
+import { getImageUrl } from '../utils/imageUtils';
 
 const MainCategory = () => {
     const { slug } = useParams();
@@ -63,34 +64,7 @@ const MainCategory = () => {
         }
     };
 
-    const getImageUrl = (image) => {
-        if (!image) return 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop';
-        
-        // Handle string images
-        if (typeof image === 'string') {
-            if (image.startsWith('http')) return image;
-            if (image.startsWith('/uploads/')) {
-                return `${BASE_URL}${image}`;
-            }
-            return image;
-        }
-        
-        // Handle object images
-        if (image && typeof image === 'object') {
-            if (image.url) {
-                if (image.url.startsWith('http')) return image.url;
-                if (image.url.startsWith('/uploads/')) {
-                    return `${BASE_URL}${image.url}`;
-                }
-                return image.url;
-            }
-            if (image.public_id) {
-                return `${BASE_URL}/uploads/products/${image.public_id}`;
-            }
-        }
-        
-        return 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop';
-    };
+    // Using getImageUrl from imageUtils
 
     const handleAddToCart = async (product, e) => {
         e.stopPropagation();
