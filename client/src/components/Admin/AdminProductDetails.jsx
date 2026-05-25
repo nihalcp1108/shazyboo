@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getImageUrl, getFallbackImage, handleImageError } from "../../utils/imageUtils";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   FaArrowLeft,
@@ -112,62 +113,6 @@ const AdminProductDetails = () => {
     return config[status];
   };
 
-  const getBackendUrl = () => {
-    const API_URL = import.meta.env?.VITE_API_URL || 'http://localhost:5001/api';
-    const BASE_URL = API_URL.replace(/\/api$/, '');
-    return BASE_URL;
-  };
-
-  const getImageUrl = (image) => {
-    if (!image) {
-      return "https://via.placeholder.com/400?text=No+Image";
-    }
-
-    const BASE_URL = getBackendUrl();
-    
-    if (typeof image === 'string') {
-      if (image.startsWith('http://') || image.startsWith('https://')) {
-        return image;
-      }
-      if (image.startsWith('/')) {
-        return `${BASE_URL}${image}`;
-      }
-      return `${BASE_URL}/uploads/products/${image}`;
-    }
-
-    if (image && typeof image === 'object') {
-      if (image.url) {
-        const url = image.url;
-        
-        if (url.startsWith('http://') || url.startsWith('https://')) {
-          return url;
-        }
-        
-        if (image.public_id && url && url.includes('cloudinary')) {
-          return url;
-        }
-        
-        if (url.startsWith('data:')) {
-          return url;
-        }
-        
-        const imagePath = url.startsWith('/') ? url : `/${url}`;
-        const fullUrl = `${BASE_URL}${imagePath}`;
-        return fullUrl;
-      }
-      
-      if (image.public_id) {
-        return `${BASE_URL}/uploads/products/${image.public_id}`;
-      }
-      
-      if (image.filename) {
-        return `${BASE_URL}/uploads/products/${image.filename}`;
-      }
-    }
-
-    return "https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80";
-  };
-
   const handleImageError = (imageId, img, e) => {
     console.error(`Failed to load image ${imageId}:`, img);
     console.error("Image URL attempted:", e.target.src);
@@ -178,9 +123,6 @@ const AdminProductDetails = () => {
     }));
   };
 
-  const getFallbackImage = () => {
-    return "https://images.unsplash.com/photo-1550747535-6734fa2e5f6b?w=400&h=400&fit=crop&q=80";
-  };
 
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this product?")) {

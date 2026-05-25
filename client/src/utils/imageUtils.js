@@ -66,7 +66,9 @@ export const getImageUrl = (image) => {
 };
 
 export const getFallbackImage = () => {
-  return 'https://via.placeholder.com/400?text=No+Image';
+  // Inline SVG placeholder to avoid external network requests.
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="400" height="400" fill="#ddd"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#555" font-size="20">No Image</text></svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 };
 
 export const handleImageError = (e) => {
