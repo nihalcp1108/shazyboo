@@ -131,15 +131,38 @@ export const adminCreateProduct = asyncHandler(async (req, res) => {
         const parsedStock = parseInt(stock);
         if (isNaN(parsedStock) || parsedStock < 0) return res.status(400).json({ success: false, error: 'Valid stock quantity is required' });
 
-        if (!req.files || req.files.length === 0) return res.status(400).json({ success: false, error: 'At least one product image is required' });
+// Validate that at least one image is provided.
+// Accept uploaded files (req.files or req.file) or a JSON array of base64 images in req.body.images.
+const hasUploadedFiles = (req.files && req.files.length > 0) || req.file;
+const hasBase64Images = req.body.images && typeof req.body.images === 'string' && req.body.images.trim().startsWith('[');
+if (!hasUploadedFiles && !hasBase64Images) {
+    return res.status(400).json({ success: false, error: 'At least one product image is required' });
+}
 
         // ============ PROCESS DATA ============
-        const images = req.files.map((file, index) => ({
-            public_id: file.filename,
-            url: `/uploads/products/${file.filename}`,
-            alt: name,
-            isDefault: index === 0
-        }));
+        // Build images array from uploaded files or base64 data.
+        let images = [];
+        if (hasUploadedFiles) {
+            images = req.files.map((file, index) => ({
+                public_id: file.filename,
+                url: `/uploads/products/${file.filename}`,
+                alt: name,
+                isDefault: index === 0
+            }));
+        } else if (hasBase64Images) {
+            try {
+                const base64Array = JSON.parse(req.body.images);
+                images = base64Array.map((data, index) => ({
+                    public_id: `base64-${Date.now()}-${index}`,
+                    url: data, // Assuming data is a data URI or already uploaded URL
+                    alt: name,
+                    isDefault: index === 0
+                }));
+            } catch (e) {
+                console.error('Failed to parse base64 images', e);
+                return res.status(400).json({ success: false, error: 'Invalid images format' });
+            }
+        }
 
         let discountPriceValue = 0;
         if (req.body.discountPrice && req.body.discountPrice !== 'undefined') {

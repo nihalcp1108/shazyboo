@@ -76,7 +76,14 @@ export const uploadProductImages = multer({
     storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
     fileFilter: fileFilter
-}).array('images', 20); // 'images' is the field name, max 20 files
+}).array('images', 20);
+
+// Fallback middleware that accepts any file field for backward compatibility
+export const uploadAnyImage = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: fileFilter
+}).any();
 
 // Optional: Export a single image upload middleware
 export const uploadSingleImage = multer({
