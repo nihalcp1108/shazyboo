@@ -31,24 +31,25 @@ const app = express();
 // ================= FIXED CORS =================
 const allowedOrigins = [
     'http://localhost:3000',
-    'http://localhost:3001',
     'http://localhost:5173',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173',
-    'https://shazyboo-df9m.vercel.app',
-    process.env.CLIENT_URL,
-    process.env.CORS_ORIGIN
-].filter(Boolean);
+    'https://shazyboo-df9m-git-completed-nihalcp1108s-projects.vercel.app'
+];
 
 app.use(cors({
     origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
 
-        const cleanOrigin = origin.replace(/\/$/, '');
-        const isAllowed = allowedOrigins.some(allowed => allowed.replace(/\/$/, '') === cleanOrigin) ||
-                          cleanOrigin.startsWith('http://localhost:') ||
-                          cleanOrigin.startsWith('http://127.0.0.1:') ||
-                          cleanOrigin.endsWith('.vercel.app');
+        // Allow any vercel deployment
+        if (origin.endsWith('.vercel.app')) {
+            return callback(null, true);
+        }
+
+        // Check if origin is in allowedOrigins or matches localhost
+        const isAllowed = allowedOrigins.includes(origin) || 
+                          origin === process.env.CLIENT_URL || 
+                          origin === process.env.CORS_ORIGIN ||
+                          origin.startsWith('http://localhost:');
 
         if (isAllowed) {
             return callback(null, true);
@@ -56,11 +57,12 @@ app.use(cors({
 
         return callback(new Error('CORS not allowed for this origin: ' + origin));
     },
-    credentials: true,
+    credentials: true, // required for cookies/JWT
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
 }));
 
+// Pre-flight requests
 app.options('*', cors());
 
 // ================= STATIC FILES =================
