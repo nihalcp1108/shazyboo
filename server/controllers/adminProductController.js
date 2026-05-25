@@ -134,11 +134,8 @@ console.log('DEBUG: req.files', req.files);
         const parsedStock = parseInt(stock);
         if (isNaN(parsedStock) || parsedStock < 0) return res.status(400).json({ success: false, error: 'Valid stock quantity is required' });
 
-    // ---- Image validation ----
-    const hasUploadedFiles = Array.isArray(req.files) && req.files.length > 0;
-    if (!hasUploadedFiles) {
-        return res.status(400).json({ success: false, error: 'At least one product image is required' });
-    }
+        const hasUploadedFiles = req.files && req.files.length > 0;
+        const hasBase64Images = req.body.images && req.body.images !== 'undefined' && req.body.images !== '[]';
 
         // ============ PROCESS DATA ============
         // Build images array from uploaded files or base64 data.
