@@ -2,30 +2,38 @@ import fs from 'fs';
 import path from 'path';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { deserialize } from 'bson';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const MONGO_URI = process.env.USE_LOCAL_DB === 'true' ? process.env.MONGO_URI_LOCAL : process.env.MONGO_URI;
 
+if (!MONGO_URI) {
+  console.error('MONGO_URI not set');
+  process.exit(1);
+}
+
 async function restoreCollection(collectionName, bsonFilePath) {
   const db = mongoose.connection.db;
   const collection = db.collection(collectionName);
   console.log(`\nRestoring collection: ${collectionName}`);
-  // Drop existing collection (if any)
   try {
     await collection.drop();
     console.log(`- Dropped existing ${collectionName}`);
   } catch (e) {
     console.log(`- No existing ${collectionName} to drop`);
   }
-  // Read BSON file and deserialize all documents
   const raw = fs.readFileSync(bsonFilePath);
-  const bson = new mongoose.mongo.BSON();
   const docs = [];
   let offset = 0;
   while (offset < raw.length) {
-    const doc = bson.deserialize(raw.slice(offset));
     const size = raw.readInt32LE(offset);
+    const slice = raw.slice(offset, offset + size);
+    const doc = deserialize(slice);
     docs.push(doc);
     offset += size;
   }
