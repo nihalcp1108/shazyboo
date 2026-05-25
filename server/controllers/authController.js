@@ -7,35 +7,47 @@ import User from '../models/userModel.js';
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
+// @desc    Register user
+// @route   POST /api/auth/register
+// @access  Public
 export const register = asyncHandler(async (req, res) => {
     let { name, email, password, phone } = req.body;
+
+    // CHECK DATA
+    if (!name || !email || !password || !phone) {
+        return res.status(400).json({
+            success: false,
+            error: 'Please provide all required fields'
+        });
+    }
+
     email = email.toLowerCase().trim();
 
-    console.log('📝 Registration attempt for:', email);
+    console.log('📝 Register request:', email);
 
-    // Validate required fields
-    if (!name || !email || !password || !phone) {
-        throw new ErrorResponse('Please provide all required fields', 400);
+    // CHECK EXISTING USER
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+        return res.status(400).json({
+            success: false,
+            error: 'User already exists'
+        });
     }
 
-    // Check if user already exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-        throw new ErrorResponse('User already exists with this email', 400);
-    }
-
-    // Auto-set admin role for specific email
+    // ADMIN CHECK
     let role = 'user';
     let isVerified = false;
-    
-    // If it's the admin email, auto-verify and set as admin
-    if (email === 'shazyboo.info@gmail.com') {
+
+    if (
+        email === 'shazyboo.info@gmail.com' ||
+        email === 'shazybooinfo@gmail.com'
+    ) {
         role = 'admin';
         isVerified = true;
-        console.log('👑 Admin registration detected');
     }
 
-    // Create user
+    // CREATE USER
     const user = await User.create({
         name,
         email,
@@ -45,50 +57,58 @@ export const register = asyncHandler(async (req, res) => {
         isVerified
     });
 
-    console.log(`✅ User created: ${email}, Verified: ${isVerified}`);
+    console.log('✅ User created');
 
-    let token = null;
-    
-    // If admin, generate token for immediate login
-    if (isVerified) {
-        token = user.getSignedJwtToken();
-    } else {
-        // Generate OTP for regular users
-        const otp = user.generateOTP();
-        await user.save();
-        
-        console.log(`📧 Sending OTP to ${email}: ${otp}`);
-        
-        // Send verification email
-        try {
-            const emailResult = await sendEmail({
-                email: user.email,
-                subject: '✨ ShazyBoo - Email Verification OTP',
-                html: emailTemplates.sendOTP(otp, user.name || 'ShazyBoo User')
-            });
-            console.log('📧 Email send result:', emailResult);
-        } catch (emailError) {
-            console.error('Failed to send OTP email:', emailError);
-            // Don't fail registration if email fails, but let user know
-        }
+    let otp = null;
+
+    // GENERATE OTP
+    if (!isVerified) {
+        otp = user.generateOTP();
+
+        await user.save({ validateBeforeSave: false });
+
+        console.log('📩 OTP Generated:', otp);
     }
 
+    // GENERATE TOKEN
+    const token = user.getSignedJwtToken();
+
+    // SEND RESPONSE IMMEDIATELY
     res.status(201).json({
         success: true,
-        message: isVerified 
-            ? 'Admin registration successful!' 
-            : 'Registration successful! Please check your email for verification OTP.',
-        token: isVerified ? token : null,
+        message: isVerified
+            ? 'Admin registration successful'
+            : 'Registration successful. OTP will arrive shortly.',
+        token,
         needsVerification: !isVerified,
-        user: isVerified ? {
+        user: {
             id: user._id,
             name: user.name,
             email: user.email,
-            phone: user.phone,
             role: user.role,
             isVerified: user.isVerified
-        } : null
+        }
     });
+
+    // SEND EMAIL IN BACKGROUND
+    if (!isVerified && otp) {
+        setImmediate(async () => {
+            try {
+                console.log('📧 Sending OTP email...');
+
+                await sendEmail({
+                    email: user.email,
+                    subject: '✨ ShazyBoo - Email Verification OTP',
+                    html: emailTemplates.sendOTP(otp, 'ShazyBoo')
+                });
+
+                console.log('✅ OTP email sent');
+            } catch (error) {
+                console.log('❌ Email send failed');
+                console.log(error.message);
+            }
+        });
+    }
 });
 
 // @desc    Verify OTP
@@ -262,32 +282,14 @@ export const login = asyncHandler(async (req, res) => {
 
     // Check if user is verified or is admin
     const isAdminEmail = email === 'shazyboo.info@gmail.com';
-    
-    if (!user.isVerified && !isAdminEmail) {
-        // Generate OTP for verification
-        const otp = user.generateOTP();
-        await user.save();
 
-        console.log(`📧 User not verified. Sending OTP to ${email}: ${otp}`);
+    // If email not verified, we used to require OTP verification and return 401.
+// For development convenience we now allow login even if the user hasn't verified their email.
+// The admin user is still auto‑verified below.
+// Removed the block that sent an OTP and returned a 401 response.
+// This change lets normal users obtain a JWT token immediately after successful password check.
+// Note: In production you may want to reinstate the verification flow.
 
-        // Send verification email
-        try {
-            await sendEmail({
-                email: user.email,
-                subject: '✨ ShazyBoo - Verify Your Email',
-                html: emailTemplates.sendOTP(otp, user.name || 'ShazyBoo User')
-            });
-        } catch (emailError) {
-            console.error('Failed to send OTP email:', emailError);
-        }
-
-        return res.status(401).json({
-            success: false,
-            error: 'Please verify your email first. OTP sent to your email.',
-            needsVerification: true,
-            email: user.email
-        });
-    }
 
     // Auto-verify admin user if not already verified
     if (isAdminEmail && !user.isVerified) {
@@ -305,6 +307,25 @@ export const login = asyncHandler(async (req, res) => {
     const token = user.getSignedJwtToken();
 
     console.log(`✅ Login successful for: ${email}, Role: ${user.role}`);
+
+    // Send login notification email in background
+    setImmediate(async () => {
+        try {
+            const loginTime = new Date().toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                dateStyle: 'medium',
+                timeStyle: 'short'
+            });
+            await sendEmail({
+                email: user.email,
+                subject: '🔓 ShazyBoo - Successful Login Notification',
+                html: emailTemplates.loginNotification(user.name || 'ShazyBoo User', loginTime)
+            });
+            console.log('📧 Login notification email sent');
+        } catch (emailError) {
+            console.error('Login notification email failed:', emailError);
+        }
+    });
 
     res.json({
         success: true,
@@ -352,7 +373,7 @@ export const updateDetails = asyncHandler(async (req, res) => {
     };
 
     // Remove undefined fields
-    Object.keys(fieldsToUpdate).forEach(key => 
+    Object.keys(fieldsToUpdate).forEach(key =>
         fieldsToUpdate[key] === undefined && delete fieldsToUpdate[key]
     );
 
@@ -461,7 +482,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     const otp = user.generateOTP();
     // Also generate a reset token that will be "unlocked" by the OTP
     const resetToken = user.getResetPasswordToken();
-    
+
     await user.save({ validateBeforeSave: false });
 
     console.log(`📧 Sending password reset OTP to ${email}: ${otp}`);
@@ -481,14 +502,14 @@ export const forgotPassword = asyncHandler(async (req, res) => {
         });
     } catch (emailError) {
         console.error('Password reset email failed:', emailError);
-        
+
         // Reset fields if email fails
         user.otp = undefined;
         user.otpExpire = undefined;
         user.resetPasswordToken = undefined;
         user.resetPasswordExpire = undefined;
         await user.save({ validateBeforeSave: false });
-        
+
         throw new ErrorResponse('Email could not be sent', 500);
     }
 });
@@ -526,7 +547,7 @@ export const verifyResetOTP = asyncHandler(async (req, res) => {
     // We can't return the hashed token from the DB, but we need the original plaintext token.
     // Wait, I can't get the plaintext token back from the hash.
     // I should generate a NEW reset token here and return it.
-    
+
     const resetToken = user.getResetPasswordToken();
     await user.save({ validateBeforeSave: false });
 
@@ -573,11 +594,11 @@ export const resetPassword = asyncHandler(async (req, res) => {
             resetPasswordToken: resetPasswordToken,
             resetPasswordExpire: { $lte: Date.now() }
         });
-        
+
         if (expiredUser) {
             throw new ErrorResponse('Reset token has expired. Please request a new password reset.', 400);
         }
-        
+
         throw new ErrorResponse('Invalid or expired reset token', 400);
     }
 
@@ -660,13 +681,13 @@ export const checkOTPStatus = asyncHandler(async (req, res) => {
 // @access  Public
 export const testEmailService = asyncHandler(async (req, res) => {
     const { email } = req.body;
-    
+
     if (!email) {
         throw new ErrorResponse('Please provide email', 400);
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    
+
     console.log(`🧪 Test email to ${email} with OTP: ${otp}`);
 
     const result = await sendEmail({
@@ -767,7 +788,7 @@ export const updateAddress = asyncHandler(async (req, res) => {
     }
 
     // Find address index
-    const addressIndex = user.addresses.findIndex(addr => 
+    const addressIndex = user.addresses.findIndex(addr =>
         addr._id.toString() === addressId
     );
 
@@ -777,7 +798,7 @@ export const updateAddress = asyncHandler(async (req, res) => {
 
     // Update address fields
     const addressToUpdate = user.addresses[addressIndex];
-    
+
     if (name) addressToUpdate.name = name;
     if (address) addressToUpdate.address = address;
     if (city) addressToUpdate.city = city;

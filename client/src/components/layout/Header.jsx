@@ -200,16 +200,7 @@ const Header = () => {
         }
       `}</style>
 
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 overflow-hidden ${scrolled ? "py-1 shadow-lg" : "py-3 shadow-none"
-          }`}
-        style={{
-          background: "linear-gradient(135deg, #f585b9 0%, #f585b9 0%, #e4f1f6 100%)",
-          backdropFilter: scrolled ? "blur(20px)" : "none",
-          fontFamily: "'Nunito', sans-serif",
-          height: scrolled ? "68px" : "84px"
-        }}
-      >
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 overflow-visible ${scrolled ? "py-1 shadow-lg" : "py-3 shadow-none"}`} style={{ background: "linear-gradient(135deg, #f585b9 0%, #f585b9 0%, #e4f1f6 100%)", backdropFilter: scrolled ? "blur(20px)" : "none", fontFamily: "'Nunito', sans-serif", height: scrolled ? "68px" : "84px" }}>
         <div className="container mx-auto px-6 md:px-8 max-w-7xl h-full">
           <div className="flex items-center justify-between gap-4 sm:gap-6 w-full h-full">
             {/* ── Logo with Image (Left Column) ── */}
@@ -357,7 +348,7 @@ const Header = () => {
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: -10, scale: 0.95 }}
                           transition={{ duration: 0.2, ease: "easeOut" }}
-                          className="absolute right-0 mt-3 w-64 rounded-2xl shadow-2xl z-50 overflow-hidden"
+                          className="absolute right-0 mt-3 w-64 rounded-2xl shadow-2xl z-50"
                           style={{
                             background: "#fff",
                             border: "1.5px solid #ede0ff",

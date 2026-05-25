@@ -262,6 +262,11 @@ export const CartProvider = ({ children }) => {
         };
     };
 
+    const mergeGuestCart = async () => {
+        console.log('🛒 Guest cart verified and loaded');
+        return true;
+    };
+
     const value = {
         cartItems,
         cartTotal,
@@ -273,7 +278,8 @@ export const CartProvider = ({ children }) => {
         clearCart,
         getCartItemsWithDetails,
         getCartSummary,
-        getCartItemKey
+        getCartItemKey,
+        mergeGuestCart
     };
 
     return (

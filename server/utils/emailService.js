@@ -412,65 +412,165 @@ const emailTemplates = {
         </body>
         </html>
         `;
-    }
+    },
+    // Login Notification Email
+    loginNotification: (userName, loginTime) => `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Successful Login - ShazyBoo</title>
+            <style>
+                body { font-family: Arial, sans-serif; background: #fdf2f8; padding: 20px; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+                .logo { color: #ec4899; font-size: 32px; font-weight: bold; margin-bottom: 20px; }
+                .status-icon { font-size: 48px; margin: 20px 0; }
+                .footer { margin-top: 30px; color: #6b7280; font-size: 14px; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="logo">✨ ShazyBoo ✨</div>
+                <div class="status-icon">🔓</div>
+                <h1>New Login Detected</h1>
+                <p>Hello ${userName}! 👋</p>
+                <p>We detected a new login to your ShazyBoo account on <strong>${loginTime}</strong>.</p>
+                <p>If this was you, no further action is needed! Happy shopping! 🛍️</p>
+                <div class="footer">
+                    💝 Made with love by ShazyBoo<br>
+                    📧 Need help? Contact: support@shazyboo.com
+                </div>
+            </div>
+        </body>
+        </html>
+    `
 };
 
 // Create transporter
 let transporter = null;
+let initializingPromise = null;
 
-const initializeTransporter = () => {
-    console.log('📧 Initializing email transporter...');
-    
-    // Check if email configuration exists
-    const hasEmailConfig = process.env.EMAIL_HOST && process.env.EMAIL_USER;
-    
-    if (!hasEmailConfig) {
-        console.warn('⚠️ Email service not configured. Using console logging only.');
-        console.log('   To enable emails, set:');
-        console.log('   EMAIL_HOST=smtp.gmail.com');
-        console.log('   EMAIL_USER=your-email@gmail.com');
-        console.log('   EMAIL_PASS=your-app-password');
-        return null;
-    }
+const initializeTransporter = async () => {
+    if (transporter) return transporter;
+    if (initializingPromise) return initializingPromise;
 
-    try {
-        const config = {
-            host: process.env.EMAIL_HOST,
-            port: process.env.EMAIL_PORT || 587,
-            secure: process.env.EMAIL_PORT === '465',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
+    initializingPromise = (async () => {
+        console.log('📧 Initializing email transporter...');
+        
+        const emailHost = process.env.EMAIL_HOST;
+        const emailUser = process.env.EMAIL_USER;
+        const emailPass = process.env.EMAIL_PASS;
+        
+        const isPlaceholder = (val) => {
+            if (!val) return true;
+            const lower = val.toLowerCase();
+            return lower.includes('<your_') || 
+                   lower.includes('your-') || 
+                   lower.includes('your_') || 
+                   lower.includes('example.com') || 
+                   lower.includes('<');
         };
 
-        console.log('📧 Email config:', {
-            host: config.host,
-            port: config.port,
-            user: config.auth.user.substring(0, 3) + '***' // Hide full email
-        });
-
-        transporter = nodemailer.createTransport(config);
-
-        // Test connection
-        transporter.verify((error, success) => {
-            if (error) {
-                console.error('❌ Email connection failed:', error.message);
-                console.log('📧 Falling back to console logging');
+        const hasRealEmailConfig = emailHost && emailUser && emailPass && 
+                                  !isPlaceholder(emailHost) && 
+                                  !isPlaceholder(emailUser) && 
+                                  !isPlaceholder(emailPass);
+        
+        if (!hasRealEmailConfig) {
+            console.warn('⚠️ Real SMTP credentials not configured (or placeholders detected). Creating Ethereal SMTP test account...');
+            try {
+                const testAccount = await nodemailer.createTestAccount();
+                console.log('✨ Ethereal SMTP test account generated successfully:');
+                console.log(`   User: ${testAccount.user}`);
+                console.log(`   Pass: ${testAccount.pass}`);
+                
+                transporter = nodemailer.createTransport({
+                    host: 'smtp.ethereal.email',
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: testAccount.user,
+                        pass: testAccount.pass
+                    },
+                    tls: {
+                        rejectUnauthorized: false
+                    }
+                });
+                console.log('✅ Ethereal email transporter ready');
+                return transporter;
+            } catch (etherealError) {
+                console.error('❌ Failed to create Ethereal test account:', etherealError.message);
+                console.log('📧 Falling back to console logging only');
                 transporter = null;
-            } else {
-                console.log('✅ Email service ready');
+                return null;
             }
-        });
+        }
 
-        return transporter;
-    } catch (error) {
-        console.error('❌ Email initialization error:', error.message);
-        return null;
-    }
+        try {
+            const config = {
+                host: emailHost,
+                port: process.env.EMAIL_PORT || 587,
+                secure: process.env.EMAIL_PORT === '465',
+                auth: {
+                    user: emailUser,
+                    pass: emailPass
+                },
+                tls: {
+                    rejectUnauthorized: false
+                }
+            };
+
+            console.log('📧 Email config:', {
+                host: config.host,
+                port: config.port,
+                user: config.auth.user.substring(0, 3) + '***'
+            });
+
+            const newTransporter = nodemailer.createTransport(config);
+
+            await new Promise((resolve, reject) => {
+                newTransporter.verify((error, success) => {
+                    if (error) reject(error);
+                    else resolve(success);
+                });
+            });
+
+            console.log('✅ Real email service ready');
+            transporter = newTransporter;
+            return transporter;
+        } catch (error) {
+            console.error('❌ Real SMTP connection failed:', error.message);
+            console.log('📧 Attempting Ethereal SMTP fallback...');
+            try {
+                const testAccount = await nodemailer.createTestAccount();
+                console.log('✨ Ethereal SMTP test account generated successfully (fallback):');
+                console.log(`   User: ${testAccount.user}`);
+                console.log(`   Pass: ${testAccount.pass}`);
+                
+                transporter = nodemailer.createTransport({
+                    host: 'smtp.ethereal.email',
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: testAccount.user,
+                        pass: testAccount.pass
+                    },
+                    tls: {
+                        rejectUnauthorized: false
+                    }
+                });
+                return transporter;
+            } catch (etherealError) {
+                console.error('❌ Ethereal fallback failed:', etherealError.message);
+                console.log('📧 Falling back to console logging only');
+                transporter = null;
+                return null;
+            }
+        }
+    })();
+
+    return initializingPromise;
 };
 
 // Send email function with console fallback
@@ -487,26 +587,38 @@ export const sendEmail = async (options) => {
         console.log('🔢 OTP for testing:', otpMatch[0]);
     }
     
-    console.log('HTML Preview:', html.substring(0, 200) + '...');
+    console.log('HTML Preview:', html.substring(0, 200).trim().replace(/\s+/g, ' ') + '...');
     console.log('📧📧📧 END EMAIL LOG 📧📧📧\n');
 
-    // Try to send actual email if transporter is available
-    if (!transporter) {
-        transporter = initializeTransporter();
-    }
+    // Ensure transporter is initialized
+    const activeTransporter = await initializeTransporter();
 
-    if (transporter) {
+    if (activeTransporter) {
         try {
             const mailOptions = {
-                from: `"ShazyBoo 🎀" <${process.env.FROM_EMAIL || process.env.EMAIL_USER}>`,
+                from: `"ShazyBoo 🎀" <${process.env.FROM_EMAIL || process.env.EMAIL_USER || 'shazyboo.info@gmail.com'}>`,
                 to: email,
                 subject: subject,
                 html: html,
                 text: html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
             };
 
-            const info = await transporter.sendMail(mailOptions);
+            const info = await activeTransporter.sendMail(mailOptions);
             console.log('✅ Email sent successfully! Message ID:', info.messageId);
+
+            // Log Ethereal preview link if using Ethereal
+            if (activeTransporter.options.host.includes('ethereal.email')) {
+                const previewUrl = nodemailer.getTestMessageUrl(info);
+                console.log(`\n🔗🔗🔗 ETHEREAL EMAIL PREVIEW URL: ${previewUrl} 🔗🔗🔗\n`);
+                return {
+                    success: true,
+                    messageId: info.messageId,
+                    message: 'Email sent successfully via Ethereal',
+                    previewUrl: previewUrl,
+                    otp: otpMatch ? otpMatch[0] : null
+                };
+            }
+
             return { 
                 success: true, 
                 messageId: info.messageId,

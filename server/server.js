@@ -7,6 +7,8 @@ import mongoSanitize from 'express-mongo-sanitize';
 import hpp from 'hpp';
 import cookieParser from 'cookie-parser';
 
+import path from 'path';
+
 dotenv.config();
 
 import connectDB from './config/database.js';
@@ -29,15 +31,26 @@ const app = express();
 // ================= FIXED CORS =================
 const allowedOrigins = [
     'http://localhost:3000',
+    'http://localhost:3001',
     'http://localhost:5173',
-    'https://shazyboo-df9m.vercel.app'
-];
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:5173',
+    'https://shazyboo-df9m.vercel.app',
+    process.env.CLIENT_URL,
+    process.env.CORS_ORIGIN
+].filter(Boolean);
 
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
 
-        if (allowedOrigins.includes(origin)) {
+        const cleanOrigin = origin.replace(/\/$/, '');
+        const isAllowed = allowedOrigins.some(allowed => allowed.replace(/\/$/, '') === cleanOrigin) ||
+                          cleanOrigin.startsWith('http://localhost:') ||
+                          cleanOrigin.startsWith('http://127.0.0.1:') ||
+                          cleanOrigin.endsWith('.vercel.app');
+
+        if (isAllowed) {
             return callback(null, true);
         }
 
@@ -49,6 +62,9 @@ app.use(cors({
 }));
 
 app.options('*', cors());
+
+// ================= STATIC FILES =================
+app.use('/uploads', express.static(path.resolve('../uploads')));
 
 // ================= SECURITY =================
 app.use(express.json({ limit: '10mb' }));

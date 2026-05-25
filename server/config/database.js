@@ -1,33 +1,29 @@
 import mongoose from 'mongoose';
 
 const connectDB = async () => {
-    try {
+  try {
+    const isLocal = process.env.USE_LOCAL_DB === 'true';
+    const dbUri = isLocal ? process.env.MONGO_URI_LOCAL : process.env.MONGO_URI;
+    
+    console.log(`Connecting to database (${isLocal ? 'Local' : 'Atlas'})...`);
+    
+    const conn = await mongoose.connect(dbUri, {
+      dbName: 'shazyboo',
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 10000
+    });
 
-        const conn = await mongoose.connect(process.env.MONGO_URI, {
-            dbName: 'shazyboo'
-        });
-
-        console.log(`
-═══════════════════════════════════════════
-✅ MongoDB Connected Successfully
-═══════════════════════════════════════════
-🌍 Host : ${conn.connection.host}
-📦 Database : ${conn.connection.name}
-═══════════════════════════════════════════
-        `);
-
-    } catch (error) {
-
-        console.error(`
-═══════════════════════════════════════════
-❌ MongoDB Connection Failed
-═══════════════════════════════════════════
-${error.message}
-═══════════════════════════════════════════
-        `);
-
-        process.exit(1);
-    }
+    console.log(`
+══════════════════════════
+MongoDB Connected
+Host: ${conn.connection.host}
+DB: ${conn.connection.name}
+══════════════════════════
+    `);
+  } catch (error) {
+    console.error('DB ERROR:', error.message);
+    process.exit(1);
+  }
 };
 
 export default connectDB;

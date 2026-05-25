@@ -38,7 +38,7 @@ const MainCategoryManager = () => {
 
     const checkServerConnection = async () => {
         try {
-            const response = await fetch('http://localhost:5001/health');
+            const response = await fetch(`${BASE_URL}/health`);
             if (response.ok) {
                 setServerStatus('connected');
                 return true;
@@ -46,7 +46,7 @@ const MainCategoryManager = () => {
         } catch (error) {
             console.error('Server connection failed:', error);
             setServerStatus('disconnected');
-            toast.error('Cannot connect to backend server. Please make sure the server is running on port 5001');
+            toast.error('Cannot connect to backend server. Please make sure the server is running.');
             return false;
         }
         return false;

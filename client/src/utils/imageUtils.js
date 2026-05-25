@@ -12,20 +12,27 @@ export const getImageUrl = (image) => {
   }
 
   const BASE_URL = getBackendUrl();
-  
+
   // Helper to construct full URL from path
   const constructUrl = (path) => {
     if (!path) return getFallbackImage();
     if (path.startsWith('http://') || path.startsWith('https://')) return path;
     if (path.startsWith('data:')) return path;
-    
+
     // Ensure path starts with /uploads/ or uploads/
     let normalizedPath = path;
     if (!normalizedPath.startsWith('/') && !normalizedPath.startsWith('uploads/')) {
       normalizedPath = `/uploads/products/${normalizedPath}`;
     }
-    
-    // Combine with BASE_URL
+
+    // In development (Vite dev server on port 3000), use relative URLs to leverage proxy
+    const isDev = typeof window !== 'undefined' && window.location.port === '3000';
+    if (isDev) {
+      // Return path relative to same origin (proxy will forward to backend)
+      return normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
+    }
+
+    // Combine with BASE_URL for production or non‑dev environments
     if (normalizedPath.startsWith('/')) {
       return `${BASE_URL}${normalizedPath}`;
     }

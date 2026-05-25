@@ -183,7 +183,7 @@ export const createCategory = asyncHandler(async (req, res) => {
         // Process image if uploaded
         let image = null;
         if (req.file) {
-            const baseUrl = process.env.BASE_URL || 'http://localhost:5001';
+            const baseUrl = process.env.BASE_URL || process.env.APP_URL || 'http://localhost:5001';
             image = {
                 public_id: req.file.filename,
                 url: `${baseUrl}/uploads/categories/${req.file.filename}`,
@@ -304,7 +304,7 @@ export const updateCategory = asyncHandler(async (req, res) => {
             }
             
             // Add new image
-            const baseUrl = process.env.BASE_URL || 'http://localhost:5001';
+            const baseUrl = process.env.BASE_URL || process.env.APP_URL || 'http://localhost:5001';
             image = {
                 public_id: req.file.filename,
                 url: `${baseUrl}/uploads/categories/${req.file.filename}`,
