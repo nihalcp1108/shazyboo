@@ -33,7 +33,7 @@ import {
 } from '../controllers/adminProductController.js';
 
 import { protect, authorize } from '../middlewares/auth.js';
-import { uploadProductImages } from '../middlewares/upload.js';
+import { uploadProductImages, multerErrorHandler, logMulter } from '../middlewares/upload.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
 const router = express.Router();
