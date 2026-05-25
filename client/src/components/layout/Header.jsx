@@ -455,26 +455,27 @@ const Header = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full text-white text-sm font-black shadow-md transition-all hover:scale-105 hover:shadow-lg active:scale-95"
+                  className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-white text-xs sm:text-sm font-black shadow-md transition-all hover:scale-105 hover:shadow-lg active:scale-95"
                   style={{
                     background: "linear-gradient(135deg, #f9a5b7, #cebaf8)",
                     boxShadow: "0 4px 16px rgba(155,107,255,0.3)",
                   }}
                 >
-                  <FaUser size={12} />
-                  <span className="hidden sm:inline">Login</span>
+                  <FaUser size={11} className="sm:text-xs" />
+                  <span>Login</span>
                 </Link>
               )}
 
               {/* Mobile hamburger */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full transition-all duration-200 hover:shadow-md"
+                className="lg:hidden icon-btn"
                 style={{
+                  ...iconBtnStyle,
                   background: isMenuOpen
-                    ? "rgba(255,107,138,0.15)"
-                    : "rgba(255,107,138,0.08)",
-                  border: "2px solid #ffd0dd",
+                    ? "rgba(255, 107, 138, 0.95)"
+                    : "rgba(244, 196, 222, 0.95)",
+                  borderColor: isMenuOpen ? "#f585b9" : "#f8f4fe",
                 }}
                 aria-label="Toggle menu"
                 aria-expanded={isMenuOpen}
@@ -487,8 +488,9 @@ const Header = () => {
                       animate={{ rotate: 0, opacity: 1 }}
                       exit={{ rotate: 90, opacity: 0 }}
                       transition={{ duration: 0.15 }}
+                      className="flex items-center justify-center"
                     >
-                      <FaTimes size={18} style={{ color: "#FF6B8A" }} />
+                      <FaTimes size={16} style={{ color: "#ffffff" }} />
                     </motion.span>
                   ) : (
                     <motion.span
@@ -497,8 +499,9 @@ const Header = () => {
                       animate={{ rotate: 0, opacity: 1 }}
                       exit={{ rotate: -90, opacity: 0 }}
                       transition={{ duration: 0.15 }}
+                      className="flex items-center justify-center"
                     >
-                      <FaBars size={18} style={{ color: "#FF6B8A" }} />
+                      <FaBars size={16} style={{ color: "#7a5bb8" }} />
                     </motion.span>
                   )}
                 </AnimatePresence>
@@ -521,23 +524,21 @@ const Header = () => {
                 />
 
                 <motion.div
-                  initial={{ opacity: 0, height: 0, y: -20 }}
+                  initial={{ opacity: 0, height: 0, y: -10 }}
                   animate={{ opacity: 1, height: "auto", y: 0 }}
-                  exit={{ opacity: 0, height: 0, y: -20 }}
+                  exit={{ opacity: 0, height: 0, y: -10 }}
                   transition={{
-                    height: { duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] },
-                    opacity: { duration: 0.25 },
-                    y: { duration: 0.3 }
+                    height: { duration: 0.3, ease: "easeOut" },
+                    opacity: { duration: 0.2 },
+                    y: { duration: 0.25 }
                   }}
-                  className="lg:hidden overflow-hidden mobile-menu relative z-40"
+                  className="lg:hidden overflow-hidden mobile-menu absolute top-full left-4 right-4 z-40 rounded-2xl shadow-2xl border"
+                  style={{
+                    borderColor: "#fde8f0",
+                    background: "linear-gradient(135deg, #fff9fc, #fff5ff)",
+                  }}
                 >
-                  <div
-                    className="pt-4 pb-5 px-1 border-t mt-2 rounded-2xl"
-                    style={{
-                      borderColor: "#fde8f0",
-                      background: "linear-gradient(135deg, #fff9fc, #fff5ff)",
-                    }}
-                  >
+                  <div className="pt-4 pb-5 px-4">
                     {/* Mobile search with better styling */}
                     <motion.form
                       onSubmit={handleSearch}
