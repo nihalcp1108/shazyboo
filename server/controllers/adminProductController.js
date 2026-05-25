@@ -360,8 +360,14 @@ export const adminUpdateProduct = asyncHandler(async (req, res) => {
             updateData.images[0].isDefault = true;
         }
 
+        // Ensure at least one image exists: retain original if present, otherwise require a new image.
         if (updateData.images.length === 0) {
-            return res.status(400).json({ success: false, error: 'Product must have at least one image' });
+            const originalImages = product.images || [];
+            if (originalImages.length === 0) {
+                return res.status(400).json({ success: false, error: 'Product must have at least one image' });
+            }
+            // Preserve original images when none are uploaded.
+            updateData.images = originalImages;
         }
 
         const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true })
