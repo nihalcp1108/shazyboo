@@ -8,8 +8,12 @@ import hpp from 'hpp';
 import cookieParser from 'cookie-parser';
 
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
 
 import connectDB from './config/database.js';
 await connectDB();
