@@ -616,10 +616,18 @@ export const sendEmail = async (options) => {
 
         const info = await activeTransporter.sendMail(mailOptions);
         console.log('✅ Email sent successfully! Message ID:', info.messageId);
+        console.log('📬 Accepted:', info.accepted);
+        console.log('🚫 Rejected:', info.rejected);
+        console.log('📩 Envelope:', info.envelope);
+        console.log('📜 Response:', info.response);
 
         const result = {
             success: true,
             messageId: info.messageId,
+            accepted: info.accepted,
+            rejected: info.rejected,
+            envelope: info.envelope,
+            response: info.response,
             message: 'Email sent successfully'
         };
 
