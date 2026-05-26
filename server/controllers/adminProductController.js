@@ -146,16 +146,25 @@ console.log('DEBUG: req.files', req.files);
         // Build images array
         let images = [];
         if (hasUploadedFiles) {
-            // Upload each file to Cloudinary
-            const uploadResults = await Promise.all(req.files.map(file => uploadToCloudinary(file.path)));
-            images = uploadResults.map((res, index) => ({
-                public_id: res.public_id,
-                url: res.secure_url,
-                alt: name,
-                isDefault: index === 0
-            }));
-            // Delete local temporary files
-            req.files.forEach(file => deleteFile(file.path));
+            try {
+                console.log(`🚀 Uploading ${req.files.length} files to Cloudinary...`);
+                // Upload each file to Cloudinary
+                const uploadResults = await Promise.all(req.files.map(file => uploadToCloudinary(file.path)));
+                images = uploadResults.map((res, index) => ({
+                    public_id: res.public_id,
+                    url: res.url || res.secure_url,
+                    alt: name,
+                    isDefault: index === 0
+                }));
+                console.log('✅ All Cloudinary uploads successful!');
+                // Delete local temporary files
+                req.files.forEach(file => deleteFile(file.path));
+            } catch (uploadError) {
+                console.error('❌ CRITICAL ERROR during Cloudinary upload in adminCreateProduct:', uploadError);
+                // Ensure temporary files are deleted even if upload fails
+                req.files.forEach(file => deleteFile(file.path));
+                return res.status(500).json({ success: false, error: `Image upload failed: ${uploadError.message}` });
+            }
         } else if (hasBase64Images) {
             try {
                 const base64Array = JSON.parse(req.body.images);
@@ -330,20 +339,28 @@ export const adminUpdateProduct = asyncHandler(async (req, res) => {
         // Handle images
         const existingImages = product.images || [];
         if (req.files && req.files.length > 0) {
+            try {
+                console.log(`🚀 Updating product: Uploading ${req.files.length} files to Cloudinary...`);
                 const uploadResults = await Promise.all(req.files.map(file => uploadToCloudinary(file.path)));
                 const newImages = uploadResults.map((res, index) => ({
                     public_id: res.public_id,
-                    url: res.secure_url,
+                    url: res.url || res.secure_url,
                     alt: req.body.name || product.name,
                     isDefault: false
                 }));
+                console.log('✅ Update Cloudinary uploads successful!');
                 // Delete local files after upload
                 req.files.forEach(file => deleteFile(file.path));
                 updateData.images = [...existingImages, ...newImages];
-            } else {
-                // No new files uploaded – keep existing images
-                updateData.images = existingImages;
+            } catch (uploadError) {
+                console.error('❌ CRITICAL ERROR during Cloudinary upload in adminUpdateProduct:', uploadError);
+                req.files.forEach(file => deleteFile(file.path));
+                return res.status(500).json({ success: false, error: `Image update upload failed: ${uploadError.message}` });
             }
+        } else {
+            // No new files uploaded – keep existing images
+            updateData.images = existingImages;
+        }
 
         // Handle deleted images
         if (req.body.deletedImages) {
