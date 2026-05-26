@@ -13,27 +13,32 @@ const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
 const apiKey = process.env.CLOUDINARY_API_KEY;
 const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-if (!cloudName || !apiKey || !apiSecret) {
-  console.error('🚨 Cloudinary configuration error: missing required environment variables.');
-  console.error({
+// Allow server to start even if Cloudinary envs are not set.
+// When disabled, upload/delete helpers will throw runtime errors with a clear message.
+const cloudinaryEnabled = !!(cloudName && apiKey && apiSecret);
+
+if (!cloudinaryEnabled) {
+  console.warn('⚠️ Cloudinary not configured. Uploads will fail until environment variables are set.');
+  console.warn({
     CLOUDINARY_CLOUD_NAME: cloudName || 'MISSING',
     CLOUDINARY_API_KEY: !!apiKey,
     CLOUDINARY_API_SECRET: !!apiSecret
   });
-  throw new Error('Missing Cloudinary environment variables. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.');
+} else {
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+    secure: true
+  });
+  console.log('Cloudinary configured with cloud name:', cloudName);
 }
-
-cloudinary.config({
-  cloud_name: cloudName,
-  api_key: apiKey,
-  api_secret: apiSecret,
-  secure: true
-});
-
-console.log('Cloudinary configured with cloud name:', cloudName);
 
 // Helper function for uploading to Cloudinary
 export const uploadToCloudinary = async (filePath, folder = 'products') => {
+  if (!cloudinaryEnabled) {
+    throw new Error('Cloudinary is not configured in this environment. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET to enable uploads.');
+  }
   try {
     console.log(`Starting Cloudinary upload for file: ${filePath} to folder: ${folder}`);
     const result = await cloudinary.uploader.upload(filePath, {
@@ -63,6 +68,9 @@ export const uploadToCloudinary = async (filePath, folder = 'products') => {
 
 // Helper function for deleting from Cloudinary
 export const deleteFromCloudinary = async (publicId) => {
+  if (!cloudinaryEnabled) {
+    throw new Error('Cloudinary is not configured in this environment. Cannot delete images.');
+  }
   try {
     const result = await cloudinary.uploader.destroy(publicId);
     return result;
@@ -74,6 +82,9 @@ export const deleteFromCloudinary = async (publicId) => {
 
 // Helper function for multiple deletions
 export const deleteMultipleFromCloudinary = async (publicIds) => {
+  if (!cloudinaryEnabled) {
+    throw new Error('Cloudinary is not configured in this environment. Cannot delete images.');
+  }
   try {
     const results = await Promise.all(
       publicIds.map(publicId => cloudinary.uploader.destroy(publicId))
