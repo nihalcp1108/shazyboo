@@ -502,8 +502,10 @@ const ProductManager = () => {
                 }
             }
 
-            const headers = { Authorization: `Bearer ${token}` };
-            // Do NOT set Content-Type — let the browser set it with the multipart boundary
+            const headers = { 
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+            };
 
             let response;
             if (editingProduct) {
