@@ -1,0 +1,7 @@
+{
+  "name": "shazyboo-root",
+  "private": true,
+  "scripts": {
+    "build": "cd client && npm ci --legacy-peer-deps && npm run build"
+  }
+}
