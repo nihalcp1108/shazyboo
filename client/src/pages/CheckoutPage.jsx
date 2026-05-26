@@ -163,19 +163,36 @@ const CheckoutPage = () => {
       console.log('Sending order to:', `${API_URL}/orders`);
       console.log('Order payload:', orderPayload);
 
-      const response = await guestApi.post('/orders', orderPayload);
+      // Build a concise WhatsApp order message client-side and open immediately
+      const shopNumber = '9567161716'; // shop WhatsApp number (no country code prefix expected for wa.me)
+      const itemsText = orderItems.map((it, i) => `${i + 1}. ${it.name} x${it.quantity} - ₹${(it.price * it.quantity).toFixed(0)}`).join('\n');
+      const msg = `NEW ORDER REQUEST\n\nName: ${orderData.shippingAddress.fullName}\nPhone: ${orderData.shippingAddress.phone}\nEmail: ${orderData.shippingAddress.email}\nAddress: ${orderData.shippingAddress.address}, ${orderData.shippingAddress.city}, ${orderData.shippingAddress.state} - ${orderData.shippingAddress.zipCode}\n\nItems:\n${itemsText}\n\nShipping: ₹${shippingCharge.toFixed(0)}\nTotal: ₹${finalTotal.toFixed(0)}\nPayment: ${orderData.paymentMethod}\n\nNotes: ${orderData.notes || 'None'}\n\nPlease confirm by replying CONFIRM`;
+      const whatsappUrlImmediate = `https://wa.me/${shopNumber}?text=${encodeURIComponent(msg)}`;
 
-      console.log('Order response:', response.data);
+      // Open WhatsApp in a new tab immediately so user can send confirmation fast
+      try {
+        window.open(whatsappUrlImmediate, '_blank');
+      } catch (e) {
+        console.warn('Failed to open WhatsApp URL immediately', e);
+      }
 
-      if (response.data.success) {
-        const { whatsappUrl, orderId, _id } = response.data.data;
+      // Send order in background; await response to update local state and show toasts
+      const responsePromise = guestApi.post('/orders', orderPayload);
 
-        clearCart();
-        localStorage.setItem('lastOrderId', orderId);
-        toast.success('Order placed! Redirecting to WhatsApp...');
-        
-        // Directly redirect to WhatsApp in the same window
-        window.location.href = whatsappUrl;
+      try {
+        const response = await responsePromise;
+        console.log('Order response:', response.data);
+        if (response.data.success) {
+          const { orderId } = response.data.data;
+          clearCart();
+          localStorage.setItem('lastOrderId', orderId);
+          toast.success('Order recorded. Please confirm on WhatsApp.');
+        } else {
+          toast.error('Order not recorded on server. Please try again.');
+        }
+      } catch (err) {
+        console.error('Order error (background):', err);
+        toast.error('Failed to record order on server. Please contact support.');
       }
     } catch (error) {
       console.error('Order error:', error);
