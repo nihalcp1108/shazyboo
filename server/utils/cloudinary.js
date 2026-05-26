@@ -5,26 +5,32 @@ import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const envPath = path.resolve(__dirname, '../.env');
 
-dotenv.config({ path: path.resolve(__dirname, '../.env'), override: true });
+dotenv.config({ path: envPath, override: false });
 
-// Debug logs to verify environment variables
-console.log('=== CLOUDINARY CONFIG CHECK ===');
-console.log('CLOUDINARY_CLOUD_NAME:', process.env.CLOUDINARY_CLOUD_NAME || 'MISSING');
-console.log('CLOUDINARY_API_KEY exists:', !!process.env.CLOUDINARY_API_KEY);
-console.log('CLOUDINARY_API_SECRET exists:', !!process.env.CLOUDINARY_API_SECRET);
+const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+const apiKey = process.env.CLOUDINARY_API_KEY;
+const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-  console.error('🚨 CRITICAL ERROR: Cloudinary credentials are missing in the environment variables!');
+if (!cloudName || !apiKey || !apiSecret) {
+  console.error('🚨 Cloudinary configuration error: missing required environment variables.');
+  console.error({
+    CLOUDINARY_CLOUD_NAME: cloudName || 'MISSING',
+    CLOUDINARY_API_KEY: !!apiKey,
+    CLOUDINARY_API_SECRET: !!apiSecret
+  });
+  throw new Error('Missing Cloudinary environment variables. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.');
 }
 
-// Cloudinary configuration
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: cloudName,
+  api_key: apiKey,
+  api_secret: apiSecret,
   secure: true
 });
+
+console.log('Cloudinary configured with cloud name:', cloudName);
 
 // Helper function for uploading to Cloudinary
 export const uploadToCloudinary = async (filePath, folder = 'products') => {

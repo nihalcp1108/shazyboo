@@ -4,3 +4,4 @@ client/node_modules
 _site
 .jekyll-cache
 .env
+**/.env
