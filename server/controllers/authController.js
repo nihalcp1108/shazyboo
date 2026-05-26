@@ -73,8 +73,23 @@ export const register = asyncHandler(async (req, res) => {
     // GENERATE TOKEN
     const token = user.getSignedJwtToken();
 
-    // SEND RESPONSE IMMEDIATELY
-    res.status(201).json({
+    let emailWarning = null;
+    if (!isVerified && otp) {
+        try {
+            console.log('📧 Sending OTP email...');
+            const emailResult = await sendEmail({
+                email: user.email,
+                subject: '✨ ShazyBoo - Email Verification OTP',
+                html: emailTemplates.sendOTP(otp, 'ShazyBoo')
+            });
+            console.log('✅ OTP email sent', emailResult);
+        } catch (error) {
+            console.error('❌ OTP email send failed:', error.message);
+            emailWarning = 'Registration succeeded but verification email could not be sent. Please use resend OTP or contact support.';
+        }
+    }
+
+    const responsePayload = {
         success: true,
         message: isVerified
             ? 'Admin registration successful'
@@ -88,27 +103,13 @@ export const register = asyncHandler(async (req, res) => {
             role: user.role,
             isVerified: user.isVerified
         }
-    });
+    };
 
-    // SEND EMAIL IN BACKGROUND
-    if (!isVerified && otp) {
-        setImmediate(async () => {
-            try {
-                console.log('📧 Sending OTP email...');
-
-                await sendEmail({
-                    email: user.email,
-                    subject: '✨ ShazyBoo - Email Verification OTP',
-                    html: emailTemplates.sendOTP(otp, 'ShazyBoo')
-                });
-
-                console.log('✅ OTP email sent');
-            } catch (error) {
-                console.log('❌ Email send failed');
-                console.log(error.message);
-            }
-        });
+    if (emailWarning) {
+        responsePayload.warning = emailWarning;
     }
+
+    res.status(201).json(responsePayload);
 });
 
 // @desc    Verify OTP

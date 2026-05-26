@@ -458,9 +458,11 @@ const initializeTransporter = async () => {
     initializingPromise = (async () => {
         console.log('📧 Initializing email transporter...');
         
-        const emailHost = process.env.EMAIL_HOST;
-        const emailUser = process.env.EMAIL_USER;
-        const emailPass = process.env.EMAIL_PASS;
+        const emailHost = process.env.EMAIL_HOST?.trim();
+        const emailUser = process.env.EMAIL_USER?.trim();
+        const emailPass = process.env.EMAIL_PASS?.trim();
+        const emailPort = parseInt(process.env.EMAIL_PORT, 10) || 587;
+        const fromEmail = process.env.FROM_EMAIL?.trim() || emailUser;
         
         const isPlaceholder = (val) => {
             if (!val) return true;
@@ -478,6 +480,10 @@ const initializeTransporter = async () => {
                                   !isPlaceholder(emailPass);
         
         if (!hasRealEmailConfig) {
+            if (process.env.NODE_ENV === 'production') {
+                throw new Error('Email service is not configured for production. Set EMAIL_HOST, EMAIL_USER, EMAIL_PASS, and optional EMAIL_PORT.');
+            }
+
             console.warn('⚠️ Real SMTP credentials not configured (or placeholders detected). Creating Ethereal SMTP test account...');
             try {
                 const testAccount = await nodemailer.createTestAccount();
@@ -510,8 +516,8 @@ const initializeTransporter = async () => {
         try {
             const config = {
                 host: emailHost,
-                port: process.env.EMAIL_PORT || 587,
-                secure: process.env.EMAIL_PORT === '465',
+                port: emailPort,
+                secure: emailPort === 465,
                 auth: {
                     user: emailUser,
                     pass: emailPass
@@ -593,52 +599,45 @@ export const sendEmail = async (options) => {
     // Ensure transporter is initialized
     const activeTransporter = await initializeTransporter();
 
-    if (activeTransporter) {
-        try {
-            const mailOptions = {
-                from: `"ShazyBoo 🎀" <${process.env.FROM_EMAIL || process.env.EMAIL_USER || 'shazyboo.info@gmail.com'}>`,
-                to: email,
-                subject: subject,
-                html: html,
-                text: html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
-            };
+    if (!activeTransporter) {
+        console.error('❌ No active email transporter available. Please configure SMTP settings.');
+        throw new Error('No email transporter available. Please configure EMAIL_HOST, EMAIL_USER, and EMAIL_PASS.');
+    }
 
-            const info = await activeTransporter.sendMail(mailOptions);
-            console.log('✅ Email sent successfully! Message ID:', info.messageId);
-
-            // Log Ethereal preview link if using Ethereal
-            if (activeTransporter.options.host.includes('ethereal.email')) {
-                const previewUrl = nodemailer.getTestMessageUrl(info);
-                console.log(`\n🔗🔗🔗 ETHEREAL EMAIL PREVIEW URL: ${previewUrl} 🔗🔗🔗\n`);
-                return {
-                    success: true,
-                    messageId: info.messageId,
-                    message: 'Email sent successfully via Ethereal',
-                    previewUrl: previewUrl,
-                    otp: otpMatch ? otpMatch[0] : null
-                };
-            }
-
-            return { 
-                success: true, 
-                messageId: info.messageId,
-                message: 'Email sent successfully'
-            };
-        } catch (error) {
-            console.error('❌ Email send error:', error.message);
-            return { 
-                success: false, 
-                error: error.message,
-                message: 'Email logged to console (send failed)'
-            };
-        }
-    } else {
-        console.log('📧 Email logged to console (no email service configured)');
-        return { 
-            success: true, 
-            message: 'Email logged to console (no email service configured)',
-            otp: otpMatch ? otpMatch[0] : null
+    try {
+        const fromEmail = process.env.FROM_EMAIL?.trim() || process.env.EMAIL_USER?.trim() || 'shazyboo.info@gmail.com';
+        const mailOptions = {
+            from: `"ShazyBoo 🎀" <${fromEmail}>`,
+            to: email,
+            subject: subject,
+            html: html,
+            text: html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
         };
+
+        const info = await activeTransporter.sendMail(mailOptions);
+        console.log('✅ Email sent successfully! Message ID:', info.messageId);
+
+        const result = {
+            success: true,
+            messageId: info.messageId,
+            message: 'Email sent successfully'
+        };
+
+        if (activeTransporter.options.host?.includes('ethereal.email')) {
+            const previewUrl = nodemailer.getTestMessageUrl(info);
+            console.log(`\n🔗🔗🔗 ETHEREAL EMAIL PREVIEW URL: ${previewUrl} 🔗🔗🔗\n`);
+            result.message = 'Email sent successfully via Ethereal';
+            result.previewUrl = previewUrl;
+        }
+
+        if (otpMatch) {
+            result.otp = otpMatch[0];
+        }
+
+        return result;
+    } catch (error) {
+        console.error('❌ Email send error:', error.message);
+        throw error;
     }
 };
 
