@@ -29,7 +29,7 @@ import heroImg1 from '../assets/WhatsApp Image 2026-05-16 at 6.18.22 PM.jpeg';
 import heroImg2 from '../assets/WhatsApp Image 2026-05-16 at 6.18.24 PM.jpeg';
 import heroImg3 from '../assets/WhatsApp Image 2026-05-16 at 6.26.16 PM.jpeg';
 import heroImg4 from '../assets/WhatsApp Image 2026-05-16 at 6.41.37 PM.jpeg';
-import logoImg from '../assets/logo(1).png';
+import siteLogo from '../assets/Shazy Boo_Logo,.png';
 
 const FontStyle = () => (
   <style>{`
@@ -105,7 +105,7 @@ const HeroSection = () => {
 
             <motion.img
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-              src={logoImg}
+              src={siteLogo}
               alt="ShazyBoo Logo"
               className="w-64 sm:w-72 md:w-[380px] object-contain mb-5 drop-shadow-xl md:-ml-6"
             />

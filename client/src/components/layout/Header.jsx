@@ -15,13 +15,14 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import siteLogo from '../../assets/Shazy Boo_Logo,.png';
 
 // ── Logo ─────────────────────────────────────────────────────────────────────
 const Logo = () => (
   <Link to="/" className="flex items-center group flex-shrink-0 z-10 pl-2 sm:pl-0">
     <div className="relative flex items-center">
       <img
-        src="/logo.png"
+        src={siteLogo}
         alt="ShazyBoo"
         className="logo-image w-auto object-contain transition-transform duration-300 group-hover:scale-105"
       />
