@@ -234,11 +234,16 @@ export const AuthProvider = ({ children }) => {
       // Regular users need OTP verification
       else if (result.needsVerification) {
         localStorage.setItem('pendingVerificationEmail', userData.email)
+        // Show server-provided warning if email delivery failed
+        if (result.warning) {
+          toast.warning(result.warning)
+        }
         toast.success(result.message || 'Registration successful! Please check your email for verification OTP.')
         return { 
           success: true, 
           needsVerification: true,
-          email: userData.email 
+          email: userData.email,
+          warning: result.warning || null
         }
       } else {
         // Direct login for already verified users
