@@ -129,7 +129,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.45 }}
               className="flex gap-4 justify-center md:justify-start"
             >
-              <Link to="/shop" className="fredoka text-lg text-white px-8 py-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 shadow-lg transition-transform hover:scale-105 active:scale-95">
+              <Link to="/shop" className="fredoka text-lg text-white px-8 py-3 rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95 hover:brightness-110" style={{ background: '#FF6B8A' }}>
                 Shop Now →
               </Link>
             </motion.div>
