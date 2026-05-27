@@ -6,9 +6,7 @@ import footerLogo from '../../assets/Generated_Image_May_27__2026_-_11_13AM-remo
 
 const Footer = () => {
   const [categories, setCategories] = useState([]);
-  const [featuredCategories, setFeaturedCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [featuredLoading, setFeaturedLoading] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -22,19 +20,8 @@ const Footer = () => {
       }
     };
 
-    const fetchFeaturedCategories = async () => {
-      try {
-        const response = await api.get('/categories/featured');
-        setFeaturedCategories(response.data.data || []);
-      } catch (error) {
-        console.error('Error fetching footer featured categories:', error);
-      } finally {
-        setFeaturedLoading(false);
-      }
-    };
 
     fetchCategories();
-    fetchFeaturedCategories();
   }, []);
 
   return (
@@ -92,24 +79,6 @@ const Footer = () => {
 
           {/* Categories */}
           <div className="text-center md:text-left">
-            <h3 className="fredoka text-xl text-gray-800 mb-6">Popular Categories</h3>
-            <ul className="space-y-3 mb-6">
-              {featuredLoading ? (
-                [...Array(5)].map((_, i) => (
-                  <li key={i} className="h-4 w-24 bg-pink-200/50 rounded animate-pulse"></li>
-                ))
-              ) : featuredCategories.length > 0 ? (
-                featuredCategories.slice(0, 6).map((cat) => (
-                  <li key={cat._id || cat.slug}>
-                    <Link to={`/categories/${cat.slug || cat._id}`} className="text-gray-600 font-bold hover:text-purple-600 transition-colors">
-                      {cat.name}
-                    </Link>
-                  </li>
-                ))
-              ) : (
-                <li className="text-gray-500">No popular categories available.</li>
-              )}
-            </ul>
 
             <h3 className="fredoka text-xl text-gray-800 mb-6">All Categories</h3>
             <ul className="space-y-3">
