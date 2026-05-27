@@ -21,11 +21,15 @@ import siteLogo from '../../assets/logo.png';
 const Logo = () => (
   <Link to="/" className="flex items-center group flex-shrink-0 z-10 pl-2 sm:pl-0">
     <div className="relative flex items-center">
-      <img
+      <motion.img
         src={siteLogo}
         alt="ShazyBoo"
         className="logo-image w-auto object-contain transition-transform duration-300 group-hover:scale-105"
         style={{ backgroundColor: 'transparent' }}
+        initial={{ scale: 0.96, opacity: 0.92 }}
+        animate={{ scale: [0.96, 1.06, 0.96], opacity: [0.92, 1, 0.92] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+        whileHover={{ scale: 1.08 }}
       />
     </div>
   </Link>

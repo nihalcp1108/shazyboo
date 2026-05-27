@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { FaUsers, FaBox, FaShoppingCart, FaRupeeSign, FaExclamationTriangle, FaStar, FaFire, FaTag } from 'react-icons/fa';
 import { getFallbackImage } from '../../utils/imageUtils.js';
 import { api } from '../../services/api'
+import siteLogo from '../../assets/logo.png';
 
 const Dashboard = () => {
     const [dashboardData, setDashboardData] = useState(null)
@@ -127,6 +129,20 @@ const Dashboard = () => {
 
     return (
         <div className="space-y-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-5 rounded-3xl shadow-sm border border-gray-200">
+                <motion.img
+                    src={siteLogo}
+                    alt="ShazyBoo Admin Home"
+                    className="h-16 w-auto object-contain"
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: [0.95, 1.02, 0.98] }}
+                    transition={{ duration: 2.2, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+                />
+                <div className="flex-1 min-w-0">
+                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Welcome back, ShazyBoo Admin</h1>
+                    <p className="mt-2 text-sm text-slate-500">Your orders, products and revenue are ready for review.</p>
+                </div>
+            </div>
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                 {stats.map((stat, index) => (

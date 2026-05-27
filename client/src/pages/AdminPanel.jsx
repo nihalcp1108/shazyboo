@@ -11,11 +11,12 @@ import {
   FaStar, 
   FaChartLine,
   FaSignOutAlt,
-  FaCrown,
   FaUserShield,
   FaStore,
   FaClipboardList
 } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import siteLogo from '../assets/logo.png';
 
 // Import admin components
 import Dashboard from '../components/Admin/Dashboard';
@@ -70,9 +71,23 @@ const AdminPanel = () => {
         <div className="p-4 border-b border-purple-700">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <FaCrown className="text-yellow-400 text-2xl" />
+              <motion.img
+                src={siteLogo}
+                alt="ShazyBoo Admin"
+                className="h-10 w-auto object-contain"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: [0.9, 1.05, 0.95] }}
+                transition={{ duration: 1.6, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
+              />
               {sidebarOpen && (
-                <span className="font-bold text-lg">Admin Panel</span>
+                <motion.span
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="font-bold text-lg"
+                >
+                  ShazyBoo Admin
+                </motion.span>
               )}
             </div>
             <button

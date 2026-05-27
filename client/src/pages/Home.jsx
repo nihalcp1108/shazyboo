@@ -104,7 +104,9 @@ const HeroSection = () => {
             </motion.div>
 
             <motion.img
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
+              initial={{ opacity: 0, y: 20, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: [0.96, 1.03, 0.98] }}
+              transition={{ duration: 2.2, delay: 0.1, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
               src={siteLogo}
               alt="ShazyBoo Logo"
               className="w-64 sm:w-72 md:w-[380px] object-contain mb-5 md:-ml-6"
