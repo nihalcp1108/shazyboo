@@ -21,12 +21,21 @@ console.log('Cloudinary config - enabled:', cloudinaryEnabled);
 console.log('CLOUDINARY_CLOUD_NAME:', cloudName);
 console.log('CLOUDINARY_API_KEY set:', !!apiKey);
 console.log('CLOUDINARY_API_SECRET set:', !!apiSecret);
+  if (!cloudinaryEnabled) {
   console.warn('⚠️ Cloudinary not configured. Uploads will fail until environment variables are set.');
   console.warn({
     CLOUDINARY_CLOUD_NAME: cloudName || 'MISSING',
     CLOUDINARY_API_KEY: !!apiKey,
     CLOUDINARY_API_SECRET: !!apiSecret
   });
+} else {
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+    secure: true
+  });
+  console.log('Cloudinary configured with cloud name:', cloudName);
 } else {
   cloudinary.config({
     cloud_name: cloudName,

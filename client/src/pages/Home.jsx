@@ -29,7 +29,7 @@ import heroImg1 from '../assets/WhatsApp Image 2026-05-16 at 6.18.22 PM.jpeg';
 import heroImg2 from '../assets/WhatsApp Image 2026-05-16 at 6.18.24 PM.jpeg';
 import heroImg3 from '../assets/WhatsApp Image 2026-05-16 at 6.26.16 PM.jpeg';
 import heroImg4 from '../assets/WhatsApp Image 2026-05-16 at 6.41.37 PM.jpeg';
-import siteLogo from '../assets/Generated_Image_May_27__2026_-_11_13AM-removebg-preview.png';
+import siteLogo from '../assets/shazy_boo_logo.png';
 
 const FontStyle = () => (
   <style>{`
@@ -95,13 +95,6 @@ const HeroSection = () => {
       <div className="container mx-auto px-6 md:px-12 py-8 relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex-1 text-center md:text-left flex flex-col items-center md:items-start pl-0">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}
-              className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-2 mb-6 text-sm font-medium w-max bg-white/20 backdrop-blur-sm border border-white/30"
-              style={{ color: '#fff', letterSpacing: '0.05em' }}
-            >
-              <FaHeart className="text-white" /> Super Sale — Up to 50% OFF! <FaHeart className="text-white" />
-            </motion.div>
 
             <motion.img
               initial={{ opacity: 0, y: 20, scale: 0.96 }}
@@ -763,7 +756,7 @@ const Home = () => {
             <div className="flex items-center gap-3">
               <Star size={22} color="#FFD84D" />
               <h2 className="fredoka text-2xl md:text-3xl lg:text-4xl" style={{ color: '#2D2D2D' }}>
-                Today's <span style={{ color: 'var(--kiddex-pink)' }}>Popular Picks</span>
+                Popular Picks
               </h2>
             </div>
             <Link to="/shop" className="text-sm font-black flex items-center gap-1 hover:underline" style={{ color: 'var(--kiddex-blue)' }}>
@@ -780,9 +773,8 @@ const Home = () => {
           </div>
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <span className="fredoka text-2xl" style={{ color: 'var(--kiddex-green)' }}>✨</span>
               <h2 className="fredoka text-2xl md:text-3xl lg:text-4xl" style={{ color: '#2D2D2D' }}>
-                New <span style={{ color: 'var(--kiddex-green)' }}>Arrivals</span>
+                New Arrivals
               </h2>
             </div>
             <Link to="/shop" className="text-sm font-black flex items-center gap-1 hover:underline" style={{ color: 'var(--kiddex-green)' }}>
@@ -798,9 +790,8 @@ const Home = () => {
           <div className="mb-2 text-center">
           </div>
           <div className="flex items-center gap-3 mb-8">
-            <span className="fredoka text-2xl" style={{ color: 'var(--kiddex-orange)' }}>🔥</span>
             <h2 className="fredoka text-2xl md:text-3xl lg:text-4xl" style={{ color: '#2D2D2D' }}>
-              Best <span style={{ color: 'var(--kiddex-orange)' }}>Sellers</span>
+              Best Sellers
             </h2>
           </div>
           <ProductCarousel products={bestSellers} loading={loading.bestSellers} onAddToCart={handleAddToCart} navigate={navigate} />
