@@ -196,7 +196,7 @@ const MainCategoriesSection = ({ categories, loading, navigate }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {categories.map((category, index) => (
         <motion.div
           key={category._id}
@@ -568,19 +568,19 @@ const features = [
 ];
 
 const FeaturesRow = () => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
     {features.map((f, i) => (
       <motion.div key={i}
         initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
-        className="flex items-center gap-4 rounded-2xl px-5 py-4"
+        className="flex flex-col items-center text-center gap-2 rounded-2xl px-3 md:px-5 py-3 md:py-4"
         style={{ background: f.bg }}>
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+        <div className="w-10 md:w-12 h-10 md:h-12 rounded-xl flex items-center justify-center text-lg md:text-xl flex-shrink-0"
           style={{ background: f.color, color: '#fff' }}>
           {f.icon}
         </div>
         <div>
-          <p className="fredoka text-base leading-tight" style={{ color: '#2D2D2D' }}>{f.title}</p>
+          <p className="fredoka text-sm md:text-base leading-tight" style={{ color: '#2D2D2D' }}>{f.title}</p>
           <p className="text-xs font-bold text-gray-500">{f.desc}</p>
         </div>
       </motion.div>
@@ -719,6 +719,15 @@ const Home = () => {
         <FeaturesRow />
       </section>
 
+      {/* Promo Section */}
+      <section className="py-8 container mx-auto px-4">
+        <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-3xl p-6 md:p-8 text-center">
+          <h3 className="fredoka text-xl md:text-2xl text-gray-800 mb-2">✨ Limited Time Offer!</h3>
+          <p className="text-gray-600 font-bold mb-3">Get up to 50% off on selected items + Free Shipping on orders above ₹2999</p>
+          <p className="text-sm text-gray-500">🎁 Use code <span className="fredoka font-black text-pink-600">SHAZY50</span> at checkout</p>
+        </div>
+      </section>
+
 
       {/* Main Categories Section - SECOND (as cards) */}
       <section className="py-10 container mx-auto px-4">
@@ -727,6 +736,7 @@ const Home = () => {
             Shop by <span className="text-pink-500">Main Category</span>
           </h2>
           <p className="text-gray-600 mt-2">Explore our curated collections</p>
+          <p className="text-sm text-gray-500 mt-2">🌟 Find your perfect treasures from our handpicked selection</p>
         </div>
         <MainCategoriesSection
           categories={mainCategories}
@@ -738,6 +748,9 @@ const Home = () => {
       {/* Featured Products Section */}
       <section className="py-10" style={{ background: 'linear-gradient(135deg, #fce7f3 0%, #fae8ff 100%)' }}>
         <div className="container mx-auto px-4">
+          <div className="mb-2 text-center">
+            <p className="text-sm text-purple-600 font-bold mb-1">👑 VIP Collection</p>
+          </div>
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
               <FaCrown size={22} color="var(--kiddex-yellow)" />
@@ -755,6 +768,9 @@ const Home = () => {
 
       <section className="py-10" style={{ background: '#fff' }}>
         <div className="container mx-auto px-4">
+          <div className="mb-2 text-center">
+            <p className="text-sm text-blue-600 font-bold mb-1">🌟 Trending Right Now</p>
+          </div>
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
               <Star size={22} color="#FFD84D" />
@@ -772,6 +788,9 @@ const Home = () => {
 
       <section className="py-10" style={{ background: 'linear-gradient(135deg, #ef63a4 0%, #f585b9 0%, #e4f1f6 100%)' }}>
         <div className="container mx-auto px-4">
+          <div className="mb-2 text-center">
+            <p className="text-sm text-green-700 font-bold mb-1">🆕 Just Added</p>
+          </div>
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
               <span className="fredoka text-2xl" style={{ color: 'var(--kiddex-green)' }}>✨</span>
@@ -789,6 +808,9 @@ const Home = () => {
 
       <section className="py-10" style={{ background: '#fff' }}>
         <div className="container mx-auto px-4">
+          <div className="mb-2 text-center">
+            <p className="text-sm text-orange-600 font-bold mb-1">🔥 Top Favorites</p>
+          </div>
           <div className="flex items-center gap-3 mb-8">
             <span className="fredoka text-2xl" style={{ color: 'var(--kiddex-orange)' }}>🔥</span>
             <h2 className="fredoka text-2xl md:text-3xl lg:text-4xl" style={{ color: '#2D2D2D' }}>
