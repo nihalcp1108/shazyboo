@@ -381,7 +381,7 @@ const MainCategory = () => {
                             </div>
                         ) : (
                             <>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {currentProducts.map((product, index) => {
                                         const discount = product.discountPrice > 0 && product.discountPrice < product.price
                                             ? Math.round(((product.price - product.discountPrice) / product.price) * 100) : 0;

@@ -29,7 +29,7 @@ import heroImg1 from '../assets/WhatsApp Image 2026-05-16 at 6.18.22 PM.jpeg';
 import heroImg2 from '../assets/WhatsApp Image 2026-05-16 at 6.18.24 PM.jpeg';
 import heroImg3 from '../assets/WhatsApp Image 2026-05-16 at 6.26.16 PM.jpeg';
 import heroImg4 from '../assets/WhatsApp Image 2026-05-16 at 6.41.37 PM.jpeg';
-import siteLogo from '../assets/Generated_Image_May_27__2026_-_11_13AM-removebg-preview.png';
+import siteLogo from '../assets/shazyboo-logo.png';
 
 const FontStyle = () => (
   <style>{`
@@ -719,15 +719,6 @@ const Home = () => {
         <FeaturesRow />
       </section>
 
-      {/* Promo Section */}
-      <section className="py-8 container mx-auto px-4">
-        <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-3xl p-6 md:p-8 text-center">
-          <h3 className="fredoka text-xl md:text-2xl text-gray-800 mb-2">✨ Limited Time Offer!</h3>
-          <p className="text-gray-600 font-bold mb-3">Get up to 50% off on selected items + Free Shipping on orders above ₹2999</p>
-          <p className="text-sm text-gray-500">🎁 Use code <span className="fredoka font-black text-pink-600">SHAZY50</span> at checkout</p>
-        </div>
-      </section>
-
 
       {/* Main Categories Section - SECOND (as cards) */}
       <section className="py-10 container mx-auto px-4">
@@ -736,7 +727,6 @@ const Home = () => {
             Shop by <span className="text-pink-500">Main Category</span>
           </h2>
           <p className="text-gray-600 mt-2">Explore our curated collections</p>
-          <p className="text-sm text-gray-500 mt-2">🌟 Find your perfect treasures from our handpicked selection</p>
         </div>
         <MainCategoriesSection
           categories={mainCategories}
@@ -749,7 +739,6 @@ const Home = () => {
       <section className="py-10" style={{ background: 'linear-gradient(135deg, #fce7f3 0%, #fae8ff 100%)' }}>
         <div className="container mx-auto px-4">
           <div className="mb-2 text-center">
-            <p className="text-sm text-purple-600 font-bold mb-1">👑 VIP Collection</p>
           </div>
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
@@ -769,7 +758,6 @@ const Home = () => {
       <section className="py-10" style={{ background: '#fff' }}>
         <div className="container mx-auto px-4">
           <div className="mb-2 text-center">
-            <p className="text-sm text-blue-600 font-bold mb-1">🌟 Trending Right Now</p>
           </div>
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
@@ -789,7 +777,6 @@ const Home = () => {
       <section className="py-10" style={{ background: 'linear-gradient(135deg, #ef63a4 0%, #f585b9 0%, #e4f1f6 100%)' }}>
         <div className="container mx-auto px-4">
           <div className="mb-2 text-center">
-            <p className="text-sm text-green-700 font-bold mb-1">🆕 Just Added</p>
           </div>
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
@@ -809,7 +796,6 @@ const Home = () => {
       <section className="py-10" style={{ background: '#fff' }}>
         <div className="container mx-auto px-4">
           <div className="mb-2 text-center">
-            <p className="text-sm text-orange-600 font-bold mb-1">🔥 Top Favorites</p>
           </div>
           <div className="flex items-center gap-3 mb-8">
             <span className="fredoka text-2xl" style={{ color: 'var(--kiddex-orange)' }}>🔥</span>
