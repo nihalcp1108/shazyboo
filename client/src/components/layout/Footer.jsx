@@ -2,6 +2,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaEnvelope, FaPhone, Fa
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { api } from '../../services/api'
+import footerLogo from '../../assets/Shazy_Boo_Logo_-removebg-preview.png'
 
 const Footer = () => {
   const [categories, setCategories] = useState([]);
@@ -51,7 +52,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
             <Link to="/" className="flex items-center space-x-2 mb-6 group">
-              <img src="/logo.png" alt="ShazyBoo" className="h-10 w-auto transition-transform group-hover:scale-110" />
+              <img src={footerLogo} alt="ShazyBoo" className="h-10 w-auto transition-transform group-hover:scale-110" />
             </Link>
             <p className="text-gray-600 font-bold mb-6 max-w-xs">
               Your one-stop destination for premium quality products. We deliver happiness right to your doorstep.

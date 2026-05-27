@@ -16,7 +16,7 @@ import {
   FaClipboardList
 } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import siteLogo from '../assets/logo.png';
+import siteLogo from '../assets/Shazy_Boo_Logo_-removebg-preview.png';
 
 // Import admin components
 import Dashboard from '../components/Admin/Dashboard';
