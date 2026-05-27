@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const envPath = path.resolve(__dirname, '../.env');
+const envPath = path.resolve(__dirname, '../../.env');
 
 dotenv.config({ path: envPath, override: false });
 
@@ -17,7 +17,10 @@ const apiSecret = process.env.CLOUDINARY_API_SECRET;
 // When disabled, upload/delete helpers will throw runtime errors with a clear message.
 const cloudinaryEnabled = !!(cloudName && apiKey && apiSecret);
 
-if (!cloudinaryEnabled) {
+console.log('Cloudinary config - enabled:', cloudinaryEnabled);
+console.log('CLOUDINARY_CLOUD_NAME:', cloudName);
+console.log('CLOUDINARY_API_KEY set:', !!apiKey);
+console.log('CLOUDINARY_API_SECRET set:', !!apiSecret);
   console.warn('⚠️ Cloudinary not configured. Uploads will fail until environment variables are set.');
   console.warn({
     CLOUDINARY_CLOUD_NAME: cloudName || 'MISSING',

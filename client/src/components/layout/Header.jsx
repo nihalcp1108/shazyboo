@@ -15,7 +15,21 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import siteLogo from '../../assets/shazyboo-logo.png';
+import siteLogo from '../assets/Shazy Boo_Logo.png';
+
+// Cute thought under logo
+const CuteThought = () => (
+  <motion.p
+    initial={{ opacity: 0, y: 5 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.5, duration: 1 }}
+    className="text-center text-sm text-gray-600 mt-1"
+    style={{ fontFamily: "'Nunito', sans-serif" }}
+  >
+    "Dream big, play bigger!"
+  </motion.p>
+);
+
 
 // ── Logo ─────────────────────────────────────────────────────────────────────
 const Logo = () => (
@@ -210,7 +224,8 @@ const Header = () => {
         <div className="container mx-auto px-6 md:px-8 max-w-7xl h-full">
           <div className="flex items-center justify-between gap-4 sm:gap-6 w-full h-full">
             {/* ── Logo with Image (Left Column) ── */}
-            <Logo />
+<Logo />
+<CuteThought />
 
             {/* ── Desktop Nav (Center Column) ── */}
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2">

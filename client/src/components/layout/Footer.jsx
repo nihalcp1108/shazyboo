@@ -2,7 +2,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaEnvelope, FaPhone, Fa
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { api } from '../../services/api'
-import footerLogo from '../../assets/shazyboo-logo.png'
+import footerLogo from '../../assets/Generated_Image_May_27__2026_-_11_13AM-removebg-preview.png'
 
 const Footer = () => {
   const [categories, setCategories] = useState([]);
