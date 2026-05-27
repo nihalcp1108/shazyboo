@@ -107,7 +107,8 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
               src={siteLogo}
               alt="ShazyBoo Logo"
-              className="w-64 sm:w-72 md:w-[380px] object-contain mb-5 drop-shadow-xl md:-ml-6"
+              className="w-64 sm:w-72 md:w-[380px] object-contain mb-5 md:-ml-6"
+              style={{ backgroundColor: 'transparent', boxShadow: 'none' }}
             />
 
             <motion.div

@@ -25,6 +25,7 @@ const Logo = () => (
         src={siteLogo}
         alt="ShazyBoo"
         className="logo-image w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+        style={{ backgroundColor: 'transparent' }}
       />
     </div>
   </Link>
