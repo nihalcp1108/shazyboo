@@ -19,17 +19,17 @@ import siteLogo from '../../assets/Generated_Image_May_27__2026_-_11_13AM-remove
 
 // ── Logo ─────────────────────────────────────────────────────────────────────
 const Logo = () => (
-  <Link to="/" className="flex items-center group flex-shrink-0 z-10 pl-2 sm:pl-0">
-    <div className="relative flex items-center">
+  <Link to="/" className="flex items-center group flex-shrink-0 z-10 px-2 sm:px-4 py-1">
+    <div className="relative flex items-center justify-center">
       <motion.img
         src={siteLogo}
         alt="ShazyBoo"
-        className="logo-image w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-        style={{ backgroundColor: 'transparent' }}
+        className="logo-image h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-110"
+        style={{ backgroundColor: 'transparent', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.05))' }}
         initial={{ scale: 0.96, opacity: 0.92 }}
         animate={{ scale: [0.96, 1.06, 0.96], opacity: [0.92, 1, 0.92] }}
         transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-        whileHover={{ scale: 1.08 }}
+        whileHover={{ scale: 1.12 }}
       />
     </div>
   </Link>
