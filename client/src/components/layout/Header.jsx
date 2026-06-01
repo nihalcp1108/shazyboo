@@ -206,7 +206,7 @@ const Header = () => {
         }
       `}</style>
 
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 overflow-visible ${scrolled ? "py-2 shadow-lg" : "py-4 shadow-none"}`} style={{ background: "linear-gradient(135deg, #f585b9 0%, #f585b9 0%, #e4f1f6 100%)", backdropFilter: scrolled ? "blur(20px)" : "none", fontFamily: "'Nunito', sans-serif", height: scrolled ? "88px" : "124px" }}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 overflow-visible ${scrolled ? "py-2 shadow-lg" : "py-4 shadow-none"}`} style={{ background: "linear-gradient(135deg, #f585b9 0%, #f585b9 0%, #e4f1f6 100%)", backdropFilter: scrolled ? "blur(20px)" : "none", fontFamily: "'Nunito', sans-serif", height: scrolled ? "80px" : "108px" }}>
         <div className="container mx-auto px-6 md:px-8 max-w-7xl h-full">
           <div className="flex items-center justify-between gap-4 sm:gap-6 w-full h-full">
             {/* ── Logo with Image (Left Column) ── */}
