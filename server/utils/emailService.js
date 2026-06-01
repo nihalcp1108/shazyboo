@@ -524,13 +524,17 @@ const initializeTransporter = async () => {
                 },
                 tls: {
                     rejectUnauthorized: false
-                }
+                },
+                ...(emailHost.includes('gmail.com') ? { service: 'gmail', authMethod: 'LOGIN' } : {}),
+                connectionTimeout: 10000,
+                greetingTimeout: 10000
             };
 
             console.log('📧 Email config:', {
                 host: config.host,
                 port: config.port,
-                user: config.auth.user.substring(0, 3) + '***'
+                user: config.auth.user.substring(0, 3) + '***',
+                service: config.service || 'custom'
             });
 
             const newTransporter = nodemailer.createTransport(config);
