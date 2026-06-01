@@ -39,7 +39,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
             <Link to="/" className="flex items-center space-x-2 mb-6 group">
-              <img src={footerLogo} alt="ShazyBoo" className="h-16 w-auto transition-transform group-hover:scale-110" />
+              <img src={footerLogo} alt="ShazyBoo" className="h-24 w-auto transition-transform group-hover:scale-110" style={{ maxHeight: '6rem' }} />
             </Link>
             <p className="text-gray-600 font-bold mb-6 max-w-xs">
               Your one-stop destination for premium quality products. We deliver happiness right to your doorstep.
