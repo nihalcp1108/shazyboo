@@ -24,7 +24,7 @@ const Logo = () => (
       <motion.img
         src={siteLogo}
         alt="ShazyBoo"
-        className="logo-image h-20 w-auto object-contain transition-transform duration-300 group-hover:scale-110"
+        className="logo-image h-24 w-auto object-contain transition-transform duration-300 group-hover:scale-110"
         style={{ backgroundColor: 'transparent', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.05))' }}
         initial={{ scale: 0.96, opacity: 0.92 }}
         animate={{ scale: [0.96, 1.06, 0.96], opacity: [0.92, 1, 0.92] }}
