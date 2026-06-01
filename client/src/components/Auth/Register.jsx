@@ -26,7 +26,8 @@ const Register = () => {
           navigate('/verify-otp', { 
             state: { 
               email: data.email,
-              from: 'register'
+              from: 'register',
+              debugOtp: result.debugOtp || null
             },
             replace: true
           })

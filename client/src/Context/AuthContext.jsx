@@ -238,12 +238,16 @@ export const AuthProvider = ({ children }) => {
         if (result.warning) {
           toast(result.warning, { icon: '⚠️' })
         }
+        if (result.debugOtp) {
+          toast.success(`Debug OTP: ${result.debugOtp}`)
+        }
         toast.success(result.message || 'Registration successful! Please check your email for verification OTP.')
         return { 
           success: true, 
           needsVerification: true,
           email: userData.email,
-          warning: result.warning || null
+          warning: result.warning || null,
+          debugOtp: result.debugOtp || null
         }
       } else {
         // Direct login for already verified users
@@ -324,8 +328,15 @@ export const AuthProvider = ({ children }) => {
       console.log('🔄 Resending OTP for:', email)
       const response = await api.post('/auth/resend-otp', { email })
       console.log('✅ Resend OTP response:', response.data)
-      toast.success('✨ New OTP sent to your email!')
-      return { success: true }
+      if (response.data.warning) {
+        toast(response.data.warning, { icon: '⚠️' })
+      }
+      if (response.data.debugOtp) {
+        toast.success(`Debug OTP: ${response.data.debugOtp}`)
+      } else {
+        toast.success('✨ New OTP sent to your email!')
+      }
+      return { success: true, debugOtp: response.data.debugOtp || null }
     } catch (error) {
       console.error('❌ Resend OTP error:', error)
       const responseData = error?.response?.data

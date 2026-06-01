@@ -88,6 +88,7 @@ export const register = asyncHandler(async (req, res) => {
         } catch (error) {
             console.error('❌ OTP email send failed:', error.message);
 
+            const debugOtpEnabled = process.env.EMAIL_DEBUG_OTP?.toLowerCase() === 'true';
             const responsePayload = {
                 success: true,
                 message: 'Registration completed, but verification email could not be sent.',
@@ -102,6 +103,10 @@ export const register = asyncHandler(async (req, res) => {
                     isVerified: user.isVerified
                 }
             };
+
+            if (debugOtpEnabled && otp) {
+                responsePayload.debugOtp = otp;
+            }
 
             return res.status(201).json(responsePayload);
         }
@@ -257,15 +262,28 @@ export const resendOTP = asyncHandler(async (req, res) => {
             html: emailTemplates.sendOTP(otp, user.name || 'ShazyBoo User')
         });
         console.log('📧 Resend email result:', emailResult);
+
+        res.json({
+            success: true,
+            message: 'New OTP sent to your email'
+        });
+        return;
     } catch (emailError) {
         console.error('Failed to resend OTP email:', emailError.message);
+        const debugOtpEnabled = process.env.EMAIL_DEBUG_OTP?.toLowerCase() === 'true';
+
+        if (debugOtpEnabled) {
+            res.json({
+                success: true,
+                message: `Failed to send OTP email: ${emailError.message}. Using debug OTP instead.`,
+                warning: `Email delivery failed: ${emailError.message}. Use the code below to verify your account.`,
+                debugOtp: otp
+            });
+            return;
+        }
+
         throw new ErrorResponse(`Failed to send OTP email. ${emailError.message}`, 500);
     }
-
-    res.json({
-        success: true,
-        message: 'New OTP sent to your email'
-    });
 });
 
 // @desc    Login user

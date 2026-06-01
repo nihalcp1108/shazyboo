@@ -15,6 +15,7 @@ const OTPVerification = () => {
   const { verifyOTP, resendOTP, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [debugOtp, setDebugOtp] = useState(location.state?.debugOtp || null);
   
   const email = location.state?.email || localStorage.getItem('pendingVerificationEmail');
   const from = location.state?.from || 'register';
@@ -98,15 +99,17 @@ const OTPVerification = () => {
     setResendLoading(true);
     const result = await resendOTP(email);
     setResendLoading(false);
-    
+
     if (result.success) {
       setTimeLeft(300);
       setCanResend(false);
       setOtp(['', '', '', '', '', '']);
+      if (result.debugOtp) {
+        setDebugOtp(result.debugOtp);
+      }
       // Focus on first input
       const firstInput = document.getElementById('otp-0');
       if (firstInput) firstInput.focus();
-      toast.success('New OTP sent to your email!');
     }
   };
 
@@ -229,6 +232,11 @@ const OTPVerification = () => {
                 <span className="font-bold">💡 Tip:</span> 
                 Check your spam folder if you don't see the email in your inbox.
               </p>
+              {debugOtp && (
+                <p className="mt-3 text-sm text-pink-600 font-semibold">
+                  <span className="font-bold">Debug OTP:</span> {debugOtp}
+                </p>
+              )}
             </div>
           </form>
         </div>
