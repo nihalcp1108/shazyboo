@@ -460,9 +460,17 @@ const initializeTransporter = async () => {
         
         const emailHost = process.env.EMAIL_HOST?.trim();
         const emailUser = process.env.EMAIL_USER?.trim();
-        const emailPass = process.env.EMAIL_PASS?.trim();
+        let emailPass = process.env.EMAIL_PASS?.trim();
         const emailPort = parseInt(process.env.EMAIL_PORT, 10) || 587;
         const fromEmail = process.env.FROM_EMAIL?.trim() || emailUser;
+        
+        if (emailHost?.includes('gmail.com') && emailPass) {
+            const normalizedPass = emailPass.replace(/\s+/g, '');
+            if (normalizedPass !== emailPass) {
+                console.warn('⚠️ Gmail app password contained spaces; removed spaces for SMTP auth.');
+                emailPass = normalizedPass;
+            }
+        }
         
         const isPlaceholder = (val) => {
             if (!val) return true;
