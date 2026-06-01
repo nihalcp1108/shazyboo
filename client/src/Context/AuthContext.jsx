@@ -233,7 +233,7 @@ export const AuthProvider = ({ children }) => {
       } 
       // Regular users need OTP verification
       else if (result.needsVerification) {
-        localStorage.setItem('pendingVerificationEmail', data.email)
+        localStorage.setItem('pendingVerificationEmail', userData.email)
         // Show server-provided warning if email delivery failed
         if (result.warning) {
           toast(result.warning, { icon: '⚠️' })
