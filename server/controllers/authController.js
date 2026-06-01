@@ -70,6 +70,7 @@ export const register = asyncHandler(async (req, res) => {
 
     // GENERATE TOKEN
     const token = user.getSignedJwtToken();
+    let emailWarning = null;
 
     if (!isVerified && otp) {
         try {
@@ -80,6 +81,10 @@ export const register = asyncHandler(async (req, res) => {
                 html: emailTemplates.sendOTP(otp, 'ShazyBoo')
             });
             console.log('✅ OTP email sent', emailResult);
+
+            if (emailResult?.previewUrl) {
+                emailWarning = 'Verification email was sent via Ethereal test SMTP. Check server logs for the preview URL.';
+            }
         } catch (error) {
             console.error('❌ OTP email send failed:', error.message);
             try {

@@ -509,7 +509,10 @@ const initializeTransporter = async () => {
                     },
                     tls: {
                         rejectUnauthorized: false
-                    }
+                    },
+                    connectionTimeout: 10000,
+                    greetingTimeout: 10000,
+                    socketTimeout: 10000
                 });
                 console.log('✅ Ethereal email transporter ready');
                 return transporter;
@@ -535,7 +538,8 @@ const initializeTransporter = async () => {
                 },
                 ...(emailHost.includes('gmail.com') ? { service: 'gmail', authMethod: 'LOGIN' } : {}),
                 connectionTimeout: 10000,
-                greetingTimeout: 10000
+                greetingTimeout: 10000,
+                socketTimeout: 10000
             };
 
             console.log('📧 Email config:', {
@@ -559,6 +563,9 @@ const initializeTransporter = async () => {
             return transporter;
         } catch (error) {
             console.error('❌ Real SMTP connection failed:', error.message);
+            if (process.env.NODE_ENV === 'production') {
+                throw new Error(`Production SMTP connection failed: ${error.message}`);
+            }
             console.log('📧 Attempting Ethereal SMTP fallback...');
             try {
                 const testAccount = await nodemailer.createTestAccount();
@@ -576,7 +583,10 @@ const initializeTransporter = async () => {
                     },
                     tls: {
                         rejectUnauthorized: false
-                    }
+                    },
+                    connectionTimeout: 10000,
+                    greetingTimeout: 10000,
+                    socketTimeout: 10000
                 });
                 return transporter;
             } catch (etherealError) {
