@@ -88,7 +88,7 @@ export const register = asyncHandler(async (req, res) => {
             } catch (deleteError) {
                 console.error('❌ Failed to delete temporary user:', deleteError.message);
             }
-            throw new ErrorResponse('Registration failed because verification email could not be sent. Please try again or contact support.', 500);
+            throw new ErrorResponse(`Registration failed because verification email could not be sent. ${error.message}`, 500);
         }
     }
 
