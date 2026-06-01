@@ -526,40 +526,64 @@ const initializeTransporter = async () => {
 
         const allowFallback = process.env.EMAIL_ALLOW_FALLBACK?.toLowerCase() === 'true';
 
-        try {
-            const config = {
-                host: emailHost,
-                port: emailPort,
-                secure: emailPort === 465,
-                requireTLS: emailPort === 587 || emailPort === 25,
-                auth: {
-                    user: emailUser,
-                    pass: emailPass
-                },
-                tls: {
-                    rejectUnauthorized: false
-                },
-                ...(emailHost.includes('gmail.com') ? { service: 'gmail', authMethod: 'LOGIN' } : {}),
-                connectionTimeout: 10000,
-                greetingTimeout: 10000,
-                socketTimeout: 10000
-            };
+        const createConfig = (portOverride = null) => ({
+            host: emailHost,
+            port: portOverride || emailPort,
+            secure: (portOverride || emailPort) === 465,
+            requireTLS: (portOverride || emailPort) === 587 || (portOverride || emailPort) === 25,
+            auth: {
+                user: emailUser,
+                pass: emailPass
+            },
+            tls: {
+                rejectUnauthorized: false
+            },
+            ...(emailHost.includes('gmail.com') ? { service: 'gmail', authMethod: 'LOGIN' } : {}),
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
+            socketTimeout: 10000
+        });
 
-            console.log('📧 Email config:', {
+        const attemptTransport = async (config) => {
+            console.log('📧 Attempting SMTP transport with config:', {
                 host: config.host,
                 port: config.port,
-                user: config.auth.user.substring(0, 3) + '***',
+                secure: config.secure,
                 service: config.service || 'custom'
             });
 
-            const newTransporter = nodemailer.createTransport(config);
-
+            const transport = nodemailer.createTransport(config);
             await new Promise((resolve, reject) => {
-                newTransporter.verify((error, success) => {
+                transport.verify((error, success) => {
                     if (error) reject(error);
                     else resolve(success);
                 });
             });
+            return transport;
+        };
+
+        try {
+            const configs = [createConfig()];
+            if (emailHost.includes('gmail.com') && emailPort === 587) {
+                configs.push(createConfig(465));
+            }
+
+            let newTransporter = null;
+            let lastError = null;
+
+            for (const config of configs) {
+                try {
+                    newTransporter = await attemptTransport(config);
+                    break;
+                } catch (verifyError) {
+                    lastError = verifyError;
+                    console.error(`❌ SMTP verify failed for port ${config.port}:`, verifyError.message);
+                }
+            }
+
+            if (!newTransporter) {
+                throw lastError;
+            }
 
             console.log('✅ Real email service ready');
             transporter = newTransporter;
