@@ -24,7 +24,7 @@ const Logo = () => (
       <motion.img
         src={siteLogo}
         alt="ShazyBoo"
-        className="logo-image h-32 w-auto object-contain transition-transform duration-300 group-hover:scale-110"
+        className="logo-image h-40 w-auto object-contain transition-transform duration-300 group-hover:scale-110"
         style={{ backgroundColor: 'transparent', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.05))' }}
         initial={{ scale: 0.96, opacity: 0.92 }}
         animate={{ scale: [0.96, 1.06, 0.96], opacity: [0.92, 1, 0.92] }}
@@ -180,23 +180,23 @@ const Header = () => {
 
         /* Logo responsive styles */
         .logo-image {
-          height: 5.0rem !important;
+          height: 6.6rem !important;
           transition: all 0.3s ease;
           filter: drop-shadow(0 2px 8px rgba(255, 107, 138, 0.15));
         }
         @media (max-width: 640px) {
           .logo-image {
-            height: 3.8rem !important;
+            height: 4.8rem !important;
           }
         }
         @media (min-width: 641px) and (max-width: 1024px) {
           .logo-image {
-            height: 5.6rem !important;
+            height: 7.4rem !important;
           }
         }
         @media (min-width: 1025px) {
           .logo-image {
-            height: 6.5rem !important;
+            height: 8.8rem !important;
           }
         }
 
@@ -206,7 +206,7 @@ const Header = () => {
         }
       `}</style>
 
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 overflow-visible ${scrolled ? "py-1 shadow-lg" : "py-3 shadow-none"}`} style={{ background: "linear-gradient(135deg, #f585b9 0%, #f585b9 0%, #e4f1f6 100%)", backdropFilter: scrolled ? "blur(20px)" : "none", fontFamily: "'Nunito', sans-serif", height: scrolled ? "80px" : "108px" }}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 overflow-visible ${scrolled ? "py-2 shadow-lg" : "py-4 shadow-none"}`} style={{ background: "linear-gradient(135deg, #f585b9 0%, #f585b9 0%, #e4f1f6 100%)", backdropFilter: scrolled ? "blur(20px)" : "none", fontFamily: "'Nunito', sans-serif", height: scrolled ? "88px" : "124px" }}>
         <div className="container mx-auto px-6 md:px-8 max-w-7xl h-full">
           <div className="flex items-center justify-between gap-4 sm:gap-6 w-full h-full">
             {/* ── Logo with Image (Left Column) ── */}
