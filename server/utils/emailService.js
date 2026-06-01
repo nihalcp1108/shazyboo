@@ -458,12 +458,24 @@ const initializeTransporter = async () => {
     initializingPromise = (async () => {
         console.log('📧 Initializing email transporter...');
         
-        const emailHost = process.env.EMAIL_HOST?.trim();
-        const emailUser = process.env.EMAIL_USER?.trim();
+        let emailService = process.env.EMAIL_SERVICE?.trim().toLowerCase();
+        let emailHost = process.env.EMAIL_HOST?.trim();
+        let emailUser = process.env.EMAIL_USER?.trim();
         let emailPass = process.env.EMAIL_PASS?.trim();
+        const sendGridApiKey = process.env.SENDGRID_API_KEY?.trim();
         const emailPort = parseInt(process.env.EMAIL_PORT, 10) || 587;
         const fromEmail = process.env.FROM_EMAIL?.trim() || emailUser;
-        
+
+        if (!emailService && sendGridApiKey) {
+            emailService = 'sendgrid';
+        }
+
+        if (emailService === 'sendgrid') {
+            emailHost = emailHost || 'smtp.sendgrid.net';
+            emailUser = 'apikey';
+            emailPass = sendGridApiKey;
+        }
+
         if (emailHost?.includes('gmail.com') && emailPass) {
             const normalizedPass = emailPass.replace(/\s+/g, '');
             if (normalizedPass !== emailPass) {
@@ -471,7 +483,7 @@ const initializeTransporter = async () => {
                 emailPass = normalizedPass;
             }
         }
-        
+
         const isPlaceholder = (val) => {
             if (!val) return true;
             const lower = val.toLowerCase();
@@ -538,7 +550,8 @@ const initializeTransporter = async () => {
             tls: {
                 rejectUnauthorized: false
             },
-            ...(emailHost.includes('gmail.com') ? { service: 'gmail', authMethod: 'LOGIN' } : {}),
+            ...((emailHost?.includes('gmail.com') || emailService === 'gmail') ? { service: 'gmail', authMethod: 'LOGIN' } : {}),
+            ...((emailHost?.includes('sendgrid.net') || emailService === 'sendgrid') ? { service: 'SendGrid' } : {}),
             connectionTimeout: 10000,
             greetingTimeout: 10000,
             socketTimeout: 10000
