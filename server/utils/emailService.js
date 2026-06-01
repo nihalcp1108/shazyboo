@@ -524,11 +524,14 @@ const initializeTransporter = async () => {
             }
         }
 
+        const allowFallback = process.env.EMAIL_ALLOW_FALLBACK?.toLowerCase() === 'true';
+
         try {
             const config = {
                 host: emailHost,
                 port: emailPort,
                 secure: emailPort === 465,
+                requireTLS: emailPort === 587 || emailPort === 25,
                 auth: {
                     user: emailUser,
                     pass: emailPass
@@ -563,7 +566,7 @@ const initializeTransporter = async () => {
             return transporter;
         } catch (error) {
             console.error('❌ Real SMTP connection failed:', error.message);
-            if (process.env.NODE_ENV === 'production') {
+            if (process.env.NODE_ENV === 'production' && !allowFallback) {
                 throw new Error(`Production SMTP connection failed: ${error.message}`);
             }
             console.log('📧 Attempting Ethereal SMTP fallback...');

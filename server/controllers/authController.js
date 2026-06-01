@@ -87,13 +87,23 @@ export const register = asyncHandler(async (req, res) => {
             }
         } catch (error) {
             console.error('❌ OTP email send failed:', error.message);
-            try {
-                await User.findByIdAndDelete(user._id);
-                console.log('🗑️ Deleted unverified user after failed OTP email');
-            } catch (deleteError) {
-                console.error('❌ Failed to delete temporary user:', deleteError.message);
-            }
-            throw new ErrorResponse(`Registration failed because verification email could not be sent. ${error.message}`, 500);
+
+            const responsePayload = {
+                success: true,
+                message: 'Registration completed, but verification email could not be sent.',
+                warning: `Verification email failed: ${error.message}. Your account is created; please retry OTP delivery after fixing SMTP settings.`,
+                token,
+                needsVerification: true,
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    isVerified: user.isVerified
+                }
+            };
+
+            return res.status(201).json(responsePayload);
         }
     }
 
