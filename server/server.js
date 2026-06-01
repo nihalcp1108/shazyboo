@@ -123,11 +123,13 @@ app.use((err, req, res, next) => {
         }
         return res.status(400).json({ success: false, error: message });
     }
-    // Other errors (e.g., fileFilter rejection)
+
     if (err) {
-        const message = err.message || 'File upload error';
-        return res.status(400).json({ success: false, error: message });
+        const statusCode = err.statusCode || 500;
+        const message = err.message || 'Server error';
+        return res.status(statusCode).json({ success: false, error: message });
     }
+
     next();
 });
 

@@ -64,16 +64,13 @@ export const register = asyncHandler(async (req, res) => {
     // GENERATE OTP
     if (!isVerified) {
         otp = user.generateOTP();
-
         await user.save({ validateBeforeSave: false });
-
         console.log('📩 OTP Generated:', otp);
     }
 
     // GENERATE TOKEN
     const token = user.getSignedJwtToken();
 
-    let emailWarning = null;
     if (!isVerified && otp) {
         try {
             console.log('📧 Sending OTP email...');
@@ -85,7 +82,13 @@ export const register = asyncHandler(async (req, res) => {
             console.log('✅ OTP email sent', emailResult);
         } catch (error) {
             console.error('❌ OTP email send failed:', error.message);
-            emailWarning = 'Registration succeeded but verification email could not be sent. Please use resend OTP or contact support.';
+            try {
+                await User.findByIdAndDelete(user._id);
+                console.log('🗑️ Deleted unverified user after failed OTP email');
+            } catch (deleteError) {
+                console.error('❌ Failed to delete temporary user:', deleteError.message);
+            }
+            throw new ErrorResponse('Registration failed because verification email could not be sent. Please try again or contact support.', 500);
         }
     }
 
@@ -204,7 +207,8 @@ export const verifyOTP = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/resend-otp
 // @access  Public
 export const resendOTP = asyncHandler(async (req, res) => {
-    const { email } = req.body;
+    let email = req.body.email;
+    email = email?.toLowerCase().trim();
 
     console.log(`🔄 Resend OTP request for: ${email}`);
 
@@ -239,8 +243,8 @@ export const resendOTP = asyncHandler(async (req, res) => {
         });
         console.log('📧 Resend email result:', emailResult);
     } catch (emailError) {
-        console.error('Failed to resend OTP email:', emailError);
-        throw new ErrorResponse('Failed to send OTP email. Please try again.', 500);
+        console.error('Failed to resend OTP email:', emailError.message);
+        throw new ErrorResponse(`Failed to send OTP email. ${emailError.message}`, 500);
     }
 
     res.json({

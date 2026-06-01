@@ -233,7 +233,7 @@ export const AuthProvider = ({ children }) => {
       } 
       // Regular users need OTP verification
       else if (result.needsVerification) {
-        localStorage.setItem('pendingVerificationEmail', userData.email)
+        localStorage.setItem('pendingVerificationEmail', data.email)
         // Show server-provided warning if email delivery failed
         if (result.warning) {
           toast(result.warning, { icon: '⚠️' })
@@ -263,9 +263,11 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('❌ Registration error:', error)
+      const responseData = error?.response?.data
       const errorMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
+        responseData?.error ||
+        responseData?.message ||
+        (typeof responseData === 'string' ? responseData : null) ||
         error?.message ||
         'Registration failed'
       toast.error(errorMessage)
@@ -326,7 +328,12 @@ export const AuthProvider = ({ children }) => {
       return { success: true }
     } catch (error) {
       console.error('❌ Resend OTP error:', error)
-      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to resend OTP 😢'
+      const responseData = error?.response?.data
+      const errorMessage =
+        responseData?.error ||
+        responseData?.message ||
+        (typeof responseData === 'string' ? responseData : null) ||
+        'Failed to resend OTP 😢'
       toast.error(errorMessage)
       return { success: false, error: errorMessage }
     }
