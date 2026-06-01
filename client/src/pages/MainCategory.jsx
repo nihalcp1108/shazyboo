@@ -28,7 +28,7 @@ const MainCategory = () => {
     const [quickViewProduct, setQuickViewProduct] = useState(null);
     const { addToCart } = useCart();
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+    const API_URL = import.meta.env.VITE_API_URL || '/api';
     const BASE_URL = API_URL.replace('/api', '');
 
     useEffect(() => {
@@ -53,7 +53,7 @@ const MainCategory = () => {
             setSubCategories(data.subCategories || []);
             
             if (data.products?.length === 0) {
-                toast.warning('No products found in this category yet');
+                toast('No products found in this category yet', { icon: '⚠️' });
             }
         } catch (error) {
             console.error('Error fetching category:', error);

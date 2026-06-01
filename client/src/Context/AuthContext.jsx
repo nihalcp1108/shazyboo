@@ -236,7 +236,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('pendingVerificationEmail', userData.email)
         // Show server-provided warning if email delivery failed
         if (result.warning) {
-          toast.warning(result.warning)
+          toast(result.warning, { icon: '⚠️' })
         }
         toast.success(result.message || 'Registration successful! Please check your email for verification OTP.')
         return { 
@@ -263,11 +263,11 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('❌ Registration error:', error)
-      toast.error(
-  error?.response?.data?.error ||
-  error?.response?.data?.message ||
-  'Registration failed'
-)
+      const errorMessage =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        error?.message ||
+        'Registration failed'
       toast.error(errorMessage)
       return { success: false, error: errorMessage }
     } finally {
