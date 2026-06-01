@@ -83,7 +83,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ef63a4 0%, #f585b9 0%, #e4f1f6 100%)', minHeight: 380 }}>
+    <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ef63a4 0%, #f585b9 0%, #e4f1f6 100%)', minHeight: 380, marginTop: '-80px', paddingTop: '32px' }}>
       <FontStyle />
       <div className="absolute inset-0 pointer-events-none select-none">
         <Star size={28} color="#FFD84D" style={{ position: 'absolute', top: 110, left: '8%', animation: 'floatStar 3s ease-in-out infinite' }} />
