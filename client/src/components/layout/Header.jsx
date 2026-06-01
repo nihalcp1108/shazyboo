@@ -15,7 +15,7 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import siteLogo from '../../assets/shazy_boo_logo.png';
+import siteLogo from '../../assets/logo.png';
 
 // ── Logo ─────────────────────────────────────────────────────────────────────
 const Logo = () => (

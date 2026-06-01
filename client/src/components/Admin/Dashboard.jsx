@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { FaUsers, FaBox, FaShoppingCart, FaRupeeSign, FaExclamationTriangle, FaStar, FaFire, FaTag } from 'react-icons/fa';
 import { getFallbackImage } from '../../utils/imageUtils.js';
 import { api } from '../../services/api'
-import siteLogo from '../../assets/shazy_boo_logo.png';
+import siteLogo from '../../assets/logo.png';
 
 const Dashboard = () => {
     const [dashboardData, setDashboardData] = useState(null)
@@ -15,7 +15,7 @@ const Dashboard = () => {
 
     // Get base URL function (same as ProductManager)
     const getBaseUrl = () => {
-        const API_URL = import.meta.env?.VITE_API_URL || 'http://localhost:5001/api';
+        const API_URL = import.meta.env?.VITE_API_URL || '/api';
         return API_URL.replace('/api', '');
     };
 

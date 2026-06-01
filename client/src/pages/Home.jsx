@@ -29,7 +29,7 @@ import heroImg1 from '../assets/WhatsApp Image 2026-05-16 at 6.18.22 PM.jpeg';
 import heroImg2 from '../assets/WhatsApp Image 2026-05-16 at 6.18.24 PM.jpeg';
 import heroImg3 from '../assets/WhatsApp Image 2026-05-16 at 6.26.16 PM.jpeg';
 import heroImg4 from '../assets/WhatsApp Image 2026-05-16 at 6.41.37 PM.jpeg';
-import siteLogo from '../assets/shazy_boo_logo.png';
+import siteLogo from '../assets/logo.png';
 
 const FontStyle = () => (
   <style>{`
