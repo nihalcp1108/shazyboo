@@ -8,7 +8,7 @@ import axios from 'axios';
 import { FaArrowLeft, FaCheckCircle, FaTruck, FaShieldAlt, FaCreditCard, FaWhatsapp } from 'react-icons/fa';
 import { getImageUrl, handleImageError } from '../utils/imageUtils';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Helper function to get image URL
 

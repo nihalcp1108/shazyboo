@@ -88,11 +88,12 @@ export const register = asyncHandler(async (req, res) => {
         } catch (error) {
             console.error('❌ OTP email send failed:', error.message);
 
-            const debugOtpEnabled = process.env.EMAIL_DEBUG_OTP?.toLowerCase() === 'true';
+            // Default to true if email failed, unless explicitly set to false
+            const debugOtpEnabled = process.env.EMAIL_DEBUG_OTP?.toLowerCase() !== 'false';
             const responsePayload = {
                 success: true,
                 message: 'Registration completed, but verification email could not be sent.',
-                warning: `Verification email failed: ${error.message}. Your account is created; please retry OTP delivery after fixing SMTP settings.`,
+                warning: `Verification email failed (SMTP ports are likely blocked in production): ${error.message}. Please use the fallback Debug OTP below to verify your account!`,
                 token,
                 needsVerification: true,
                 user: {
@@ -270,13 +271,14 @@ export const resendOTP = asyncHandler(async (req, res) => {
         return;
     } catch (emailError) {
         console.error('Failed to resend OTP email:', emailError.message);
-        const debugOtpEnabled = process.env.EMAIL_DEBUG_OTP?.toLowerCase() === 'true';
+        // Default to true if email failed, unless explicitly set to false
+        const debugOtpEnabled = process.env.EMAIL_DEBUG_OTP?.toLowerCase() !== 'false';
 
         if (debugOtpEnabled) {
             res.json({
                 success: true,
                 message: `Failed to send OTP email: ${emailError.message}. Using debug OTP instead.`,
-                warning: `Email delivery failed: ${emailError.message}. Use the code below to verify your account.`,
+                warning: `Email delivery failed (SMTP ports are likely blocked in production): ${emailError.message}. Use the code below to verify your account.`,
                 debugOtp: otp
             });
             return;
@@ -540,6 +542,20 @@ export const forgotPassword = asyncHandler(async (req, res) => {
         });
     } catch (emailError) {
         console.error('Password reset email failed:', emailError);
+
+        // Default to true if email failed, unless explicitly set to false
+        const debugOtpEnabled = process.env.EMAIL_DEBUG_OTP?.toLowerCase() !== 'false';
+
+        if (debugOtpEnabled) {
+            res.json({
+                success: true,
+                message: `Failed to send password reset email: ${emailError.message}. Using fallback OTP.`,
+                warning: `Email delivery failed (SMTP ports are likely blocked in production): ${emailError.message}. Use the code below to reset your password.`,
+                email: user.email,
+                debugOtp: otp
+            });
+            return;
+        }
 
         // Reset fields if email fails
         user.otp = undefined;

@@ -12,6 +12,7 @@ const ForgotPassword = () => {
   const [submittedEmail, setSubmittedEmail] = useState('')
   const [resetToken, setResetToken] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [debugOtp, setDebugOtp] = useState(null)
   const { forgotPassword, verifyResetOTP, resetPassword } = useAuth()
   const navigate = useNavigate()
 
@@ -26,6 +27,9 @@ const ForgotPassword = () => {
       if (result.success) {
         setSubmittedEmail(data.email)
         setStep(2)
+        if (result.debugOtp) {
+          setDebugOtp(result.debugOtp)
+        }
         toast.success('✨ OTP sent! Please check your email.')
       }
     } catch (error) {
@@ -189,6 +193,19 @@ const ForgotPassword = () => {
                 {loading ? 'Verifying... 🔍' : 'Verify Code ✨'}
               </button>
               
+              {/* Help Note */}
+              <div className="mt-4 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-200">
+                <p className="text-sm text-blue-600 text-center">
+                  <span className="font-bold">💡 Tip:</span> 
+                  Check your spam folder if you don't see the email in your inbox.
+                </p>
+                {debugOtp && (
+                  <p className="mt-3 text-sm text-pink-600 font-semibold text-center">
+                    <span className="font-bold">Debug OTP:</span> {debugOtp}
+                  </p>
+                )}
+              </div>
+
               <div className="text-center pt-6 border-t border-pink-100">
                 <button type="button" onClick={() => setStep(1)} className="text-sm text-gray-500 hover:text-pink-600 transition-colors">
                   Didn't get the code? Try again

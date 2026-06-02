@@ -24,12 +24,12 @@ const CartItem = ({ item }) => {
         return image;
       }
       if (image.startsWith('/uploads/')) {
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+        const API_URL = import.meta.env.VITE_API_URL || '/api';
         const BASE_URL = API_URL.replace('/api', '');
         return `${BASE_URL}${image}`;
       }
       // If it's just a filename
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+      const API_URL = import.meta.env.VITE_API_URL || '/api';
       const BASE_URL = API_URL.replace('/api', '');
       return `${BASE_URL}/uploads/products/${image}`;
     }
@@ -41,14 +41,14 @@ const CartItem = ({ item }) => {
           return image.url;
         }
         if (image.url.startsWith('/uploads/')) {
-          const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+          const API_URL = import.meta.env.VITE_API_URL || '/api';
           const BASE_URL = API_URL.replace('/api', '');
           return `${BASE_URL}${image.url}`;
         }
         return image.url;
       }
       if (image.public_id) {
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+        const API_URL = import.meta.env.VITE_API_URL || '/api';
         const BASE_URL = API_URL.replace('/api', '');
         return `${BASE_URL}/uploads/products/${image.public_id}`;
       }

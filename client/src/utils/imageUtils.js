@@ -2,7 +2,7 @@
 
 const getBackendUrl = () => {
   // Build base URL from env (default to local dev API)
-  const API_URL = import.meta.env?.VITE_API_URL || 'http://localhost:5001/api';
+  const API_URL = import.meta.env?.VITE_API_URL || '/api';
   // Remove trailing '/api' only
   const BASE_URL = API_URL.replace(/\/api$/, '');
   return BASE_URL;
