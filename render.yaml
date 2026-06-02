@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: shazyboo-backend
+    env: node
+    buildCommand: npm install
+    startCommand: node server.mjs
+    rootDir: server
