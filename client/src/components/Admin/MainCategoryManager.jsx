@@ -28,7 +28,7 @@ const MainCategoryManager = () => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [serverStatus, setServerStatus] = useState('checking');
 
-    const API_URL = import.meta.env.VITE_API_URL || '/api';
+    import { API_URL } from '../../utils/Constants';
     const BASE_URL = API_URL.replace('/api', '');
 
     const getAuthInfo = () => {
