@@ -282,8 +282,7 @@ const CategoryCircles = ({ categories, loading }) => {
   // Enhanced color palette for rings
   const ringColors = [
     'ring-pink-500', 'ring-purple-500', 'ring-green-500', 'ring-blue-500',
-    'ring-orange-500', 'ring-yellow-500', 'ring-red-500', 'ring-indigo-500', 'from-pink-200 to-pink-100',
-    'from-purple-200 to-purple-100'
+    'ring-orange-500', 'ring-yellow-500', 'ring-red-500', 'ring-indigo-500'
   ];
 
   // Enhanced background gradients for circles
@@ -295,17 +294,15 @@ const CategoryCircles = ({ categories, loading }) => {
     'from-orange-200 to-orange-100',
     'from-yellow-200 to-yellow-100',
     'from-red-200 to-red-100',
-    'from-indigo-200 to-indigo-100',
-    'from-pink-200 to-pink-100',
-    'from-purple-200 to-purple-100'
+    'from-indigo-200 to-indigo-100'
   ];
 
   // Fallback emojis
   const categoryEmojis = ['🧸', '🎮', '📚', '🎨', '🚂', '🧩', '🎲', '🎭'];
 
   if (loading) return (
-    <div className="flex justify-center gap-10 flex-wrap">
-      {[...Array(10)].map((_, i) => (
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
+      {[...Array(8)].map((_, i) => (
         <div key={i} className="animate-pulse flex flex-col items-center gap-3">
           <div className="w-24 h-24 rounded-full bg-gray-100" />
           <div className="w-20 h-4 bg-gray-200 rounded-full" />
@@ -320,38 +317,28 @@ const CategoryCircles = ({ categories, loading }) => {
   );
 
   return (
-    <div className="relative flex flex-col w-full mx-auto">
-      {/* Mobile: horizontal scroll with fade hints */}
-      <div className="w-full md:hidden relative">
-        <div className="absolute left-0 top-0 bottom-0 w-8 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to right, var(--kiddex-bg), transparent)' }} />
-        <div className="absolute right-0 top-0 bottom-0 w-8 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to left, var(--kiddex-bg), transparent)' }} />
-        <div className="flex gap-4 sm:gap-6 overflow-x-auto hide-scroll px-4 sm:px-6 pb-4 w-full" style={{ scrollSnapType: 'x mandatory' }}>
-          {displayCats.map((cat, i) => (
-            <CategoryCircleItem key={cat._id || i} cat={cat} i={i} ringColors={ringColors} circleGradients={circleGradients} categoryEmojis={categoryEmojis} scrollSnap />
-          ))}
-        </div>
-      </div>
-
-      {/* Desktop: centered wrap */}
-      <div className="hidden md:flex justify-center items-center gap-8 flex-nowrap overflow-x-auto hide-scroll px-4">
-        {displayCats.map((cat, i) => (
-          <CategoryCircleItem key={cat._id || i} cat={cat} i={i} ringColors={ringColors} circleGradients={circleGradients} categoryEmojis={categoryEmojis} />
-        ))}
-      </div>
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-4">
+      {displayCats.map((cat, i) => (
+        <CategoryCircleItem
+          key={cat._id || i}
+          cat={cat}
+          i={i}
+          ringColors={ringColors}
+          circleGradients={circleGradients}
+          categoryEmojis={categoryEmojis}
+        />
+      ))}
     </div>
   );
 };
 
 // Single category circle item (shared between scroll and grid)
-const CategoryCircleItem = ({ cat, i, ringColors, circleGradients, categoryEmojis, scrollSnap }) => (
+const CategoryCircleItem = ({ cat, i, ringColors, circleGradients, categoryEmojis }) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.6 }}
     animate={{ opacity: 1, scale: 1 }}
     transition={{ duration: 0.5, delay: i * 0.07 }}
-    className={`${scrollSnap ? 'flex-shrink-0' : ''} flex flex-col items-center gap-2 cursor-pointer group`}
-    style={scrollSnap ? { scrollSnapAlign: 'start' } : {}}
+    className="flex flex-col items-center gap-2 cursor-pointer group"
   >
     <Link to={`/categories/${cat.slug || cat._id}`} className="flex flex-col items-center gap-2">
       <div className="relative">
