@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 import { getImageUrl } from '../../utils/imageUtils';
+import { API_URL } from '../../utils/Constants';
 
 const MainCategoryManager = () => {
     const [categories, setCategories] = useState([]);
@@ -28,7 +29,6 @@ const MainCategoryManager = () => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [serverStatus, setServerStatus] = useState('checking');
 
-    import { API_URL } from '../../utils/Constants';
     const BASE_URL = API_URL.replace('/api', '');
 
     const getAuthInfo = () => {
