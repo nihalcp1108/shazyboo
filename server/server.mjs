@@ -36,32 +36,28 @@ const app = express();
 const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:5173',
+    process.env.CLIENT_URL,
+    process.env.CORS_ORIGIN,
     'https://shazyboo-df9m-git-completed-nihalcp1108s-projects.vercel.app'
-];
+].filter(Boolean);
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
 
-        // Allow any vercel deployment
-        if (origin.endsWith('.vercel.app')) {
-            return callback(null, true);
-        }
-
-        // Check if origin is in allowedOrigins or matches localhost
-        const isAllowed = allowedOrigins.includes(origin) || 
-                          origin === process.env.CLIENT_URL || 
-                          origin === process.env.CORS_ORIGIN ||
+        const isAllowed = allowedOrigins.includes(origin) ||
+                          origin.endsWith('.vercel.app') ||
+                          origin.endsWith('.onrender.com') ||
                           origin.startsWith('http://localhost:');
 
         if (isAllowed) {
             return callback(null, true);
         }
 
+        console.warn('Blocked CORS origin:', origin);
         return callback(new Error('CORS not allowed for this origin: ' + origin));
     },
-    credentials: true, // required for cookies/JWT
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
 }));
