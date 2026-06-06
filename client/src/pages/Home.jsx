@@ -83,7 +83,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ef63a4 0%, #f585b9 0%, #e4f1f6 100%)', marginTop: '-80px', paddingTop: '12px', paddingBottom: '14px' }}>
+    <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ef63a4 0%, #f585b9 0%, #e4f1f6 100%)', marginTop: 0, paddingTop: '96px', paddingBottom: '14px' }}>
       <FontStyle />
       <div className="absolute inset-0 pointer-events-none select-none">
         <Star size={24} color="#FFD84D" style={{ position: 'absolute', top: 90, left: '6%', animation: 'floatStar 3s ease-in-out infinite' }} />
@@ -412,13 +412,6 @@ const ProductCard = ({ product, index, onAddToCart, navigate }) => {
           onError={handleImageError}
         />
 
-        {discount > 0 && (
-          <div className="absolute top-3 left-3 fredoka text-white text-sm px-3 py-1 rounded-full shadow"
-            style={{ background: 'var(--kiddex-red)' }}>
-            -{discount}%
-          </div>
-        )}
-
         <button
           className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center shadow transition-transform hover:scale-110 z-20"
           style={{ background: liked ? 'var(--kiddex-pink)' : 'rgba(255,255,255,0.85)' }}
@@ -450,7 +443,7 @@ const ProductCard = ({ product, index, onAddToCart, navigate }) => {
 
         <div className="mt-auto flex items-center justify-between gap-2">
           <div className="text-xs text-gray-500 self-end">
-            {product.stock > 0 ? 'In stock' : 'Sold out'}
+            {discount > 0 ? `-${discount}% off` : product.stock > 0 ? 'In stock' : 'Sold out'}
           </div>
           <button
             onClick={handleAddToCartClick}
