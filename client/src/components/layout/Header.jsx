@@ -13,6 +13,9 @@ import {
   FaCrown,
   FaUserCircle,
   FaSignOutAlt,
+  FaHome,
+  FaList,
+  FaStore,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import siteLogo from '../../assets/logo.png';
@@ -206,11 +209,56 @@ const Header = () => {
         }
       `}</style>
 
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 overflow-visible ${scrolled ? "py-2 shadow-lg" : "py-4 shadow-none"}`} style={{ background: "linear-gradient(135deg, #f585b9 0%, #f585b9 0%, #e4f1f6 100%)", backdropFilter: scrolled ? "blur(20px)" : "none", fontFamily: "'Nunito', sans-serif", height: "80px" }}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 overflow-visible ${scrolled ? "shadow-lg" : "shadow-none"}`} style={{ background: "linear-gradient(135deg, #f585b9 0%, #f585b9 0%, #e4f1f6 100%)", backdropFilter: scrolled ? "blur(20px)" : "none", fontFamily: "'Nunito', sans-serif", height: "72px" }}>
         <div className="container mx-auto px-6 md:px-8 max-w-7xl h-full">
-          <div className="flex items-center justify-between gap-4 sm:gap-6 w-full h-full">
-            {/* ── Logo with Image (Left Column) ── */}
-            <Logo />
+          <div className="flex items-center justify-between gap-4 sm:gap-6 w-full h-full relative">
+            {/* ── Mobile menu button (left) ── */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="lg:hidden icon-btn"
+              style={{
+                ...iconBtnStyle,
+                background: isMenuOpen
+                  ? "rgba(255, 107, 138, 0.95)"
+                  : "rgba(244, 196, 222, 0.95)",
+                borderColor: isMenuOpen ? "#f585b9" : "#f8f4fe",
+              }}
+              aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                {isMenuOpen ? (
+                  <motion.span
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="flex items-center justify-center"
+                  >
+                    <FaTimes size={16} style={{ color: "#ffffff" }} />
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="open"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="flex items-center justify-center"
+                  >
+                    <FaBars size={16} style={{ color: "#7a5bb8" }} />
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </button>
+
+            {/* ── Logo centered on desktop only ── */}
+            <div className="absolute inset-x-0 hidden lg:flex justify-center lg:static lg:justify-start pointer-events-none lg:pointer-events-auto">
+              <div className="mx-auto lg:mx-0 pointer-events-auto">
+                <Logo />
+              </div>
+            </div>
 
             {/* ── Desktop Nav (Center Column) ── */}
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
@@ -219,8 +267,30 @@ const Header = () => {
               ))}
             </nav>
 
+            <div className="flex items-center gap-2 lg:hidden">
+              {user ? (
+                <Link
+                  to="/profile"
+                  className="icon-btn"
+                  style={iconBtnStyle}
+                  aria-label="Profile"
+                >
+                  <FaUserCircle size={16} style={{ color: '#9B6BFF' }} />
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  className="icon-btn"
+                  style={iconBtnStyle}
+                  aria-label="Login"
+                >
+                  <FaUser size={16} style={{ color: '#FF6B8A' }} />
+                </Link>
+              )}
+            </div>
+
             {/* ── Right Controls ── */}
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="hidden lg:flex items-center gap-1 sm:gap-2">
               {/* Search */}
               <AnimatePresence mode="wait">
                 {isSearchOpen ? (
@@ -472,46 +542,6 @@ const Header = () => {
                 </Link>
               )}
 
-              {/* Mobile hamburger */}
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden icon-btn"
-                style={{
-                  ...iconBtnStyle,
-                  background: isMenuOpen
-                    ? "rgba(255, 107, 138, 0.95)"
-                    : "rgba(244, 196, 222, 0.95)",
-                  borderColor: isMenuOpen ? "#f585b9" : "#f8f4fe",
-                }}
-                aria-label="Toggle menu"
-                aria-expanded={isMenuOpen}
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  {isMenuOpen ? (
-                    <motion.span
-                      key="close"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                      className="flex items-center justify-center"
-                    >
-                      <FaTimes size={16} style={{ color: "#ffffff" }} />
-                    </motion.span>
-                  ) : (
-                    <motion.span
-                      key="open"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                      className="flex items-center justify-center"
-                    >
-                      <FaBars size={16} style={{ color: "#7a5bb8" }} />
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </button>
             </div>
           </div>
 
@@ -800,7 +830,52 @@ const Header = () => {
       </header>
 
       {/* Spacer so content doesn't hide behind fixed header */}
-      <div style={{ height: scrolled ? "68px" : "84px" }} aria-hidden />
+      <div style={{ height: "72px" }} aria-hidden />
+
+      {/* Mobile bottom navigation */}
+      <nav className="fixed inset-x-0 bottom-0 z-50 lg:hidden bg-white/95 border-t border-pink-100 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl">
+        <div className="container mx-auto px-6 py-2 max-w-7xl">
+          <div className="grid grid-cols-5 gap-1">
+            <Link
+              to="/"
+              className={`flex flex-col items-center justify-center gap-1 rounded-3xl py-2 text-xs font-bold transition-colors ${pathname === "/" ? "text-pink-600 bg-pink-50" : "text-gray-600 hover:text-pink-600"}`}
+            >
+              <FaHome size={18} />
+              Home
+            </Link>
+            <Link
+              to="/categories"
+              className={`flex flex-col items-center justify-center gap-1 rounded-3xl py-2 text-xs font-bold transition-colors ${pathname.startsWith("/categories") ? "text-pink-600 bg-pink-50" : "text-gray-600 hover:text-pink-600"}`}
+            >
+              <FaList size={18} />
+              Category
+            </Link>
+            <Link
+              to="/shop"
+              className={`flex flex-col items-center justify-center gap-1 rounded-3xl py-2 text-xs font-bold transition-colors ${pathname.startsWith("/shop") ? "text-pink-600 bg-pink-50" : "text-gray-600 hover:text-pink-600"}`}
+            >
+              <FaStore size={18} />
+              Shop
+            </Link>
+            <Link
+              to="/wishlist"
+              className={`flex flex-col items-center justify-center gap-1 rounded-3xl py-2 text-xs font-bold transition-colors ${pathname.startsWith("/wishlist") ? "text-pink-600 bg-pink-50" : "text-gray-600 hover:text-pink-600"}`}
+            >
+              <FaHeart size={18} />
+              Wishlist
+            </Link>
+            <Link
+              to="/cart"
+              className={`flex flex-col items-center justify-center gap-1 rounded-3xl py-2 text-xs font-bold transition-colors ${pathname.startsWith("/cart") ? "text-pink-600 bg-pink-50" : "text-gray-600 hover:text-pink-600"}`}
+            >
+              <FaShoppingCart size={18} />
+              Cart
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      <div className="lg:hidden" style={{ height: 76 }} aria-hidden />
     </>
   );
 };
