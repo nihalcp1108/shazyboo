@@ -83,46 +83,36 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ef63a4 0%, #f585b9 0%, #e4f1f6 100%)', minHeight: 380, marginTop: '-80px', paddingTop: '32px' }}>
+    <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ef63a4 0%, #f585b9 0%, #e4f1f6 100%)', marginTop: '-80px', paddingTop: '12px', paddingBottom: '14px' }}>
       <FontStyle />
       <div className="absolute inset-0 pointer-events-none select-none">
-        <Star size={28} color="#FFD84D" style={{ position: 'absolute', top: 110, left: '8%', animation: 'floatStar 3s ease-in-out infinite' }} />
-        <Star size={16} color="#FF6B8A" style={{ position: 'absolute', top: 160, left: '22%', animation: 'floatStar 2.5s ease-in-out infinite 0.5s' }} />
-        <Star size={22} color="#4BC98A" style={{ position: 'absolute', top: 120, right: '15%', animation: 'floatStar 3.5s ease-in-out infinite 0.3s' }} />
-        <Star size={22} color="#644bc9" style={{ position: 'absolute', top: 220, right: '22%', animation: 'floatStar 3.5s ease-in-out infinite 0.3s' }} />
+        <Star size={24} color="#FFD84D" style={{ position: 'absolute', top: 90, left: '6%', animation: 'floatStar 3s ease-in-out infinite' }} />
+        <Star size={14} color="#FF6B8A" style={{ position: 'absolute', top: 140, left: '20%', animation: 'floatStar 2.5s ease-in-out infinite 0.5s' }} />
+        <Star size={18} color="#4BC98A" style={{ position: 'absolute', top: 110, right: '15%', animation: 'floatStar 3.5s ease-in-out infinite 0.3s' }} />
+        <Star size={18} color="#644bc9" style={{ position: 'absolute', top: 190, right: '22%', animation: 'floatStar 3.5s ease-in-out infinite 0.3s' }} />
       </div>
 
-      <div className="container mx-auto px-6 md:px-12 py-8 relative z-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+      <div className="container mx-auto px-4 md:px-10 py-4 relative z-10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex-1 text-center md:text-left flex flex-col items-center md:items-start pl-0">
-
-            <motion.img
-              initial={{ opacity: 0, y: 20, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: [0.96, 1.03, 0.98] }}
-              transition={{ duration: 2.2, delay: 0.1, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
-              src={siteLogo}
-              alt="ShazyBoo Logo"
-              className="w-64 sm:w-72 md:w-[380px] object-contain mb-5 md:-ml-6"
-              style={{ backgroundColor: 'transparent', boxShadow: 'none' }}
-            />
 
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.25 }}
-              className="mb-7"
+              className="mb-4 max-w-2xl"
             >
-              <p
-                className="fredoka text-2xl sm:text-3xl md:text-4xl font-bold tracking-wide"
-                style={{ color: '#c7106a' }}
-              >
-                Your happy little corner 🎀
+              <h1 className="fredoka text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-gray-900 leading-tight">
+                Cute things <span className="text-pink-500">for a happy day</span>
+              </h1>
+              <p className="mt-5 text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed max-w-xl">
+                Kawaii stationery, cute bags, and sweet gifts made to brighten every moment.
               </p>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.45 }}
-              className="flex gap-4 justify-center md:justify-start"
+              className="flex gap-4 justify-center md:justify-start flex-wrap"
             >
-              <Link to="/shop" className="fredoka text-lg text-white px-8 py-3 rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95 hover:brightness-110" style={{ background: '#FF6B8A' }}>
+              <Link to="/shop" className="fredoka text-sm sm:text-base text-white px-8 py-3 rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95" style={{ background: '#FF6B8A' }}>
                 Shop Now →
               </Link>
             </motion.div>
@@ -130,7 +120,7 @@ const HeroSection = () => {
 
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex-1 w-full flex justify-center items-center relative max-w-[280px] sm:max-w-[340px] md:max-w-[400px] h-[240px] sm:h-[300px] md:h-[360px]"
+            className="flex-1 w-full flex justify-center items-center relative max-w-[220px] sm:max-w-[280px] md:max-w-[320px] h-[180px] sm:h-[220px] md:h-[260px]"
           >
             <AnimatePresence mode="wait">
               <motion.img
@@ -282,7 +272,7 @@ const CategoryCircles = ({ categories, loading }) => {
   // Enhanced color palette for rings
   const ringColors = [
     'ring-pink-500', 'ring-purple-500', 'ring-green-500', 'ring-blue-500',
-    'ring-orange-500', 'ring-yellow-500', 'ring-red-500', 'ring-indigo-500'
+    'ring-orange-500'
   ];
 
   // Enhanced background gradients for circles
@@ -291,24 +281,22 @@ const CategoryCircles = ({ categories, loading }) => {
     'from-purple-200 to-purple-100',
     'from-green-200 to-green-100',
     'from-blue-200 to-blue-100',
-    'from-orange-200 to-orange-100',
-    'from-yellow-200 to-yellow-100',
-    'from-red-200 to-red-100',
-    'from-indigo-200 to-indigo-100'
+    'from-orange-200 to-orange-100'
   ];
 
   // Fallback emojis
-  const categoryEmojis = ['🧸', '🎮', '📚', '🎨', '🚂', '🧩', '🎲', '🎭'];
+  const categoryEmojis = ['🧸', '🎮', '📚', '🎨', '🚂'];
 
   if (loading) return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
-      {[...Array(8)].map((_, i) => (
-        <div key={i} className="animate-pulse flex flex-col items-center gap-3">
-          <div className="w-24 h-24 rounded-full bg-gray-100" />
-          <div className="w-20 h-4 bg-gray-200 rounded-full" />
-          <div className="w-16 h-3 bg-gray-200 rounded-full" />
-        </div>
-      ))}
+    <div className="overflow-x-auto hide-scroll px-4 py-2">
+      <div className="flex gap-4 w-max">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="animate-pulse flex-shrink-0 w-28 flex flex-col items-center gap-3 p-3 rounded-3xl bg-white shadow-sm">
+            <div className="w-20 h-20 rounded-3xl bg-gray-100" />
+            <div className="w-20 h-4 bg-gray-200 rounded-full" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 
@@ -317,17 +305,19 @@ const CategoryCircles = ({ categories, loading }) => {
   );
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-4">
-      {displayCats.map((cat, i) => (
-        <CategoryCircleItem
-          key={cat._id || i}
-          cat={cat}
-          i={i}
-          ringColors={ringColors}
-          circleGradients={circleGradients}
-          categoryEmojis={categoryEmojis}
-        />
-      ))}
+    <div className="overflow-x-auto hide-scroll px-4 py-2">
+      <div className="flex gap-4 min-w-full justify-center flex-nowrap">
+        {displayCats.map((cat, i) => (
+          <CategoryCircleItem
+            key={cat._id || i}
+            cat={cat}
+            i={i}
+            ringColors={ringColors}
+            circleGradients={circleGradients}
+            categoryEmojis={categoryEmojis}
+          />
+        ))}
+      </div>
     </div>
   );
 };
@@ -414,7 +404,7 @@ const ProductCard = ({ product, index, onAddToCart, navigate }) => {
       style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
       onClick={() => navigate(`/product/${product._id}`)}
     >
-      <div className="relative flex items-center justify-center overflow-hidden flex-shrink-0 h-[180px] sm:h-[260px]" style={{ background: bg }}>
+      <div className="relative flex items-center justify-center overflow-hidden flex-shrink-0 h-[130px] sm:h-[180px] md:h-[220px]" style={{ background: bg }}>
         <img
           src={getImageUrl(product.images?.[0] || product.image)}
           alt={product.name}
@@ -442,48 +432,37 @@ const ProductCard = ({ product, index, onAddToCart, navigate }) => {
         </button>
       </div>
 
-      <div className="px-3 py-3 flex flex-col flex-grow">
-        {product.category && typeof product.category === 'object' ? (
-          <span className="text-xs font-black uppercase tracking-wider" style={{ color: 'var(--kiddex-purple)' }}>
-            {product.category.name}
-          </span>
-        ) : (
-          <span className="text-xs font-black uppercase tracking-wider" style={{ color: 'var(--kiddex-purple)' }}>
-            {product.category}
-          </span>
-        )}
-        <h3 className="font-black text-gray-800 text-sm mt-0.5 mb-1 leading-tight line-clamp-2">
+      <div className="px-2 py-2 flex flex-col flex-grow">
+        <h3 className="font-black text-gray-800 text-sm mb-2 leading-tight line-clamp-2">
           {product.name}
         </h3>
 
-        <div className="flex items-center gap-0.5 mb-2">
-          {[...Array(5)].map((_, i) => (
-            <FaStar key={i} size={11} color={i < Math.floor(product.ratings?.average || 4) ? '#FFD84D' : '#E5E7EB'} />
-          ))}
-          <span className="text-xs text-gray-400 ml-1">({product.ratings?.count || 0})</span>
+        <div className="mb-3">
+          <span className="fredoka text-lg" style={{ color: 'var(--kiddex-pink)' }}>
+            ₹{(product.discountPrice > 0 ? product.discountPrice : product.price)?.toFixed(2)}
+          </span>
+          {product.discountPrice > 0 && product.discountPrice < product.price && (
+            <span className="text-xs text-gray-400 line-through ml-2">
+              ₹{product.price?.toFixed(2)}
+            </span>
+          )}
         </div>
 
-        <div className="flex items-center justify-between mt-auto pt-2">
-          <div>
-            <span className="fredoka text-lg" style={{ color: 'var(--kiddex-pink)' }}>
-              ₹{(product.discountPrice > 0 ? product.discountPrice : product.price)?.toFixed(2)}
-            </span>
-            {product.discountPrice > 0 && product.discountPrice < product.price && (
-              <span className="text-xs text-gray-400 line-through ml-1">
-                ₹{product.price?.toFixed(2)}
-              </span>
-            )}
+        <div className="mt-auto flex items-center justify-between gap-2">
+          <div className="text-xs text-gray-500 self-end">
+            {product.stock > 0 ? 'In stock' : 'Sold out'}
           </div>
           <button
             onClick={handleAddToCartClick}
             disabled={isAdding || product.stock === 0}
-            className="w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-full text-white shadow-md transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ background: 'var(--kiddex-blue)' }}
+            aria-label="Add to cart"
           >
             {isAdding ? (
-              <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
             ) : (
-              <FaShoppingCart size={13} color="#fff" />
+              <FaShoppingCart size={18} />
             )}
           </button>
         </div>
@@ -523,9 +502,9 @@ const ProductCarousel = ({ products, loading, onAddToCart, navigate }) => {
         style={{ background: '#fff' }}>
         <FaChevronLeft style={{ color: 'var(--kiddex-pink)' }} />
       </button>
-      <div ref={scrollRef} className="flex gap-3 sm:gap-6 overflow-x-auto hide-scroll pb-4 px-2 items-stretch" style={{ scrollSnapType: 'x mandatory' }}>
+      <div ref={scrollRef} className="grid grid-cols-3 md:flex gap-2 sm:gap-4 md:overflow-x-auto hide-scroll pb-4 px-2 items-stretch" style={{ scrollSnapType: 'x mandatory' }}>
         {products.map((p, i) => (
-          <div key={p._id || i} className="flex-shrink-0 w-[45vw] sm:w-[300px] md:w-[240px] h-auto" style={{ scrollSnapAlign: 'center' }}>
+          <div key={p._id || i} className="flex-shrink-0 w-full sm:w-[300px] md:w-[240px] h-auto" style={{ scrollSnapAlign: 'center' }}>
             <ProductCard product={p} index={i} onAddToCart={onAddToCart} navigate={navigate} />
           </div>
         ))}
@@ -541,10 +520,10 @@ const ProductCarousel = ({ products, loading, onAddToCart, navigate }) => {
 
 // Features Row
 const features = [
-  { icon: <FaShippingFast />, title: 'Free Shipping', desc: 'On orders over ₹2999', color: '#4BA3E8', bg: '#E4F0FF' },
+  { icon: <FaShippingFast />, title: 'Free Shipping', desc: 'On orders over $39', color: '#4BA3E8', bg: '#E4F0FF' },
+  { icon: <MdVerified />, title: 'Premium Quality', desc: 'Best quality products', color: '#9B6BFF', bg: '#F0E4FF' },
+  { icon: <FaBoxOpen />, title: 'Cute Packaging', desc: 'Packed with love', color: '#FF8C42', bg: '#FFF0E4' },
   { icon: <FaShieldAlt />, title: 'Secure Payment', desc: '100% safe checkout', color: '#4BC98A', bg: '#E4FFF0' },
-  { icon: <MdVerified />, title: 'Quality Assured', desc: 'Premium products', color: '#9B6BFF', bg: '#F0E4FF' },
-  { icon: <FaHeadset />, title: '24/7 Support', desc: 'Always here for you', color: '#FF8C42', bg: '#FFF0E4' },
 ];
 
 const FeaturesRow = () => (
@@ -679,14 +658,14 @@ const Home = () => {
   };
 
   return (
-    <div style={{ fontFamily: "'Nunito', sans-serif", background: 'var(--kiddex-bg)', minHeight: '100vh' }}>
+    <div className="pb-24 lg:pb-0" style={{ fontFamily: "'Nunito', sans-serif", background: 'var(--kiddex-bg)', minHeight: '100vh' }}>
       <FontStyle />
 
       <HeroSection />
 
       {/* Popular Categories Section - TOP MOVED */}
-      <section className="py-8 sm:py-12 container mx-auto">
-        <div className="px-4 mb-8 text-center">
+      <section className="py-6 sm:py-8 container mx-auto">
+        <div className="px-4 mb-6 text-center">
           <h2 className="fredoka text-3xl md:text-4xl text-gray-800 mb-2">
             Popular <span className="text-purple-500">Categories</span>
           </h2>
@@ -695,14 +674,9 @@ const Home = () => {
         <CategoryCircles categories={categories} loading={loading.categories} />
       </section>
 
-      <section className="py-10 container mx-auto px-4">
-        <FeaturesRow />
-      </section>
-
-
       {/* Main Categories Section - SECOND (as cards) */}
-      <section className="py-10 container mx-auto px-4">
-        <div className="text-center mb-8">
+      <section className="py-8 container mx-auto px-4">
+        <div className="text-center mb-6">
           <h2 className="fredoka text-2xl md:text-3xl lg:text-4xl text-gray-800">
             Shop by <span className="text-pink-500">Main Category</span>
           </h2>
@@ -782,6 +756,35 @@ const Home = () => {
             </h2>
           </div>
           <ProductCarousel products={bestSellers} loading={loading.bestSellers} onAddToCart={handleAddToCart} navigate={navigate} />
+        </div>
+      </section>
+
+      <section className="py-10 container mx-auto px-4">
+        <FeaturesRow />
+      </section>
+
+      <section className="py-12" style={{ background: 'linear-gradient(135deg, #fff3f8 0%, #fce8f2 100%)' }}>
+        <div className="container mx-auto px-4">
+          <div className="rounded-[2rem] bg-white border border-pink-100 shadow-[0_20px_80px_rgba(255,194,218,0.25)] p-6 sm:p-8 lg:p-10 text-center">
+            <p className="text-pink-500 font-bold uppercase tracking-[0.35em] text-xs mb-4">Flash Sale ⚡</p>
+            <h2 className="fredoka text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 leading-tight mb-4">
+              Up to 50% OFF on Bestsellers
+            </h2>
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+              Shop our cutest picks with big savings and grab them before they’re gone.
+            </p>
+            <div className="inline-flex items-center justify-center gap-3 rounded-full bg-pink-50 px-4 py-3 shadow-sm mb-6 text-sm font-bold text-pink-700">
+              <span className="bg-white rounded-full px-3 py-2 text-pink-600">02</span>
+              <span className="bg-white rounded-full px-3 py-2 text-pink-600">45</span>
+              <span className="bg-white rounded-full px-3 py-2 text-pink-600">30</span>
+              <span className="text-pink-500 lowercase">hrs mins secs</span>
+            </div>
+            <div>
+              <Link to="/shop" className="inline-flex items-center justify-center rounded-full bg-pink-500 px-8 py-3 text-white font-bold shadow-lg transition hover:bg-pink-600">
+                Shop Now
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
