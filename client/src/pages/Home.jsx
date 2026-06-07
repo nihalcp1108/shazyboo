@@ -420,7 +420,7 @@ const ProductCard = ({ product, index, onAddToCart, navigate }) => {
         </button>
       </div>
 
-      <div className="px-1 py-0.5 flex flex-col flex-grow gap-0">
+      <div className="px-3 pt-3 pb-4 flex flex-col flex-grow gap-2">
         <div className="min-h-[28px] w-full">
           <h3 className="font-black text-gray-800 text-sm leading-tight line-clamp-2 overflow-hidden break-words whitespace-normal w-full mb-0">
             {product.name}
