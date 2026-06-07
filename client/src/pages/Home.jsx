@@ -78,7 +78,7 @@ const HeroSection = () => {
   const currentBg = backgroundImages[bgIndex];
 
   return (
-    <section className="relative overflow-hidden pt-12 md:pt-24 pb-5 min-h-[44vh] sm:min-h-[48vh] md:min-h-[82vh]" style={{
+    <section className="relative overflow-hidden pt-0 sm:pt-2 md:pt-14 pb-5 min-h-[36vh] sm:min-h-[42vh] md:min-h-[72vh]" style={{
       background: 'linear-gradient(135deg, rgba(239,99,164,0.18) 0%, rgba(245,133,185,0.16) 35%, rgba(228,241,246,0.14) 100%)',
       marginTop: '0'
     }}>
@@ -106,14 +106,13 @@ const HeroSection = () => {
         <div className="absolute -left-16 top-12 w-48 h-48 rounded-full bg-pink-300/30 blur-3xl" />
         <div className="absolute right-8 top-24 w-72 h-72 rounded-full bg-pink-200/20 blur-3xl" />
       </div>
-
-      <div className="container mx-auto px-4 md:px-10 py-4 relative z-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex-1 text-center md:text-left flex flex-col items-center md:items-start pl-0">
-
+      <div className="container mx-auto px-4 md:px-10 py-4 relative z-10 h-full">
+        <div className="flex items-center justify-center h-full">
+          <div className="max-w-3xl text-center flex flex-col items-center justify-center pt-10 md:pt-16 pb-8 md:pb-4">
             <motion.div
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.25 }}
-              className="mb-4 max-w-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.25 }}
             >
               <h1 className="fredoka text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-gray-900 leading-tight">
                 Cute things <span className="text-pink-500">for a happy day</span>

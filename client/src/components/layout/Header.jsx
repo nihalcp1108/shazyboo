@@ -22,7 +22,7 @@ import siteLogo from '../../assets/shazy_boo_logo-removebg-preview.png';
 
 // ── Logo ─────────────────────────────────────────────────────────────────────
 const Logo = () => (
-  <Link to="/" className="flex items-center group flex-shrink-0 z-10 px-2 sm:px-4 py-1">
+  <Link to="/" className="flex items-center group flex-shrink-0 z-10 px-2 sm:px-3 py-0">
     <div className="relative flex items-center justify-center">
       <img
         src={siteLogo}
@@ -35,18 +35,16 @@ const Logo = () => (
 );
 
 // ── Nav Link ───────────────────────────────────────
-const NavLink = ({ to, label }) => {
+const NavLink = ({ to, label, isTransparent }) => {
   const { pathname } = useLocation();
   const isActive = pathname === to || (to !== "/" && pathname.startsWith(to));
+  const textClass = isActive || isTransparent ? "" : "text-[#2e2c2c]";
 
   return (
     <Link
       to={to}
-      className="relative px-4 py-2 text-sm font-bold rounded-full transition-colors duration-200 group"
-      style={{
-        color: isActive ? "#ffffff" : "#2e2c2c",
-        fontFamily: "'Nunito', sans-serif",
-      }}
+      className={`relative px-3 py-0.5 text-sm font-bold rounded-full transition-colors duration-200 group ${textClass}`}
+      style={{ fontFamily: "'Nunito', sans-serif" }}
     >
       {/* Active / hover pill */}
       <span
@@ -65,8 +63,8 @@ const iconBtnStyle = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  width: 40,
-  height: 40,
+  width: 30,
+  height: 30,
   borderRadius: "50%",
   background: "rgba(244, 196, 222, 0.9)",
   border: "2px solid #f8f4fe",
@@ -91,6 +89,15 @@ const Header = () => {
 
   // Close mobile menu on route change
   const { pathname } = useLocation();
+  const isHome = pathname === "/";
+  const isTransparent = isHome && !scrolled;
+  const headerIconColor = isTransparent ? "#ffffff" : "#888888";
+  const iconButtonStyle = {
+    ...iconBtnStyle,
+    background: isTransparent ? "rgba(255,255,255,0.18)" : iconBtnStyle.background,
+    borderColor: isTransparent ? "rgba(255,255,255,0.35)" : iconBtnStyle.border,
+  };
+
   useEffect(() => {
     setIsMenuOpen(false);
     setIsDropdownOpen(false);
@@ -179,20 +186,20 @@ const Header = () => {
 
         /* Logo responsive styles */
         .logo-image {
-          height: 96px !important;
-          transition: all 0.3s ease;
-          filter: drop-shadow(0 2px 8px rgba(255, 107, 138, 0.15));
-        }
-        @media (min-width: 641px) {
-          .logo-image {
-            height: 104px !important;
-          }
-        }
-        @media (min-width: 1025px) {
-          .logo-image {
-            height: 112px !important;
-          }
-        }
+  height: 132px !important;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 8px rgba(255, 107, 138, 0.15));
+}
+@media (min-width: 641px) {
+  .logo-image {
+    height: 144px !important;
+  }
+}
+@media (min-width: 1025px) {
+  .logo-image {
+    height: 156px !important;
+  }
+}
 
         /* Mobile menu overlay animation */
         .mobile-menu-overlay {
@@ -200,9 +207,9 @@ const Header = () => {
         }
       `}</style>
 
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out overflow-visible ${scrolled ? "bg-white/90 backdrop-blur-md shadow-lg" : "bg-transparent shadow-none"} py-3 md:py-4`} style={{ fontFamily: "'Nunito', sans-serif" }}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out overflow-visible ${isTransparent ? "bg-transparent" : "bg-white/90 backdrop-blur-md shadow-lg"} py-2 md:py-3`} style={{ fontFamily: "'Nunito', sans-serif" }}>
         <div className="container mx-auto px-6 md:px-8 max-w-7xl">
-          <div className="flex items-center justify-between gap-4 sm:gap-6 w-full h-full relative">
+          <div className="flex items-center justify-between gap-1 sm:gap-2 w-full h-14 relative">
             {/* ── Mobile menu button (left) ── */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -211,8 +218,10 @@ const Header = () => {
                 ...iconBtnStyle,
                 background: isMenuOpen
                   ? "rgba(255, 107, 138, 0.95)"
+                  : isTransparent
+                  ? "rgba(255,255,255,0.18)"
                   : "rgba(244, 196, 222, 0.95)",
-                borderColor: isMenuOpen ? "#f585b9" : "#f8f4fe",
+                borderColor: isMenuOpen ? "#f585b9" : isTransparent ? "rgba(255,255,255,0.35)" : "#f8f4fe",
               }}
               aria-label="Toggle menu"
               aria-expanded={isMenuOpen}
@@ -238,7 +247,7 @@ const Header = () => {
                     transition={{ duration: 0.15 }}
                     className="flex items-center justify-center"
                   >
-                    <FaBars size={16} style={{ color: "#7a5bb8" }} />
+                    <FaBars size={16} style={{ color: isTransparent ? "#ffffff" : "#7a5bb8" }} />
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -254,7 +263,7 @@ const Header = () => {
             {/* ── Desktop Nav (Center Column) ── */}
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
               {navLinks.map((link) => (
-                <NavLink key={link.path} to={link.path} label={link.label} />
+                <NavLink key={link.path} to={link.path} label={link.label} isTransparent={isTransparent} />
               ))}
             </nav>
 
@@ -266,10 +275,10 @@ const Header = () => {
                   setIsSearchOpen(true);
                 }}
                 className="icon-btn"
-                style={iconBtnStyle}
+                style={iconButtonStyle}
                 aria-label="Search"
               >
-                <FaSearch size={14} style={{ color: '#888' }} />
+                <FaSearch size={14} style={{ color: isTransparent ? '#ffffff' : '#888' }} />
               </button>
 
               {user ? (
@@ -279,7 +288,7 @@ const Header = () => {
                   style={iconBtnStyle}
                   aria-label="Profile"
                 >
-                  <FaUserCircle size={16} style={{ color: '#9B6BFF' }} />
+                  <FaUserCircle size={16} style={{ color: isTransparent ? '#ffffff' : '#9B6BFF' }} />
                 </Link>
               ) : (
                 <Link
@@ -288,7 +297,7 @@ const Header = () => {
                   style={iconBtnStyle}
                   aria-label="Login"
                 >
-                  <FaUser size={16} style={{ color: '#FF6B8A' }} />
+                  <FaUser size={16} style={{ color: isTransparent ? '#ffffff' : '#FF6B8A' }} />
                 </Link>
               )}
             </div>
@@ -340,10 +349,10 @@ const Header = () => {
                     animate={{ opacity: 1 }}
                     onClick={() => setIsSearchOpen(true)}
                     className="icon-btn"
-                    style={iconBtnStyle}
+                    style={iconButtonStyle}
                     aria-label="Open search"
                   >
-                    <FaSearch size={14} style={{ color: "#888" }} />
+                    <FaSearch size={14} style={{ color: isTransparent ? "#ffffff" : "#888" }} />
                   </motion.button>
                 )}
               </AnimatePresence>
@@ -352,20 +361,20 @@ const Header = () => {
               <Link
                 to="/wishlist"
                 className="icon-btn"
-                style={iconBtnStyle}
+                style={iconButtonStyle}
                 aria-label="Wishlist"
               >
-                <FaHeart size={14} style={{ color: "#FF6B8A" }} />
+                <FaHeart size={14} style={{ color: isTransparent ? "#ffffff" : "#FF6B8A" }} />
               </Link>
 
               {/* Cart */}
               <Link
                 to="/cart"
                 className="icon-btn"
-                style={iconBtnStyle}
+                style={iconButtonStyle}
                 aria-label={`Cart (${cartCount} items)`}
               >
-                <FaShoppingCart size={14} style={{ color: "#9B6BFF" }} />
+                <FaShoppingCart size={14} style={{ color: isTransparent ? "#ffffff" : "#9B6BFF" }} />
                 <AnimatePresence>
                   {cartCount > 0 && (
                     <motion.span
@@ -535,7 +544,7 @@ const Header = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="hidden lg:flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-white text-xs sm:text-sm font-black shadow-md transition-all hover:scale-105 hover:shadow-lg active:scale-95"
+                  className="hidden lg:flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-1 sm:py-1.5 rounded-full text-white text-xs sm:text-sm font-black shadow-md transition-all hover:scale-105 hover:shadow-lg active:scale-95"
                   style={{
                     background: "linear-gradient(135deg, #f9a5b7, #cebaf8)",
                     boxShadow: "0 4px 16px rgba(155,107,255,0.3)",
@@ -574,8 +583,9 @@ const Header = () => {
                   }}
                   className="lg:hidden overflow-hidden mobile-menu absolute top-full left-4 right-4 z-40 rounded-2xl shadow-2xl border"
                   style={{
-                    borderColor: "#fde8f0",
-                    background: "linear-gradient(135deg, #fff9fc, #fff5ff)",
+                    borderColor: isTransparent ? "rgba(255,255,255,0.35)" : "#fde8f0",
+                    background: isTransparent ? "rgba(255,255,255,0.18)" : "linear-gradient(135deg, #fff9fc, #fff5ff)",
+                    backdropFilter: isTransparent ? "blur(20px)" : "none",
                   }}
                 >
                   <div className="pt-4 pb-5 px-4">

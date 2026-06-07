@@ -77,12 +77,12 @@ const ProductCard = ({ product }) => {
       {/* Product Image */}
       <Link
         to={`/product/${product._id}`}
-        className="block relative h-24 md:h-36 overflow-hidden bg-gradient-to-br from-pink-50 to-purple-50"
+        className="block relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gray-100"
       >
         <img
           src={getFirstImage()}
           alt={product.name}
-          className="w-full h-full object-contain p-3 transition-transform duration-300 group-hover:scale-105"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           onError={handleImageError}
         />
 

@@ -55,7 +55,7 @@ const CategoriesPage = () => {
                         <div className="h-8 bg-gradient-to-r from-pink-200 to-purple-200 rounded-full w-64 mx-auto mb-4 animate-pulse"></div>
                         <div className="h-4 bg-gradient-to-r from-pink-200 to-purple-200 rounded-full w-96 mx-auto mb-2 animate-pulse"></div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {[...Array(4)].map((_, i) => (
                             <div key={i} className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
                                 <div className="h-48 bg-gradient-to-r from-pink-100 to-purple-100"></div>
@@ -73,34 +73,6 @@ const CategoriesPage = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-pink-50 to-purple-50 pt-20">
-            {/* Hero Section */}
-            <section className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white py-16">
-                <div className="container mx-auto px-4">
-                    <div className="max-w-3xl mx-auto text-center">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            Browse Categories
-                        </h1>
-                        <p className="text-xl mb-8 text-white/90">
-                            Discover amazing products in our curated categories
-                        </p>
-                        
-                        {/* Search Bar */}
-                        <div className="max-w-2xl mx-auto">
-                            <div className="relative">
-                                <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                                <input
-                                    type="text"
-                                    placeholder="Search categories..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white placeholder-white/70 focus:outline-none focus:border-white/50"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             {/* Featured Categories */}
             {featuredCategories.length > 0 && (
                 <section className="py-12">
@@ -110,7 +82,7 @@ const CategoriesPage = () => {
                             <p className="text-gray-600">Popular categories loved by our customers</p>
                         </div>
                         
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                             {featuredCategories.map((category) => {
                                 const imageUrl = getImageUrl(category.image);
                                 return (
@@ -177,7 +149,7 @@ const CategoriesPage = () => {
                             </button>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6">
                             {filteredCategories.map((category) => {
                                 const imageUrl = getImageUrl(category.image);
                                 return (
