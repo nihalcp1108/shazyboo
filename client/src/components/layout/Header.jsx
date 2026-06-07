@@ -22,7 +22,7 @@ import siteLogo from '../../assets/shazy_boo_logo-removebg-preview.png';
 
 // ── Logo ─────────────────────────────────────────────────────────────────────
 const Logo = () => (
-  <Link to="/" className="flex items-center group flex-shrink-0 z-10 px-2 sm:px-3 py-0">
+  <Link to="/" className="flex items-center group flex-shrink-0 z-10 pl-2 pr-4 sm:pl-3 sm:pr-6 lg:pr-0 py-0">
     <div className="relative flex items-center justify-center">
       <img
         src={siteLogo}
@@ -253,9 +253,9 @@ const Header = () => {
               </AnimatePresence>
             </button>
 
-            {/* ── Logo centered on mobile and desktop ── */}
-            <div className="absolute inset-x-0 flex justify-center lg:static lg:justify-start pointer-events-none lg:pointer-events-auto">
-              <div className="mx-auto lg:mx-0 pointer-events-auto">
+            {/* ── Logo near the mobile menu button, centered only on desktop ── */}
+            <div className="flex justify-start lg:absolute lg:inset-x-0 lg:justify-center pointer-events-none lg:pointer-events-auto">
+              <div className="lg:mx-auto pointer-events-auto">
                 <Logo />
               </div>
             </div>
