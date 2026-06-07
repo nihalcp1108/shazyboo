@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { 
   FaStar, FaShoppingCart, FaHeart, FaTruck, FaShieldAlt, FaUndo, 
@@ -11,6 +11,7 @@ import { api } from '../../services/api'
 import { useCart } from '../../Context/CartContext'
 import { useAuth } from '../../Context/AuthContext'
 import { useWishlist } from '../../Context/WishlistContext'
+import { motion, AnimatePresence } from 'framer-motion'
 import { getImageUrl, handleImageError, getFallbackImage } from '../../utils/imageUtils'
 
 const ProductDetail = () => {
@@ -20,6 +21,15 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
+  const [mainImageLoading, setMainImageLoading] = useState(true)
+  const touchStartXRef = useRef(null)
+  const touchEndXRef = useRef(null)
+  const touchStartYRef = useRef(null)
+  const isSwipingRef = useRef(false)
+  const lightboxTouchStartRef = useRef(null)
+  const lightboxIsSwipingRef = useRef(false)
+  const mouseDragStartXRef = useRef(null)
+  const mouseIsDraggingRef = useRef(false)
   const [reviews, setReviews] = useState([])
   const [reviewStats, setReviewStats] = useState({ average: 0, count: 0 })
   const [userReview, setUserReview] = useState({
@@ -47,6 +57,7 @@ const ProductDetail = () => {
   const { toggleWishlist, isInWishlist } = useWishlist()
 
   const inWishlist = product ? isInWishlist(product._id) : false;
+  const enableGalleryLoop = false
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -223,28 +234,29 @@ const ProductDetail = () => {
   }
 
 
-  const getImages = () => {
+  const images = useMemo(() => {
     if (!product) return []
-    
+
     if (product.images && product.images.length > 0) {
       return product.images.map(img => ({
         ...img,
         url: getImageUrl(img)
       }))
     }
+
     if (product.image) {
       if (Array.isArray(product.image)) {
-        return product.image.map(img => ({
-          url: getImageUrl(img)
-        }))
+        return product.image.map(img => ({ url: getImageUrl(img) }))
       }
-      return [{
-        url: getImageUrl(product.image)
-      }]
+      return [{ url: getImageUrl(product.image) }]
     }
-    
+
     return [{ url: getFallbackImage() }]
-  }
+  }, [product])
+
+  useEffect(() => {
+    setMainImageLoading(true)
+  }, [selectedImage, images.length])
 
   // Lightbox Functions
   const openLightbox = (index) => {
@@ -260,16 +272,168 @@ const ProductDetail = () => {
     setZoomPosition({ x: 0, y: 0 })
   }
 
+  const handlePointerDown = (e) => {
+    touchEndXRef.current = null
+    touchStartXRef.current = e.clientX
+    touchStartYRef.current = e.clientY
+    isSwipingRef.current = false
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+
+  const handlePointerMove = (e) => {
+    if (touchStartXRef.current === null) return
+    const currentX = e.clientX
+    const currentY = e.clientY
+    touchEndXRef.current = currentX
+
+    const dx = Math.abs(currentX - touchStartXRef.current)
+    const dy = Math.abs(currentY - touchStartYRef.current)
+    if (Math.max(dx, dy) > 10) {
+      isSwipingRef.current = true
+    }
+  }
+
+  const handlePointerUp = (e) => {
+    if (touchStartXRef.current === null) return
+
+    const currentX = e.clientX
+    const distance = touchStartXRef.current - currentX
+    const minSwipeDistance = 50
+
+    if (Math.abs(distance) > minSwipeDistance) {
+      if (distance > 0) {
+        setSelectedImage((prev) => {
+          if (enableGalleryLoop) {
+            return (prev + 1) % images.length
+          }
+          return Math.min(prev + 1, images.length - 1)
+        })
+      } else {
+        setSelectedImage((prev) => {
+          if (enableGalleryLoop) {
+            return (prev - 1 + images.length) % images.length
+          }
+          return Math.max(prev - 1, 0)
+        })
+      }
+    }
+
+    touchStartXRef.current = null
+    touchEndXRef.current = null
+    touchStartYRef.current = null
+    isSwipingRef.current = false
+  }
+
+  const handlePointerCancel = () => {
+    touchStartXRef.current = null
+    touchEndXRef.current = null
+    touchStartYRef.current = null
+    isSwipingRef.current = false
+  }
+
+  const handleImageClick = (e) => {
+    if (e?.target?.closest && e.target.closest('button')) {
+      return
+    }
+    if (isSwipingRef.current) {
+      isSwipingRef.current = false
+      return
+    }
+    openLightbox(selectedImage)
+  }
+
+  const handleLightboxTouchStart = (e) => {
+    lightboxTouchStartRef.current = e.targetTouches[0].clientX
+    lightboxIsSwipingRef.current = false
+  }
+
+  const handleLightboxTouchMove = (e) => {
+    if (lightboxTouchStartRef.current === null) return
+    const distance = Math.abs(e.targetTouches[0].clientX - lightboxTouchStartRef.current)
+    if (distance > 10) {
+      lightboxIsSwipingRef.current = true
+    }
+  }
+
+  const handleLightboxTouchEnd = (e) => {
+    if (lightboxTouchStartRef.current === null) return
+
+    const currentX = e.changedTouches?.[0]?.clientX
+    const distance = lightboxTouchStartRef.current - currentX
+    const minSwipeDistance = 50
+
+    if (Math.abs(distance) > minSwipeDistance) {
+      if (distance > 0) {
+        nextImage()
+      } else {
+        prevImage()
+      }
+    }
+
+    lightboxTouchStartRef.current = null
+    lightboxIsSwipingRef.current = false
+  }
+
+  const handleMouseDown = (e) => {
+    mouseDragStartXRef.current = e.clientX
+    mouseIsDraggingRef.current = false
+  }
+
+  const handleMouseMoveDrag = (e) => {
+    if (mouseDragStartXRef.current === null) return
+    const dragDistance = Math.abs(e.clientX - mouseDragStartXRef.current)
+    if (dragDistance > 10) {
+      mouseIsDraggingRef.current = true
+    }
+  }
+
+  const handleMouseUp = (e) => {
+    if (mouseDragStartXRef.current === null) return
+    const distance = mouseDragStartXRef.current - e.clientX
+    const minSwipeDistance = 50
+
+    if (Math.abs(distance) > minSwipeDistance) {
+      if (distance > 0) {
+        setSelectedImage((prev) => {
+          if (enableGalleryLoop) {
+            return (prev + 1) % images.length
+          }
+          return Math.min(prev + 1, images.length - 1)
+        })
+      } else {
+        setSelectedImage((prev) => {
+          if (enableGalleryLoop) {
+            return (prev - 1 + images.length) % images.length
+          }
+          return Math.max(prev - 1, 0)
+        })
+      }
+    }
+
+    mouseDragStartXRef.current = null
+    mouseIsDraggingRef.current = false
+  }
+
   const nextImage = () => {
-    const images = getImages()
-    setLightboxImage((prev) => (prev + 1) % images.length)
+    if (!images.length) return
+    setLightboxImage((prev) => {
+      if (enableGalleryLoop) {
+        return (prev + 1) % images.length
+      }
+      return Math.min(prev + 1, images.length - 1)
+    })
     setZoomLevel(1)
     setZoomPosition({ x: 0, y: 0 })
   }
 
   const prevImage = () => {
-    const images = getImages()
-    setLightboxImage((prev) => (prev - 1 + images.length) % images.length)
+    if (!images.length) return
+    setLightboxImage((prev) => {
+      if (enableGalleryLoop) {
+        return (prev - 1 + images.length) % images.length
+      }
+      return Math.max(prev - 1, 0)
+    })
     setZoomLevel(1)
     setZoomPosition({ x: 0, y: 0 })
   }
@@ -455,7 +619,6 @@ const ProductDetail = () => {
     ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
     : 0
 
-  const images = getImages()
   const userHasReviewed = hasUserReviewed()
   const userReviewObj = user ? reviews.find(review => review.user?._id === user._id) : null
   const availableStock = selectedColorData ? colorStock : product.stock
@@ -463,6 +626,10 @@ const ProductDetail = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <style>{`
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
       {/* Breadcrumb */}
       <nav className="flex mb-6 text-sm">
         <button onClick={() => navigate('/')} className="text-gray-500 hover:text-pink-600">Home</button>
@@ -478,42 +645,126 @@ const ProductDetail = () => {
           <div className="sticky top-24">
             {/* Main Image with click to zoom */}
             <div 
-              className="rounded-2xl overflow-hidden bg-gradient-to-br from-pink-50 to-purple-50 mb-4 shadow-lg cursor-zoom-in relative group"
-              onClick={() => openLightbox(selectedImage)}
+              className="rounded-2xl overflow-hidden bg-gradient-to-br from-pink-50 to-purple-50 mb-4 shadow-lg relative group cursor-zoom-in"
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerCancel}
+              onClick={handleImageClick}
+              style={{ touchAction: 'pan-y' }}
             >
-              <img
-                src={images[selectedImage]?.url || images[0]?.url}
-                alt={product.name}
-                className="w-full h-96 object-contain p-8 transition-transform duration-300 group-hover:scale-105"
-                onError={handleImageError}
-              />
-              <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <FaExpand className="text-sm" />
-                <span>Click to zoom</span>
+              <div
+                className="relative w-full h-96 bg-white overflow-hidden"
+              >
+                {mainImageLoading && (
+                  <div className="absolute inset-0 bg-white/90 flex items-center justify-center">
+                    <div className="h-14 w-14 rounded-full bg-gradient-to-r from-pink-200 to-purple-200 animate-pulse" />
+                  </div>
+                )}
+
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={images[selectedImage]?.url || 'product-main'}
+                    src={images[selectedImage]?.url || getFallbackImage()}
+                    alt={product.name}
+                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 cursor-zoom-in"
+                    onClick={handleImageClick}
+                    onLoad={() => setMainImageLoading(false)}
+                    onError={(e) => {
+                      handleImageError(e)
+                      setMainImageLoading(false)
+                    }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.35 }}
+                    draggable={false}
+                  />
+                </AnimatePresence>
+
+                {images.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onPointerDown={(e) => e.stopPropagation()}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedImage((prev) => {
+                          if (enableGalleryLoop) {
+                            return (prev - 1 + images.length) % images.length
+                          }
+                          return Math.max(prev - 1, 0)
+                        })
+                      }}
+                      disabled={images.length <= 1}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 text-gray-800 shadow-lg p-3 hover:bg-white transition-opacity disabled:opacity-50"
+                    >
+                      <FaChevronLeft className="text-xl" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onPointerDown={(e) => e.stopPropagation()}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedImage((prev) => {
+                          if (enableGalleryLoop) {
+                            return (prev + 1) % images.length
+                          }
+                          return Math.min(prev + 1, images.length - 1)
+                        })
+                      }}
+                      disabled={images.length <= 1}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 text-gray-800 shadow-lg p-3 hover:bg-white transition-opacity disabled:opacity-50"
+                    >
+                      <FaChevronRight className="text-xl" />
+                    </button>
+                  </>
+                )}
+
+                <div className="absolute bottom-4 right-4 bg-black/70 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm flex items-center gap-2 opacity-100 transition-opacity duration-300 cursor-pointer">
+                  <FaExpand className="text-sm" />
+                  <span>Click to zoom</span>
+                </div>
               </div>
             </div>
-            
-            {/* Thumbnail Images */}
-            <div className="flex space-x-2 overflow-x-auto pb-2">
-              {images.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedImage(index)}
-                  className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                    selectedImage === index 
-                      ? 'border-pink-500 shadow-lg scale-105' 
-                      : 'border-transparent hover:border-pink-300'
-                  }`}
-                >
-                  <img
-                    src={image.url}
-                    alt={`${product.name} ${index + 1}`}
-                    className="w-full h-full object-cover"
-                    onError={handleImageError}
-                  />
-                </button>
-              ))}
+            <div className="mt-3 flex justify-end">
+              <button
+                type="button"
+                onClick={() => openLightbox(selectedImage)}
+                className="inline-flex items-center gap-2 rounded-full bg-pink-600 px-4 py-2 text-white shadow-lg hover:bg-pink-700 transition"
+              >
+                <FaExpand />
+                Zoom Image
+              </button>
             </div>
+
+            {images.length > 1 && (
+              <div className="flex items-center gap-3 overflow-x-auto hide-scroll pb-2 px-1 mt-3">
+                {images.map((image, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => setSelectedImage(index)}
+                    className={`flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${
+                      selectedImage === index
+                        ? 'border-pink-500 shadow-lg scale-105'
+                        : 'border-transparent hover:border-pink-200'
+                    }`}
+                  >
+                    <img
+                      src={image.url}
+                      alt={`${product.name} ${index + 1}`}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      onError={handleImageError}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -1018,25 +1269,20 @@ const ProductDetail = () => {
             </button>
           </div>
 
-          {images.length > 1 && (
-            <>
-              <button onClick={prevImage} className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 rounded-full p-3">
-                <FaChevronLeft className="text-white text-2xl" />
-              </button>
-              <button onClick={nextImage} className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 rounded-full p-3">
-                <FaChevronRight className="text-white text-2xl" />
-              </button>
-            </>
-          )}
-
           <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
             {lightboxImage + 1} / {images.length}
           </div>
 
           <div 
-            className="relative w-full h-full flex items-center justify-center overflow-hidden"
+            className="relative w-full h-[80vh] flex items-center justify-center overflow-hidden"
             onMouseMove={handleMouseMove}
-            onTouchMove={handleTouchMove}
+            onTouchStart={handleLightboxTouchStart}
+            onTouchMove={(e) => {
+              handleTouchMove(e)
+              handleLightboxTouchMove(e)
+            }}
+            onTouchEnd={handleLightboxTouchEnd}
+            style={{ touchAction: 'pan-y' }}
           >
             <div 
               className="relative transition-transform duration-200 ease-out"
@@ -1045,37 +1291,43 @@ const ProductDetail = () => {
                   ? `scale(${zoomLevel}) translate(${zoomPosition.x * 100 * (zoomLevel - 1)}%, ${zoomPosition.y * 100 * (zoomLevel - 1)}%)`
                   : 'scale(1)',
                 maxWidth: '90vw',
-                maxHeight: '90vh',
+                maxHeight: '80vh',
               }}
             >
               <img
                 src={images[lightboxImage]?.url}
                 alt={product.name}
-                className="max-h-[90vh] max-w-[90vw] object-contain select-none"
+                className="max-h-[80vh] max-w-[90vw] object-contain select-none"
                 draggable={false}
               />
             </div>
           </div>
 
           {images.length > 1 && (
-            <div className="absolute bottom-20 left-0 right-0 flex justify-center gap-2 px-4 py-2 overflow-x-auto">
-              {images.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setLightboxImage(index)
-                    setZoomLevel(1)
-                    setZoomPosition({ x: 0, y: 0 })
-                  }}
-                  className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                    lightboxImage === index ? 'border-pink-500 scale-105' : 'border-white/30 hover:border-white/60'
-                  }`}
-                >
-                  <img src={image.url} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
+            <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-3 px-4">
+              <div className="inline-flex items-center gap-2 overflow-x-auto px-2 py-1 bg-black/30 rounded-full hide-scroll">
+                {images.map((image, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => {
+                      setLightboxImage(index)
+                      setZoomLevel(1)
+                      setZoomPosition({ x: 0, y: 0 })
+                    }}
+                    className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                      lightboxImage === index 
+                        ? 'border-pink-500 scale-105' 
+                        : 'border-white/30 hover:border-white/60'
+                    }`}
+                  >
+                    <img src={image.url} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
             </div>
           )}
+
         </div>
       )}
     </div>

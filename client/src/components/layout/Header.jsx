@@ -254,9 +254,9 @@ const Header = () => {
               </AnimatePresence>
             </button>
 
-            {/* ── Logo near the mobile menu button, centered only on desktop ── */}
-            <div className="flex justify-start lg:absolute lg:inset-x-0 lg:justify-center pointer-events-none lg:pointer-events-auto">
-              <div className="lg:mx-auto pointer-events-auto">
+            {/* ── Logo near the mobile menu button and left-aligned on desktop ── */}
+            <div className="flex justify-start items-center pointer-events-none lg:pointer-events-auto lg:mr-4">
+              <div className="pointer-events-auto">
                 <Logo />
               </div>
             </div>
