@@ -91,6 +91,7 @@ const Header = () => {
   const { pathname } = useLocation();
   const isHome = pathname === "/";
   const isTransparent = isHome && !scrolled;
+  const homeMobileIconColor = isTransparent ? "#FF6B8A" : "#7a5bb8";
   const headerIconColor = isTransparent ? "#ffffff" : "#888888";
   const iconButtonStyle = {
     ...iconBtnStyle,
@@ -247,7 +248,7 @@ const Header = () => {
                     transition={{ duration: 0.15 }}
                     className="flex items-center justify-center"
                   >
-                    <FaBars size={16} style={{ color: isTransparent ? "#ffffff" : "#7a5bb8" }} />
+                    <FaBars size={16} style={{ color: homeMobileIconColor }} />
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -278,7 +279,7 @@ const Header = () => {
                 style={iconButtonStyle}
                 aria-label="Search"
               >
-                <FaSearch size={14} style={{ color: isTransparent ? '#ffffff' : '#888' }} />
+                <FaSearch size={14} style={{ color: homeMobileIconColor }} />
               </button>
 
               {user ? (
