@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { FaUsers, FaBox, FaShoppingCart, FaRupeeSign, FaExclamationTriangle, FaStar, FaFire, FaTag } from 'react-icons/fa';
 import { getFallbackImage } from '../../utils/imageUtils.js';
 import { api } from '../../services/api'
-import siteLogo from '../../assets/logo.png';
+import siteLogo from '../../assets/shazy_boo_logo-removebg-preview.png';
 
 const Dashboard = () => {
     const [dashboardData, setDashboardData] = useState(null)

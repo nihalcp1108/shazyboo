@@ -110,7 +110,7 @@ const CategoriesPage = () => {
                             <p className="text-gray-600">Popular categories loved by our customers</p>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                             {featuredCategories.map((category) => {
                                 const imageUrl = getImageUrl(category.image);
                                 return (
@@ -177,7 +177,7 @@ const CategoriesPage = () => {
                             </button>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6">
                             {filteredCategories.map((category) => {
                                 const imageUrl = getImageUrl(category.image);
                                 return (

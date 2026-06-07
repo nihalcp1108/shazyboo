@@ -18,21 +18,17 @@ import {
   FaStore,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import siteLogo from '../../assets/logo.png';
+import siteLogo from '../../assets/shazy_boo_logo-removebg-preview.png';
 
 // ── Logo ─────────────────────────────────────────────────────────────────────
 const Logo = () => (
   <Link to="/" className="flex items-center group flex-shrink-0 z-10 px-2 sm:px-4 py-1">
     <div className="relative flex items-center justify-center">
-      <motion.img
+      <img
         src={siteLogo}
         alt="ShazyBoo"
-        className="logo-image h-40 w-auto object-contain transition-transform duration-300 group-hover:scale-110"
+        className="logo-image w-auto object-contain"
         style={{ backgroundColor: 'transparent', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.05))' }}
-        initial={{ scale: 0.96, opacity: 0.92 }}
-        animate={{ scale: [0.96, 1.06, 0.96], opacity: [0.92, 1, 0.92] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-        whileHover={{ scale: 1.12 }}
       />
     </div>
   </Link>
@@ -101,8 +97,8 @@ const Header = () => {
   }, [pathname]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -183,23 +179,18 @@ const Header = () => {
 
         /* Logo responsive styles */
         .logo-image {
-          height: 6.6rem !important;
+          height: 96px !important;
           transition: all 0.3s ease;
           filter: drop-shadow(0 2px 8px rgba(255, 107, 138, 0.15));
         }
-        @media (max-width: 640px) {
+        @media (min-width: 641px) {
           .logo-image {
-            height: 4.8rem !important;
-          }
-        }
-        @media (min-width: 641px) and (max-width: 1024px) {
-          .logo-image {
-            height: 7.4rem !important;
+            height: 104px !important;
           }
         }
         @media (min-width: 1025px) {
           .logo-image {
-            height: 8.8rem !important;
+            height: 112px !important;
           }
         }
 
@@ -209,8 +200,8 @@ const Header = () => {
         }
       `}</style>
 
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 overflow-visible ${scrolled ? "shadow-lg" : "shadow-none"}`} style={{ background: "linear-gradient(135deg, #f585b9 0%, #f585b9 0%, #e4f1f6 100%)", backdropFilter: scrolled ? "blur(20px)" : "none", fontFamily: "'Nunito', sans-serif", height: "72px" }}>
-        <div className="container mx-auto px-6 md:px-8 max-w-7xl h-full">
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out overflow-visible ${scrolled ? "bg-white/90 backdrop-blur-md shadow-lg" : "bg-transparent shadow-none"} py-3 md:py-4`} style={{ fontFamily: "'Nunito', sans-serif" }}>
+        <div className="container mx-auto px-6 md:px-8 max-w-7xl">
           <div className="flex items-center justify-between gap-4 sm:gap-6 w-full h-full relative">
             {/* ── Mobile menu button (left) ── */}
             <button
@@ -253,8 +244,8 @@ const Header = () => {
               </AnimatePresence>
             </button>
 
-            {/* ── Logo centered on desktop only ── */}
-            <div className="absolute inset-x-0 hidden lg:flex justify-center lg:static lg:justify-start pointer-events-none lg:pointer-events-auto">
+            {/* ── Logo centered on mobile and desktop ── */}
+            <div className="absolute inset-x-0 flex justify-center lg:static lg:justify-start pointer-events-none lg:pointer-events-auto">
               <div className="mx-auto lg:mx-0 pointer-events-auto">
                 <Logo />
               </div>
@@ -268,6 +259,19 @@ const Header = () => {
             </nav>
 
             <div className="flex items-center gap-2 lg:hidden">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMenuOpen(true);
+                  setIsSearchOpen(true);
+                }}
+                className="icon-btn"
+                style={iconBtnStyle}
+                aria-label="Search"
+              >
+                <FaSearch size={14} style={{ color: '#888' }} />
+              </button>
+
               {user ? (
                 <Link
                   to="/profile"
@@ -829,8 +833,10 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Spacer so content doesn't hide behind fixed header */}
-      <div style={{ height: "72px" }} aria-hidden />
+      {/* Spacer so content doesn't hide behind fixed header on desktop */}
+      {pathname !== "/" && (
+        <div className="hidden lg:block" style={{ height: 72 }} aria-hidden />
+      )}
 
       {/* Mobile bottom navigation */}
       <nav className="fixed inset-x-0 bottom-0 z-50 lg:hidden bg-white/95 border-t border-pink-100 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl">

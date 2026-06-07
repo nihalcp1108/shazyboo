@@ -25,12 +25,9 @@ import { useAuth } from '../Context/AuthContext';
 import { useWishlist } from '../Context/WishlistContext';
 import { getImageUrl, handleImageError, getFallbackImage } from '../utils/imageUtils';
 
-import heroImg1 from '../assets/WhatsApp Image 2026-05-16 at 6.18.22 PM.jpeg';
-import heroImg2 from '../assets/WhatsApp Image 2026-05-16 at 6.18.24 PM.jpeg';
-import heroImg3 from '../assets/WhatsApp Image 2026-05-16 at 6.26.16 PM.jpeg';
-import heroImg4 from '../assets/WhatsApp Image 2026-05-16 at 6.41.37 PM.jpeg';
-import siteLogo from '../assets/logo.png';
-
+import heroBg1 from '../assets/3c6e0fd053756f748a2455407e0152de.jpg';
+import heroBg2 from '../assets/b493e30b5c424c050743c6ca8f97d768.jpg';
+import heroBg3 from '../assets/d1fd913da45a7500ffef73dbf2b10459.jpg';
 const FontStyle = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap');
@@ -67,29 +64,47 @@ const Star = ({ size = 20, color = '#FFD84D', style = {} }) => (
 
 // Hero Section
 const HeroSection = () => {
-  const images = [
-    heroImg1,
-    heroImg2,
-    heroImg3,
-    heroImg4
-  ];
-  const [currentImage, setCurrentImage] = useState(0);
+  const backgroundImages = [heroBg1, heroBg2, heroBg3];
+  const [bgIndex, setBgIndex] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % images.length);
-    }, 4000);
-    return () => clearInterval(timer);
+    const interval = setInterval(() => {
+      setBgIndex((prev) => (prev + 1) % backgroundImages.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
+  const currentBg = backgroundImages[bgIndex];
+
   return (
-    <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ef63a4 0%, #f585b9 0%, #e4f1f6 100%)', marginTop: 0, paddingTop: '96px', paddingBottom: '14px' }}>
+    <section className="relative overflow-hidden pt-12 md:pt-24 pb-5 min-h-[44vh] sm:min-h-[48vh] md:min-h-[82vh]" style={{
+      background: 'linear-gradient(135deg, rgba(239,99,164,0.18) 0%, rgba(245,133,185,0.16) 35%, rgba(228,241,246,0.14) 100%)',
+      marginTop: '0'
+    }}>
       <FontStyle />
+      <div className="absolute inset-0 overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={currentBg}
+            src={currentBg}
+            alt="Hero background"
+            className="absolute inset-0 w-full h-full object-cover object-top opacity-60"
+            initial={{ opacity: 0.25, scale: 1.06 }}
+            animate={{ opacity: 0.6, scale: 1.02 }}
+            exit={{ opacity: 0, scale: 1.03 }}
+            transition={{ duration: 0.8, ease: 'easeInOut' }}
+          />
+        </AnimatePresence>
+        <div className="absolute inset-0 bg-pink-100/20" />
+      </div>
       <div className="absolute inset-0 pointer-events-none select-none">
         <Star size={24} color="#FFD84D" style={{ position: 'absolute', top: 90, left: '6%', animation: 'floatStar 3s ease-in-out infinite' }} />
         <Star size={14} color="#FF6B8A" style={{ position: 'absolute', top: 140, left: '20%', animation: 'floatStar 2.5s ease-in-out infinite 0.5s' }} />
         <Star size={18} color="#4BC98A" style={{ position: 'absolute', top: 110, right: '15%', animation: 'floatStar 3.5s ease-in-out infinite 0.3s' }} />
         <Star size={18} color="#644bc9" style={{ position: 'absolute', top: 190, right: '22%', animation: 'floatStar 3.5s ease-in-out infinite 0.3s' }} />
+        <div className="absolute -left-16 top-12 w-48 h-48 rounded-full bg-pink-300/30 blur-3xl" />
+        <div className="absolute right-8 top-24 w-72 h-72 rounded-full bg-pink-200/20 blur-3xl" />
       </div>
 
       <div className="container mx-auto px-4 md:px-10 py-4 relative z-10">
@@ -117,25 +132,6 @@ const HeroSection = () => {
               </Link>
             </motion.div>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex-1 w-full flex justify-center items-center relative max-w-[220px] sm:max-w-[280px] md:max-w-[320px] h-[180px] sm:h-[220px] md:h-[260px]"
-          >
-            <AnimatePresence mode="wait">
-              <motion.img
-                key={currentImage}
-                initial={{ opacity: 0, scale: 1.02 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 1.2, ease: "easeInOut" }}
-                src={images[currentImage]}
-                alt="ShazyBoo Collection"
-                className="absolute z-10 rounded-3xl w-full h-full object-cover border-4 border-white/40"
-                onError={handleImageError}
-              />
-            </AnimatePresence>
-          </motion.div>
         </div>
       </div>
 
@@ -400,11 +396,11 @@ const ProductCard = ({ product, index, onAddToCart, navigate }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: index * 0.07 }}
-      className="relative bg-white rounded-3xl overflow-hidden cursor-pointer select-none transition-transform hover:-translate-y-1 hover:shadow-xl flex flex-col h-full"
-      style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
+      className="relative bg-white rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden cursor-pointer select-none transition-transform hover:-translate-y-1 hover:shadow-xl flex flex-col w-full max-w-[300px] mx-auto"
+      style={{ boxShadow: '0 6px 24px rgba(0,0,0,0.08)' }}
       onClick={() => navigate(`/product/${product._id}`)}
     >
-      <div className="relative flex items-center justify-center overflow-hidden flex-shrink-0 h-[130px] sm:h-[180px] md:h-[220px]" style={{ background: bg }}>
+      <div className="relative flex items-center justify-center overflow-hidden flex-shrink-0 h-[125px] sm:h-[145px] md:h-[165px]" style={{ background: bg }}>
         <img
           src={getImageUrl(product.images?.[0] || product.image)}
           alt={product.name}
@@ -425,37 +421,38 @@ const ProductCard = ({ product, index, onAddToCart, navigate }) => {
         </button>
       </div>
 
-      <div className="px-2 py-2 flex flex-col flex-grow">
-        <h3 className="font-black text-gray-800 text-sm mb-2 leading-tight line-clamp-2">
-          {product.name}
-        </h3>
+      <div className="px-1 py-0.5 flex flex-col flex-grow gap-0">
+        <div className="min-h-[28px] w-full">
+          <h3 className="font-black text-gray-800 text-sm leading-tight line-clamp-2 overflow-hidden break-words whitespace-normal w-full mb-0">
+            {product.name}
+          </h3>
+        </div>
 
-        <div className="mb-3">
-          <span className="fredoka text-lg" style={{ color: 'var(--kiddex-pink)' }}>
+        <div className="mb-0">
+          <span className="fredoka text-base" style={{ color: 'var(--kiddex-pink)' }}>
             ₹{(product.discountPrice > 0 ? product.discountPrice : product.price)?.toFixed(2)}
           </span>
           {product.discountPrice > 0 && product.discountPrice < product.price && (
-            <span className="text-xs text-gray-400 line-through ml-2">
+            <span className="text-[11px] text-gray-400 line-through ml-1">
               ₹{product.price?.toFixed(2)}
             </span>
           )}
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-2">
+        <div className="mt-auto flex items-center justify-between gap-1">
           <div className="text-xs text-gray-500 self-end">
             {discount > 0 ? `-${discount}% off` : product.stock > 0 ? 'In stock' : 'Sold out'}
           </div>
           <button
             onClick={handleAddToCartClick}
             disabled={isAdding || product.stock === 0}
-            className="inline-flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-full text-white shadow-md transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ background: 'var(--kiddex-blue)' }}
+            className="inline-flex h-7 w-7 items-center justify-center rounded-[16px] text-pink-500 bg-white/95 shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Add to cart"
           >
             {isAdding ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-pink-500 border-t-transparent"></div>
             ) : (
-              <FaShoppingCart size={18} />
+              <FaShoppingCart size={16} color="currentColor" />
             )}
           </button>
         </div>
@@ -473,14 +470,16 @@ const ProductCarousel = ({ products, loading, onAddToCart, navigate }) => {
   };
 
   if (loading) return (
-    <div className="flex gap-3 md:gap-5 overflow-hidden">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="flex-shrink-0 w-[45vw] sm:w-[300px] md:w-[240px] animate-pulse">
-          <div className="rounded-3xl bg-gray-100 h-48 sm:h-64 mb-3" />
-          <div className="h-3 bg-gray-100 rounded-full mb-2" />
-          <div className="h-3 bg-gray-100 rounded-full w-3/4" />
-        </div>
-      ))}
+    <div className="overflow-x-auto hide-scroll pb-4 px-3">
+      <div className="flex gap-3 md:gap-5">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex-shrink-0 min-w-[40vw] sm:min-w-[38vw] md:min-w-[240px] animate-pulse">
+            <div className="rounded-3xl bg-gray-100 h-48 sm:h-64 mb-3" />
+            <div className="h-3 bg-gray-100 rounded-full mb-2" />
+            <div className="h-3 bg-gray-100 rounded-full w-3/4" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 
@@ -495,9 +494,9 @@ const ProductCarousel = ({ products, loading, onAddToCart, navigate }) => {
         style={{ background: '#fff' }}>
         <FaChevronLeft style={{ color: 'var(--kiddex-pink)' }} />
       </button>
-      <div ref={scrollRef} className="grid grid-cols-3 md:flex gap-2 sm:gap-4 md:overflow-x-auto hide-scroll pb-4 px-2 items-stretch" style={{ scrollSnapType: 'x mandatory' }}>
+      <div ref={scrollRef} className="flex overflow-x-auto hide-scroll gap-3 sm:gap-4 pb-4 px-3 scroll-smooth snap-x snap-mandatory" style={{ WebkitOverflowScrolling: 'touch' }}>
         {products.map((p, i) => (
-          <div key={p._id || i} className="flex-shrink-0 w-full sm:w-[300px] md:w-[240px] h-auto" style={{ scrollSnapAlign: 'center' }}>
+          <div key={p._id || i} className="flex-shrink-0 w-[40vw] sm:w-[38vw] md:w-[240px] h-auto snap-start" style={{ scrollSnapAlign: 'start' }}>
             <ProductCard product={p} index={i} onAddToCart={onAddToCart} navigate={navigate} />
           </div>
         ))}
