@@ -30,7 +30,7 @@ const Contact = () => {
     {
       icon: <FaPhone />,
       title: 'Phone',
-      details: ['+91 95671 61716', '+91 97780 34171'],
+      details: ['+91 9567 16 17 16', '+91 9567 655 615', '+91 9778 034 171'],
       description: 'Mon-Sat from 10am to 7pm 🕐',
       color: 'from-pink-400 to-rose-400',
       bgColor: 'bg-pink-50'
@@ -376,7 +376,7 @@ const Contact = () => {
                     What is your return policy?
                   </h4>
                   <p className="text-gray-600 text-sm">
-                    We offer a 30-day return policy for unused items in original packaging. Happiness guaranteed! 😊
+                    We offer a 7-day return policy for unused items in original packaging. Happiness guaranteed! 😊
                   </p>
                 </div>
               </div>
@@ -406,14 +406,14 @@ const Contact = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
             <a 
-              href="tel:+919876543210" 
+              href="tel:+919567161716" 
               className="bg-white text-pink-600 hover:bg-pink-50 px-6 sm:px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 transform hover:scale-105 flex items-center justify-center"
             >
               <FaPhone className="mr-3" />
               Call Us Now
             </a>
             <a 
-              href="mailto:support@shazyboo.com" 
+              href="mailto:shazyboo.info@gmail.com" 
               className="border-2 border-white text-white hover:bg-white/20 px-6 sm:px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 backdrop-blur-sm flex items-center justify-center"
             >
               <FaEnvelope className="mr-3" />

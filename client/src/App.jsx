@@ -1,3 +1,4 @@
+import React, { Suspense, lazy } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -17,26 +18,34 @@ import ScrollToTop from "./components/layout/ScrollToTop";
 
 // Pages
 import Home from "./pages/Home";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Shop from "./pages/Shop";
-import CategoriesPage from "./pages/CategoriesPage";
-import CategoryProductsPage from "./pages/CategoryProductsPage";
-import CartPage from "./pages/CartPage";
-import CheckoutPage from "./pages/CheckoutPage";
-import WishlistPage from "./pages/WishlistPage";
-import Login from "./components/Auth/Login";
-import Register from "./components/Auth/Register";
-import ForgotPassword from "./components/Auth/ForgotPassword";
-import ResetPassword from "./components/Auth/ResetPassword";
-import OTPVerification from "./components/Auth/OtpVerification";
-import UserProfile from "./pages/UserProfile";
-import AdminPanel from "./pages/AdminPanel";
-import OrderConfirmation from "./pages/OrderConfirmation";
-import OrdersPage from "./pages/OrdersPage";
-import MainCategory from "./pages/MainCategory";
-import MainCategoryProducts from "./pages/MainCategoryProducts";
-import ProductDetail from "./components/Products/ProductDetails";
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Shop = lazy(() => import("./pages/Shop"));
+const CategoriesPage = lazy(() => import("./pages/CategoriesPage"));
+const CategoryProductsPage = lazy(() => import("./pages/CategoryProductsPage"));
+const CartPage = lazy(() => import("./pages/CartPage"));
+const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
+const WishlistPage = lazy(() => import("./pages/WishlistPage"));
+const Login = lazy(() => import("./components/Auth/Login"));
+const Register = lazy(() => import("./components/Auth/Register"));
+const ForgotPassword = lazy(() => import("./components/Auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("./components/Auth/ResetPassword"));
+const OTPVerification = lazy(() => import("./components/Auth/OtpVerification"));
+const UserProfile = lazy(() => import("./pages/UserProfile"));
+const AdminPanel = lazy(() => import("./pages/AdminPanel"));
+const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
+const OrdersPage = lazy(() => import("./pages/OrdersPage"));
+const MainCategory = lazy(() => import("./pages/MainCategory"));
+const MainCategoryProducts = lazy(() => import("./pages/MainCategoryProducts"));
+const ProductDetail = lazy(() => import("./components/Products/ProductDetails"));
+
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-[60vh]">
+    <div className="h-16 w-16 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 animate-pulse flex items-center justify-center shadow-lg">
+      <span className="text-white text-xs font-bold">Loading...</span>
+    </div>
+  </div>
+);
 
 function App() {
   return (
@@ -48,64 +57,66 @@ function App() {
             <div className="min-h-screen flex flex-col overflow-x-hidden">
               <Header />
               <main className="flex-grow">
-                <Routes>
-                  {/* Public Routes */}
-                  <Route path="/" element={<Home />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/shop" element={<Shop />} />
-                  <Route path="/categories" element={<CategoriesPage />} />
-                  <Route path="/categories/:slug" element={<CategoryProductsPage />} />
-                  <Route path="/main-category/:slug" element={<MainCategory />} />
-                  <Route path="/main-category/:slug/products" element={<MainCategoryProducts />} />
-                  <Route path="/product/:id" element={<ProductDetail />} />
-                  <Route path="/cart" element={<CartPage />} />
-                  <Route path="/wishlist" element={<WishlistPage />} />
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Routes>
+                    {/* Public Routes */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/shop" element={<Shop />} />
+                    <Route path="/categories" element={<CategoriesPage />} />
+                    <Route path="/categories/:slug" element={<CategoryProductsPage />} />
+                    <Route path="/main-category/:slug" element={<MainCategory />} />
+                    <Route path="/main-category/:slug/products" element={<MainCategoryProducts />} />
+                    <Route path="/product/:id" element={<ProductDetail />} />
+                    <Route path="/cart" element={<CartPage />} />
+                    <Route path="/wishlist" element={<WishlistPage />} />
 
-                  {/* Guest Checkout - No login required */}
-                  <Route path="/checkout" element={<CheckoutPage />} />
+                    {/* Guest Checkout - No login required */}
+                    <Route path="/checkout" element={<CheckoutPage />} />
 
-                  {/* Order Confirmation - Public access for guests */}
-                  <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
+                    {/* Order Confirmation - Public access for guests */}
+                    <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
 
-                  {/* Auth Routes */}
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/reset-password/:token" element={<ResetPassword />} />
-                  <Route path="/verify-otp" element={<OTPVerification />} />
+                    {/* Auth Routes */}
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password/:token" element={<ResetPassword />} />
+                    <Route path="/verify-otp" element={<OTPVerification />} />
 
-                  {/* Protected Routes (Require Login) */}
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <UserProfile />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/my-orders"
-                    element={
-                      <ProtectedRoute>
-                        <OrdersPage />
-                      </ProtectedRoute>
-                    }
-                  />
+                    {/* Protected Routes (Require Login) */}
+                    <Route
+                      path="/profile"
+                      element={
+                        <ProtectedRoute>
+                          <UserProfile />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/my-orders"
+                      element={
+                        <ProtectedRoute>
+                          <OrdersPage />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  {/* Admin Routes */}
-                  <Route
-                    path="/admin/*"
-                    element={
-                      <ProtectedRoute adminOnly={true}>
-                        <AdminPanel />
-                      </ProtectedRoute>
-                    }
-                  />
+                    {/* Admin Routes */}
+                    <Route
+                      path="/admin/*"
+                      element={
+                        <ProtectedRoute adminOnly={true}>
+                          <AdminPanel />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  {/* Catch-all route */}
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
+                    {/* Catch-all route */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </Suspense>
               </main>
               <Footer />
               <Toaster

@@ -33,7 +33,7 @@ import {
 } from '../controllers/adminProductController.js';
 
 import { protect, authorize } from '../middlewares/auth.js';
-import { uploadProductImages, multerErrorHandler, logMulter } from '../middlewares/upload.js';
+import { uploadProductImages, uploadCategoryImage, multerErrorHandler, logMulter } from '../middlewares/upload.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
 const router = express.Router();
@@ -112,11 +112,11 @@ router.put('/products/bulk-update', bulkUpdateProducts);
 
 // ============ CATEGORY MANAGEMENT ============
 router.get('/categories', getAdminCategories);
-router.post('/categories', uploadProductImages, asyncHandler(async (req, res) => {
+router.post('/categories', uploadCategoryImage, multerErrorHandler, logMulter, asyncHandler(async (req, res) => {
     const { createCategory } = await import('../controllers/categoryController.js');
     return createCategory(req, res);
 }));
-router.put('/categories/:id', uploadProductImages, asyncHandler(async (req, res) => {
+router.put('/categories/:id', uploadCategoryImage, multerErrorHandler, logMulter, asyncHandler(async (req, res) => {
     const { updateCategory } = await import('../controllers/categoryController.js');
     return updateCategory(req, res);
 }));

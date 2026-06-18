@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaArrowRight, FaHeart, FaGift } from 'react-icons/fa';
-import { getImageUrl } from '../utils/imageUtils';
+import { getImageUrl, handleImageError } from '../utils/imageUtils';
 
 const CategoryCard = ({ category }) => {
     // Function to get category icon
@@ -65,20 +65,7 @@ const CategoryCard = ({ category }) => {
                     src={imageSrc}
                     alt={category.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    onError={(e) => {
-                        console.log('Image failed to load:', imageSrc);
-                        // Hide the broken image and show icon instead
-                        e.target.style.display = 'none';
-                        
-                        // Find or create the fallback container
-                        let fallbackDiv = e.target.parentNode.querySelector('.image-fallback');
-                        if (!fallbackDiv) {
-                            fallbackDiv = document.createElement('div');
-                            fallbackDiv.className = 'image-fallback absolute inset-0 flex items-center justify-center';
-                            fallbackDiv.innerHTML = `<span class="text-6xl">${categoryIcon}</span>`;
-                            e.target.parentNode.appendChild(fallbackDiv);
-                        }
-                    }}
+                    onError={handleImageError}
                 />
                 
                 {/* Gradient Overlay */}

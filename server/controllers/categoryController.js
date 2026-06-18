@@ -298,9 +298,10 @@ export const updateCategory = asyncHandler(async (req, res) => {
         let image = category.image;
         if (req.file) {
             // Delete old image if exists
-            if (category.image && category.image.url) {
-                console.log('Deleting old image:', category.image.url);
-                deleteFile(category.image);
+            if (category.image) {
+                const oldImagePath = category.image.url || category.image.public_id || category.image;
+                console.log('Deleting old image:', oldImagePath);
+                await deleteFile(oldImagePath);
             }
             
             // Add new image
@@ -431,8 +432,9 @@ export const deleteCategory = asyncHandler(async (req, res) => {
         }
         
         // Delete category image if exists
-        if (category.image && category.image.url) {
-            deleteFile(category.image);
+        if (category.image) {
+            const oldImagePath = category.image.url || category.image.public_id || category.image;
+            await deleteFile(oldImagePath);
         }
         
         // Delete the category

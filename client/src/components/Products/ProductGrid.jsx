@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react'
-import { api } from '../../services/api'
-import ProductCard from './ProductsCard'
+import { useState, useEffect } from 'react';
+import { api } from '../../services/api';
+import ProductCard from './ProductsCard';
+import { useDailyShuffle } from '../../utils/shuffle';
 
 const ProductGrid = ({ searchQuery, category, sortBy, filters }) => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [pagination, setPagination] = useState({ total: 0, pages: 0, currentPage: 1 })
+  const shuffledProducts = useDailyShuffle(products);
 
   useEffect(() => {
     fetchProducts()
@@ -115,7 +117,7 @@ const ProductGrid = ({ searchQuery, category, sortBy, filters }) => {
   return (
     <div>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-        {products.map((product) => (
+        {shuffledProducts.map((product) => (
           <ProductCard key={product._id} product={product} />
         ))}
       </div>

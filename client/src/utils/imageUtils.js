@@ -22,43 +22,55 @@ export const getImageUrl = (image) => {
   const constructUrl = (path) => {
     if (!path) return getFallbackImage();
 
-    // If already a full URL (e.g., Cloudinary), return it directly
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      // Allow Cloudinary or any external CDN URLs
-      if (!path.includes('localhost')) return path;
-      // For localhost URLs, extract pathname to use static server
+    // Data URIs are returned as‑is
+    if (typeof path === 'string' && path.startsWith('data:')) return path;
+
+    if (typeof path === 'string' && (path.startsWith('http://') || path.startsWith('https://'))) {
       try {
         const urlObj = new URL(path);
+        if (urlObj.hostname && !urlObj.hostname.includes('localhost')) {
+          return path;
+        }
         path = urlObj.pathname;
       } catch (e) {
         console.error('Failed to parse URL:', path);
       }
     }
 
-    // Data URIs are returned as‑is
-    if (path.startsWith('data:')) return path;
+    let normalizedPath = String(path).trim();
+    if (!normalizedPath) return getFallbackImage();
 
-    // If this looks like a Cloudinary public_id (no slashes, contains only alphanumerics & underscores)
-    if (CLOUD_NAME && /^[a-zA-Z0-9-_]+$/.test(path)) {
-      return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${path}`;
+    // Normalize explicit upload paths
+    if (normalizedPath.startsWith('uploads/')) {
+      normalizedPath = `/${normalizedPath}`;
+      return `${BASE_URL}${normalizedPath}`;
+    }
+    if (normalizedPath.startsWith('/uploads/')) {
+      return `${BASE_URL}${normalizedPath}`;
     }
 
-    // Ensure the path points to the uploads folder
-    let normalizedPath = path;
-    if (!normalizedPath.startsWith('/') && !normalizedPath.startsWith('uploads/')) {
-      normalizedPath = `/uploads/products/${normalizedPath}`;
+    // Detect category filename patterns and route to the correct uploads folder
+    const filename = normalizedPath.replace(/^\//, '');
+    if (/^category[-_].*\.(jpe?g|png|webp|gif)$/i.test(filename)) {
+      return `${BASE_URL}/uploads/categories/${filename}`;
+    }
+    if (/^main[-_]category[-_].*\.(jpe?g|png|webp|gif)$/i.test(filename) || filename.includes('main-categories') || filename.includes('maincategories')) {
+      return `${BASE_URL}/uploads/main-categories/${filename}`;
     }
 
-    // Production – prepend backend base URL (also used in development)
-    return `${BASE_URL}${normalizedPath}`;
+    // If this looks like a Cloudinary public_id (no slashes, contains only alphanumerics, underscores, or hyphens)
+    if (CLOUD_NAME && /^[a-zA-Z0-9-_]+$/.test(filename)) {
+      return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${filename}`;
+    }
+
+    // Otherwise assume product image fallback path
+    return `${BASE_URL}/uploads/products/${filename}`;
   };
 
-  // If image is a string (could be a URL, public_id, or filename)
   if (typeof image === 'string') {
     return constructUrl(image);
   }
 
-  // If image is an object with known fields
   if (image && typeof image === 'object') {
     if (image.url) return constructUrl(image.url);
     if (image.public_id) return constructUrl(image.public_id);

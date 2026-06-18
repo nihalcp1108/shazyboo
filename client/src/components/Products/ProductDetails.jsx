@@ -1031,7 +1031,7 @@ const ProductDetail = () => {
                   </div>
                 </div>
                 <div className="font-bold text-gray-800 mb-1">Free Shipping</div>
-                <div className="text-sm text-gray-600">On orders over ₹2999</div>
+                <div className="text-sm text-gray-600">On orders over ₹1999</div>
               </div>
               
               <div className="text-center bg-gradient-to-b from-white to-purple-50 p-4 rounded-xl">
@@ -1041,7 +1041,7 @@ const ProductDetail = () => {
                   </div>
                 </div>
                 <div className="font-bold text-gray-800 mb-1">Easy Returns</div>
-                <div className="text-sm text-gray-600">30-day return policy</div>
+                <div className="text-sm text-gray-600">7-day return policy</div>
               </div>
               
               <div className="text-center bg-gradient-to-b from-white to-blue-50 p-4 rounded-xl">
@@ -1263,7 +1263,7 @@ const ProductDetail = () => {
             <button onClick={zoomOut} disabled={zoomLevel <= 1} className="bg-white/20 hover:bg-white/30 rounded-full w-10 h-10 flex items-center justify-center disabled:opacity-50">
               <FaCompress className="text-white" />
             </button>
-            <span className="text-white text-sm font-medium">{Math.round(zoomLevel * 100)}%</span>
+            <span className="text-white text-sm font-medium">{Math.round(zoomLevel * 10)}%</span>
             <button onClick={zoomIn} disabled={zoomLevel >= 3} className="bg-white/20 hover:bg-white/30 rounded-full w-10 h-10 flex items-center justify-center disabled:opacity-50">
               <FaExpand className="text-white" />
             </button>
@@ -1288,7 +1288,7 @@ const ProductDetail = () => {
               className="relative transition-transform duration-200 ease-out"
               style={{
                 transform: zoomLevel > 1 
-                  ? `scale(${zoomLevel}) translate(${zoomPosition.x * 100 * (zoomLevel - 1)}%, ${zoomPosition.y * 100 * (zoomLevel - 1)}%)`
+                  ? `scale(${zoomLevel}) translate(${zoomPosition.x * 10 * (zoomLevel - 1)}%, ${zoomPosition.y * 10 * (zoomLevel - 1)}%)`
                   : 'scale(1)',
                 maxWidth: '90vw',
                 maxHeight: '80vh',

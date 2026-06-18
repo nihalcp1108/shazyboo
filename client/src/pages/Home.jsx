@@ -25,9 +25,11 @@ import { useAuth } from '../Context/AuthContext';
 import { useWishlist } from '../Context/WishlistContext';
 import { getImageUrl, handleImageError, getFallbackImage } from '../utils/imageUtils';
 
-import heroBg1 from '../assets/3c6e0fd053756f748a2455407e0152de.jpg';
-import heroBg2 from '../assets/b493e30b5c424c050743c6ca8f97d768.jpg';
-import heroBg3 from '../assets/d1fd913da45a7500ffef73dbf2b10459.jpg';
+import hero1 from '../assets/hero(1).jpeg';
+import hero2 from '../assets/hero(2).jpeg';
+import hero3 from '../assets/hero(3).jpeg';
+import hero4 from '../assets/hero(4).jpeg';
+import hero5 from '../assets/hero(5).jpeg';
 const FontStyle = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap');
@@ -64,13 +66,13 @@ const Star = ({ size = 20, color = '#FFD84D', style = {} }) => (
 
 // Hero Section
 const HeroSection = () => {
-  const backgroundImages = [heroBg1, heroBg2, heroBg3];
+  const backgroundImages = [hero1, hero2, hero3, hero4, hero5];
   const [bgIndex, setBgIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setBgIndex((prev) => (prev + 1) % backgroundImages.length);
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -192,6 +194,7 @@ const MainCategoriesSection = ({ categories, loading, navigate }) => {
                   src={getImageUrl(category.image)}
                   alt={category.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  onError={handleImageError}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-7xl">
@@ -262,7 +265,7 @@ const MainCategoriesSection = ({ categories, loading, navigate }) => {
 
 // Category Circles (Popular Categories) - ENHANCED VERSION
 const CategoryCircles = ({ categories, loading }) => {
-  const displayCats = categories.slice(0, 10);
+  const displayCats = categories;
 
   // Enhanced color palette for rings
   const ringColors = [
@@ -301,7 +304,7 @@ const CategoryCircles = ({ categories, loading }) => {
 
   return (
     <div className="overflow-x-auto hide-scroll px-4 py-2">
-      <div className="flex gap-4 min-w-full justify-center flex-nowrap">
+      <div className="flex gap-4 min-w-max justify-start flex-nowrap">
         {displayCats.map((cat, i) => (
           <CategoryCircleItem
             key={cat._id || i}
@@ -318,44 +321,36 @@ const CategoryCircles = ({ categories, loading }) => {
 };
 
 // Single category circle item (shared between scroll and grid)
-const CategoryCircleItem = ({ cat, i, ringColors, circleGradients, categoryEmojis }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.6 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5, delay: i * 0.07 }}
-    className="flex flex-col items-center gap-2 cursor-pointer group"
-  >
-    <Link to={`/categories/${cat.slug || cat._id}`} className="flex flex-col items-center gap-2">
-      <div className="relative">
-        <div className={`relative w-24 h-24 rounded-full border-4 ${ringColors[i % ringColors.length]} overflow-hidden shadow-lg group-hover:shadow-2xl group-hover:scale-110 transition-all duration-300`}>
-          <div className={`w-full h-full bg-gradient-to-br ${circleGradients[i % circleGradients.length]} flex items-center justify-center`}>
-            {cat.image ? (
+const CategoryCircleItem = ({ cat, i, ringColors, circleGradients, categoryEmojis }) => {
+  const imageUrl = cat.image ? getImageUrl(cat.image) : null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.6 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5, delay: i * 0.07 }}
+      className="flex-shrink-0 flex flex-col items-center gap-2 cursor-pointer group"
+    >
+      <Link to={`/categories/${cat.slug || cat._id}`} className="flex flex-col items-center gap-2">
+        <div className="relative">
+          <div className={`relative w-24 h-24 rounded-full border-4 ${ringColors[i % ringColors.length]} overflow-hidden shadow-lg group-hover:shadow-2xl group-hover:scale-110 transition-all duration-300`}>
+            {imageUrl ? (
               <img
-                src={getImageUrl(cat.image)}
+                src={imageUrl}
                 alt={cat.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                onError={e => {
-                  e.target.style.display = 'none';
-                  if (e.target.parentElement) {
-                    const d = document.createElement('div');
-                    d.className = 'text-4xl';
-                    d.textContent = cat.icon || categoryEmojis[i % categoryEmojis.length];
-                    e.target.parentElement.appendChild(d);
-                    e.target.remove();
-                  }
-                }}
+                className="absolute inset-0 w-full h-full object-cover"
+                onError={handleImageError}
               />
             ) : (
-              <div className="text-4xl group-hover:scale-110 transition-transform duration-300">
+              <div className={`w-full h-full bg-gradient-to-br ${circleGradients[i % circleGradients.length]} flex items-center justify-center text-4xl`}> 
                 {cat.icon || categoryEmojis[i % categoryEmojis.length]}
               </div>
             )}
-          </div>
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-            <FaArrowRight className="text-white text-sm opacity-0 group-hover:opacity-100 transition-all duration-300" />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+              <FaArrowRight className="text-white text-sm opacity-0 group-hover:opacity-100 transition-all duration-300" />
+            </div>
           </div>
         </div>
-      </div>
 
       <div className="text-center w-24">
         <span className="fredoka text-sm font-bold text-gray-700 group-hover:text-pink-600 transition-colors duration-300 line-clamp-2 leading-tight">
@@ -367,7 +362,8 @@ const CategoryCircleItem = ({ cat, i, ringColors, circleGradients, categoryEmoji
       </div>
     </Link>
   </motion.div>
-);
+  );
+};
 
 const ProductCard = ({ product, index, onAddToCart, navigate }) => {
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -511,7 +507,7 @@ const ProductCarousel = ({ products, loading, onAddToCart, navigate }) => {
 
 // Features Row
 const features = [
-  { icon: <FaShippingFast />, title: 'Free Shipping', desc: 'On orders over $39', color: '#4BA3E8', bg: '#E4F0FF' },
+  { icon: <FaShippingFast />, title: 'Free Shipping', desc: 'On orders over ₹1999', color: '#4BA3E8', bg: '#E4F0FF' },
   { icon: <MdVerified />, title: 'Premium Quality', desc: 'Best quality products', color: '#9B6BFF', bg: '#F0E4FF' },
   { icon: <FaBoxOpen />, title: 'Cute Packaging', desc: 'Packed with love', color: '#FF8C42', bg: '#FFF0E4' },
   { icon: <FaShieldAlt />, title: 'Secure Payment', desc: '100% safe checkout', color: '#4BC98A', bg: '#E4FFF0' },
@@ -546,6 +542,71 @@ const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [mainCategories, setMainCategories] = useState([]);
+
+  const INITIAL_SECONDS = 2 * 3600 + 45 * 60 + 30; // 02:45:30
+  const REPEAT_SECONDS = 24 * 3600; // 24 hours
+
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const storedDeadline = localStorage.getItem('flashSaleDeadline');
+    const now = Date.now();
+    if (storedDeadline) {
+      let deadline = parseInt(storedDeadline, 10);
+      if (isNaN(deadline)) {
+        deadline = now + INITIAL_SECONDS * 1000;
+        localStorage.setItem('flashSaleDeadline', deadline.toString());
+      }
+      if (now >= deadline) {
+        const elapsed = now - deadline;
+        const cycles = Math.floor(elapsed / (REPEAT_SECONDS * 1000)) + 1;
+        deadline = deadline + cycles * REPEAT_SECONDS * 1000;
+        localStorage.setItem('flashSaleDeadline', deadline.toString());
+      }
+      return Math.max(0, Math.round((deadline - now) / 1000));
+    } else {
+      const deadline = now + INITIAL_SECONDS * 1000;
+      localStorage.setItem('flashSaleDeadline', deadline.toString());
+      return INITIAL_SECONDS;
+    }
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const storedDeadline = localStorage.getItem('flashSaleDeadline');
+      let deadline = storedDeadline ? parseInt(storedDeadline, 10) : now + INITIAL_SECONDS * 1000;
+      
+      if (isNaN(deadline)) {
+        deadline = now + INITIAL_SECONDS * 1000;
+        localStorage.setItem('flashSaleDeadline', deadline.toString());
+      }
+
+      if (now >= deadline) {
+        const elapsed = now - deadline;
+        const cycles = Math.floor(elapsed / (REPEAT_SECONDS * 1000)) + 1;
+        const newDeadline = deadline + cycles * REPEAT_SECONDS * 1000;
+        localStorage.setItem('flashSaleDeadline', newDeadline.toString());
+        setTimeLeft(Math.max(0, Math.round((newDeadline - now) / 1000)));
+      } else {
+        setTimeLeft(Math.max(0, Math.round((deadline - now) / 1000)));
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatTime = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return {
+      hours: hrs.toString().padStart(2, '0'),
+      minutes: mins.toString().padStart(2, '0'),
+      seconds: secs.toString().padStart(2, '0'),
+    };
+  };
+
+  const { hours, minutes, seconds } = formatTime(timeLeft);
+
   const [loading, setLoading] = useState({
     trending: true,
     categories: true,
@@ -765,9 +826,9 @@ const Home = () => {
               Shop our cutest picks with big savings and grab them before they’re gone.
             </p>
             <div className="inline-flex items-center justify-center gap-3 rounded-full bg-pink-50 px-4 py-3 shadow-sm mb-6 text-sm font-bold text-pink-700">
-              <span className="bg-white rounded-full px-3 py-2 text-pink-600">02</span>
-              <span className="bg-white rounded-full px-3 py-2 text-pink-600">45</span>
-              <span className="bg-white rounded-full px-3 py-2 text-pink-600">30</span>
+              <span className="bg-white rounded-full px-3 py-2 text-pink-600">{hours}</span>
+              <span className="bg-white rounded-full px-3 py-2 text-pink-600">{minutes}</span>
+              <span className="bg-white rounded-full px-3 py-2 text-pink-600">{seconds}</span>
               <span className="text-pink-500 lowercase">hrs mins secs</span>
             </div>
             <div>

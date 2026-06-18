@@ -110,7 +110,7 @@ const AdminCategories = () => {
             isActive: category.isActive || true,
             order: category.order || 0
         });
-        setImagePreview(category.image?.url || null);
+        setImagePreview(category.image ? getImageUrl(category.image) : null);
         setShowForm(true);
     };
 

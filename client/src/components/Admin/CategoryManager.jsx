@@ -6,6 +6,7 @@ import {
   FaStar, FaUpload, FaSave, FaTimes,
   FaBox, FaImage, FaSpinner
 } from 'react-icons/fa';
+import { getImageUrl } from '../../utils/imageUtils';
 
 const CategoryManager = () => {
   const [categories, setCategories] = useState([]);
@@ -208,7 +209,7 @@ const CategoryManager = () => {
       isActive: category.isActive !== false,
       order: category.order || 0
     });
-    setImagePreview(category.image?.url || null);
+    setImagePreview(category.image ? getImageUrl(category.image) : null);
     setImageFile(null);
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -438,7 +439,13 @@ const CategoryManager = () => {
                         <img
                           src={imagePreview}
                           alt="Preview"
-                          className="max-h-48 mx-auto rounded-lg"
+                          className="max-h-48 mx-auto rounded-lg object-cover"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            setImagePreview(null);
+                            setImageFile(null);
+                            toast.error('Invalid image preview. Please upload a different file.');
+                          }}
                         />
                         <button
                           type="button"
@@ -617,9 +624,9 @@ const CategoryManager = () => {
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex items-center">
-                        {category.image?.url ? (
+                        {category.image ? (
                           <img
-                            src={category.image.url}
+                            src={getImageUrl(category.image)}
                             alt={category.name}
                             className="w-8 h-8 rounded-full object-cover border border-gray-300"
                             onError={(e) => {

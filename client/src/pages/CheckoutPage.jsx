@@ -45,7 +45,7 @@ const CheckoutPage = () => {
     notes: ''
   });
 
-  const shippingCharge = cart.totalPrice >= 3000 ? 0 : 50;
+  const shippingCharge = cart.totalPrice >= 1999 ? 0 : 50;
   const finalTotal = cart.totalPrice + shippingCharge;
 
   useEffect(() => {
@@ -479,7 +479,7 @@ const CheckoutPage = () => {
                     </div>
                     {shippingCharge > 0 && cart.totalPrice > 0 && (
                       <div className="text-xs text-blue-600 mt-1">
-                        Add ₹{(3000 - cart.totalPrice).toFixed(2)} more to get free shipping!
+                        Add ₹{(1999 - cart.totalPrice).toFixed(2)} more to get free shipping!
                       </div>
                     )}
                     <div className="border-t border-gray-200 pt-3 mt-3">

@@ -109,8 +109,9 @@ const Footer = () => {
                   <FaPhone size={12} className="text-blue-500" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-gray-600 font-bold text-sm">+91 95671 61716</span>
-                  <span className="text-gray-600 font-bold text-sm">+91 97780 34171</span>
+                  <span className="text-gray-600 font-bold text-sm">+91 9567 16 17 16</span>
+                  <span className="text-gray-600 font-bold text-sm">+91 9567 655 615</span>
+                  <span className="text-gray-600 font-bold text-sm">+91 9778 034 171</span>
                 </div>
               </li>
               <li className="flex items-start justify-center md:justify-start gap-3">

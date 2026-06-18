@@ -6,7 +6,7 @@ const CartSummary = () => {
   const { cart } = useCart();
 
   const subtotal = cart.totalPrice || 0;
-  const shipping = subtotal > 2999 ? 0 : 50;
+  const shipping = subtotal >= 1999 ? 0 : 50;
   const total = subtotal + shipping;
 
   if (cart.items.length === 0) {

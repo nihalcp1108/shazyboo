@@ -16,10 +16,26 @@ if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Configure storage
+// Configure storage for product uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+// Configure storage for category uploads
+const categoryUploadDir = path.join(__dirname, '../../uploads/categories');
+if (!fs.existsSync(categoryUploadDir)) {
+    fs.mkdirSync(categoryUploadDir, { recursive: true });
+}
+
+const categoryStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, categoryUploadDir);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -40,11 +56,25 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Helper function to delete a single file
+// Helper function to delete a single file or URL
 export const deleteFile = async (filePath) => {
     try {
-        // Remove the leading slash if present and ensure it's relative to current directory
-        const cleanPath = filePath.replace(/^\//, '');
+        if (!filePath) return false;
+
+        let cleanPath = filePath;
+
+        // If a full URL is passed, extract the pathname
+        if (typeof cleanPath === 'string' && (cleanPath.startsWith('http://') || cleanPath.startsWith('https://'))) {
+            try {
+                const urlObj = new URL(cleanPath);
+                cleanPath = urlObj.pathname;
+            } catch (err) {
+                console.error('Unable to parse URL for file deletion:', cleanPath);
+            }
+        }
+
+        // Remove leading slash if present
+        cleanPath = cleanPath.replace(/^\//, '');
         const fullPath = path.join(process.cwd(), cleanPath);
         
         if (fs.existsSync(fullPath)) {
@@ -116,7 +146,7 @@ export const uploadSingleImage = multer({
 
 // Export single image upload for categories
 export const uploadCategoryImage = multer({
-    storage: storage,
+    storage: categoryStorage,
     limits: { fileSize: 2 * 1024 * 1024 }, // 2MB limit for categories
     fileFilter: fileFilter
 }).single('image');

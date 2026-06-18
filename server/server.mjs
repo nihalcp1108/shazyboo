@@ -66,7 +66,8 @@ app.use(cors({
 app.options('*', cors());
 
 // ================= STATIC FILES =================
-app.use('/uploads', express.static(path.resolve('../uploads')));
+const uploadsPath = path.resolve(__dirname, '../uploads');
+app.use('/uploads', express.static(uploadsPath));
 
 // ================= SECURITY =================
 app.use(express.json({ limit: '10mb' }));

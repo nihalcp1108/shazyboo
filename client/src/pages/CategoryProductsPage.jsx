@@ -26,7 +26,7 @@ const CategoryProductsPage = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [totalProducts, setTotalProducts] = useState(0);
     const [viewMode, setViewMode] = useState('grid');
-    const [quickViewProduct, setQuickViewProduct] = useState(null);
+    const shuffledProducts = useDailyShuffle(products);
     const { addToCart } = useCart();
 
     const API_URL = import.meta.env.VITE_API_URL || '/api';
@@ -394,7 +394,7 @@ const CategoryProductsPage = () => {
                         ) : (
                             <>
                                 <div className={`grid ${viewMode === 'grid' ? 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6' : 'grid-cols-1 gap-4'}`}>
-                                    {products.map((product, index) => {
+                                    {shuffledProducts.map((product, index) => {
                                         const discount = product.discountPrice > 0 && product.discountPrice < product.price
                                             ? Math.round(((product.price - product.discountPrice) / product.price) * 100) : 0;
                                         const isInWishlist = wishlist.includes(product._id);
@@ -479,7 +479,7 @@ const CategoryProductsPage = () => {
                                                     <img
                                                         src={getImageUrl(product.images?.[0])}
                                                         alt={product.name}
-                                                        className="w-full h-full object-contain p-4 md:p-6 group-hover:scale-110 transition-transform duration-500"
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                                         onError={(e) => {
                                                             e.target.src = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop';
                                                         }}

@@ -84,7 +84,7 @@ const CategoriesPage = () => {
                         
                         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                             {featuredCategories.map((category) => {
-                                const imageUrl = getImageUrl(category.image);
+                                const imageUrl = category.image ? getImageUrl(category.image) : null;
                                 return (
                                     <Link
                                         key={category._id}
@@ -96,10 +96,8 @@ const CategoriesPage = () => {
                                                 <img
                                                     src={imageUrl}
                                                     alt={category.name}
-                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                    onError={(e) => {
-                                                        handleImageError(e);
-                                                    }}
+                                                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                                                    onError={handleImageError}
                                                 />
                                             ) : (
                                                 <div className="w-full h-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
@@ -151,7 +149,7 @@ const CategoriesPage = () => {
                     ) : (
                         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6">
                             {filteredCategories.map((category) => {
-                                const imageUrl = getImageUrl(category.image);
+                                const imageUrl = category.image ? getImageUrl(category.image) : null;
                                 return (
                                     <Link
                                         key={category._id}
@@ -163,10 +161,8 @@ const CategoriesPage = () => {
                                                 <img
                                                     src={imageUrl}
                                                     alt={category.name}
-                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                    onError={(e) => {
-                                                        handleImageError(e);
-                                                    }}
+                                                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                                                    onError={handleImageError}
                                                 />
                                             ) : (
                                                 <div className="w-full h-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
