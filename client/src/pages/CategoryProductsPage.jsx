@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useDailyShuffle } from '../utils/shuffle';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   FaArrowLeft, FaStar, FaShoppingCart, FaFilter, FaSpinner, 
@@ -26,6 +27,7 @@ const CategoryProductsPage = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [totalProducts, setTotalProducts] = useState(0);
     const [viewMode, setViewMode] = useState('grid');
+    const [quickViewProduct, setQuickViewProduct] = useState(null);
     const shuffledProducts = useDailyShuffle(products);
     const { addToCart } = useCart();
 
@@ -42,7 +44,7 @@ const CategoryProductsPage = () => {
             setLoading(true);
             const params = {
                 page: currentPage,
-                limit: 12,
+                limit: 20,
                 sort: sortBy,
                 ...(priceRange.min && { minPrice: priceRange.min }),
                 ...(priceRange.max && { maxPrice: priceRange.max })
@@ -409,14 +411,14 @@ const CategoryProductsPage = () => {
                                                     initial={{ opacity: 0, y: 20 }}
                                                     animate={{ opacity: 1, y: 0 }}
                                                     transition={{ delay: index * 0.05 }}
-                                                    className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col sm:flex-row"
+                                                    className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col"
                                                     onClick={() => navigate(`/product/${product._id}`)}
                                                 >
-                                                    <div className="relative w-full sm:w-40 h-48 sm:h-40 bg-gradient-to-br from-pink-100 to-purple-100 flex-shrink-0">
+                                                    <div className="relative w-full h-56 sm:h-64 md:h-72 overflow-hidden bg-gray-100">
                                                         <img
                                                             src={getImageUrl(product.images?.[0])}
                                                             alt={product.name}
-                                                            className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-300"
+                                                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                                             onError={(e) => {
                                                                 e.target.src = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop';
                                                             }}

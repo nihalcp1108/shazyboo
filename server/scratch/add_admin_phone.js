@@ -13,7 +13,7 @@ async function fix() {
         await mongoose.connect('mongodb://127.0.0.1:27017/shazyboo');
         await mongoose.connection.db.collection('users').updateOne(
             { email: 'shazyboo.info@gmail.com' },
-            { $set: { phone: '9876543210' } }
+            { $set: { phone: '9567161716' } }
         );
         console.log('Phone number added to admin');
         await mongoose.connection.close();

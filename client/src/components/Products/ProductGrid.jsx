@@ -43,7 +43,9 @@ const ProductGrid = ({ searchQuery, category, sortBy, filters }) => {
         url += `&inStock=true`
       }
       
-      url += `&page=${pagination.currentPage}&limit=12`
+      url += `&page=${pagination.currentPage}&limit=20`;
+      // Show 20 loading placeholders
+      const loadingPlaceholders = [...Array(20)];
       
       const response = await api.get(url)
       
@@ -71,7 +73,7 @@ const ProductGrid = ({ searchQuery, category, sortBy, filters }) => {
       setProducts(productsData)
       setPagination({
         total: paginationData.total || productsData.length,
-        pages: paginationData.pages || Math.ceil(productsData.length / 12),
+        pages: paginationData.pages || Math.ceil(productsData.length / 20),
         currentPage: paginationData.currentPage || 1
       })
       
@@ -91,7 +93,7 @@ const ProductGrid = ({ searchQuery, category, sortBy, filters }) => {
   if (loading) {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-        {[...Array(8)].map((_, i) => (
+        {[...Array(20)].map((_, i) => (
           <div key={i} className="animate-pulse">
             <div className="bg-gray-200 rounded-xl h-64 mb-4"></div>
             <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>

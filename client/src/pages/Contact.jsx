@@ -193,7 +193,7 @@ const Contact = () => {
                     }
                   })}
                   className="w-full px-4 py-3 bg-pink-50 border-2 border-pink-100 rounded-xl focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none transition-all duration-300 text-gray-700 placeholder-pink-300"
-                  placeholder="9876543210"
+                  placeholder="Phone no"
                 />
                 {errors.phone && (
                   <p className="mt-2 text-sm text-pink-600 flex items-center animate-pulse">

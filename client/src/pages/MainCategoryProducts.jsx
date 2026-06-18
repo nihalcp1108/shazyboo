@@ -25,7 +25,7 @@ const MainCategoryProducts = () => {
     const [showFilters, setShowFilters] = useState(false);
     const [wishlist, setWishlist] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(12);
+    const [itemsPerPage] = useState(20);
     const [totalProducts, setTotalProducts] = useState(0);
     const [viewMode, setViewMode] = useState('grid');
     const [quickViewProduct, setQuickViewProduct] = useState(null);

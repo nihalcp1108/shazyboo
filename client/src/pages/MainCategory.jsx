@@ -24,7 +24,7 @@ const MainCategory = () => {
     const [showFilters, setShowFilters] = useState(false);
     const [wishlist, setWishlist] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(12);
+    const [itemsPerPage] = useState(20);
     const [quickViewProduct, setQuickViewProduct] = useState(null);
     const { addToCart } = useCart();
 
@@ -399,11 +399,11 @@ const MainCategory = () => {
                                                 onClick={() => window.location.href = `/product/${product._id}`}
                                             >
                                                 {/* Product Image */}
-                                                <div className="relative h-56 overflow-hidden bg-gradient-to-br from-pink-100 to-purple-100">
+                                                <div className="block relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gray-100">
                                                     <img
                                                         src={getImageUrl(product.images?.[0])}
                                                         alt={product.name}
-                                                        className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+                                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                                         onError={(e) => {
                                                             e.target.src = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop';
                                                         }}

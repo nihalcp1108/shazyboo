@@ -130,7 +130,7 @@ const UserProfile = () => {
                         type="tel"
                         {...registerProfile('phone', { required: 'Phone is required 📱' })}
                         className="w-full px-4 py-3 bg-pink-50 border-2 border-pink-100 rounded-xl focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none transition-all duration-300 text-gray-700 placeholder-pink-300"
-                        placeholder="9876543210"
+                        placeholder="Phone no"
                       />
                     </div>
                   </div>

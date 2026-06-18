@@ -28,7 +28,7 @@ async function create() {
       name: 'Nihal CP',
       email: 'cpnihal35@gmail.com',
       password: 'password123',
-      phone: '9876543210',
+      phone: '9567 16 17 16',
       role: 'user',
       isVerified: true
     });
@@ -38,7 +38,7 @@ async function create() {
     console.log(' - Name: Nihal CP');
     console.log(' - Email: cpnihal35@gmail.com');
     console.log(' - Password: password123');
-    console.log(' - Phone: 9876543210');
+    console.log(' - Phone: 9567 16 1716');
     
     await mongoose.connection.close();
   } catch (err) {
