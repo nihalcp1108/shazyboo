@@ -32,6 +32,7 @@ import { protect } from './middlewares/auth.js';
 
 const app = express();
 
+app.set('trust proxy', 1);
 // ================= FIXED CORS =================
 const allowedOrigins = [
     'http://localhost:3000',
