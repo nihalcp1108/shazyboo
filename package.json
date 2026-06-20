@@ -1,7 +1,10 @@
 {
   "name": "shazyboo-root",
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "cd client && npm ci --legacy-peer-deps && npm run build"
+    "build": "cd client && npm ci --legacy-peer-deps && npm run build",
+    "start": "node server/server.mjs",
+    "dev": "nodemon server/server.mjs"
   }
 }

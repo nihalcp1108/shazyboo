@@ -1,41 +1,51 @@
-// server/utils/resendService.js
-// Resend email service wrapper using the Resend SDK.
-// This module provides a simple `send` function that the rest of the
-// application can call to dispatch transactional emails.
-//
-// Usage:
-//   import { send as resendSend } from './resendService.js';
-//   await resendSend({ to, subject, html });
-
 import { Resend } from 'resend';
 
-// Initialise Resend with the API key from environment variables.
-// If the key is missing, we still create the client – the caller should
-// handle the missing configuration (the sendEmail wrapper already does).
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend with API key from environment variables
+let resend = null;
 
-/**
- * Send an email via Resend.
- *
- * @param {Object} params
- * @param {string} params.to      Recipient email address.
- * @param {string} params.subject Subject line of the email.
- * @param {string} params.html    HTML body of the email.
- * @returns {Promise<Object>} The result from Resend SDK.
- */
+try {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (apiKey && apiKey !== 'your_resend_api_key_here') {
+    resend = new Resend(apiKey);
+    console.log('✅ Resend initialized successfully');
+  } else {
+    console.warn('⚠️ Resend API key not set or using default placeholder. Email sending will be disabled.');
+    console.warn('   To enable emails, set RESEND_API_KEY in your .env file');
+  }
+} catch (error) {
+  console.error('❌ Failed to initialize Resend:', error.message);
+}
+
 export const send = async ({ to, subject, html }) => {
-  // Resend requires a `from` address. Prefer the configurable FROM_EMAIL.
-  const from = process.env.FROM_EMAIL || 'no-reply@shazyboo.com';
+  // Check if Resend is initialized
+  if (!resend) {
+    console.warn('⚠️ Resend not initialized. Email would be sent to:', to);
+    console.warn('   Subject:', subject);
+    console.warn('   HTML Preview:', html.substring(0, 100) + '...');
+    
+    // Return a mock success response for development
+    return {
+      data: {
+        id: `mock-${Date.now()}`,
+        message: 'Email would be sent in production (Resend not configured)'
+      },
+      error: null
+    };
+  }
 
-  // The SDK method returns a promise that resolves to the HTTP response.
-  // We simply forward that result to the caller.
-  return await resend.emails.send({
-    from,
-    to,
-    subject,
-    html,
-  });
+  try {
+    const result = await resend.emails.send({
+      from: process.env.FROM_EMAIL || 'onboarding@resend.dev',
+      to,
+      subject,
+      html,
+    });
+    return result;
+  } catch (error) {
+    console.error('Resend error:', error);
+    throw error;
+  }
 };
 
-// Export the client for advanced usage if needed.
-export default resend;
+// Also export as default for convenience
+export default { send };
