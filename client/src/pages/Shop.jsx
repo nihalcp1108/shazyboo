@@ -12,9 +12,9 @@ const Shop = () => {
         <div className="mb-12 text-center">
           <div className="inline-flex items-center justify-center bg-white/50 backdrop-blur-sm rounded-full px-6 py-3 mb-6 shadow-md border border-white/30">
             <FaSearch className="mr-3 text-xl" style={{ color: 'var(--kiddex-blue)' }} />
-            <h2 className="fredoka text-3xl text-gray-800">
-              {searchQuery ? 'Search Results' : 'Our Collection'}
-            </h2>
+           <h2 className="fredoka text-3xl font-normal tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-fuchsia-500 to-rose-400">
+  {searchQuery ? 'Search Results' : "✨Shop Your Cute Collection's 💖"}
+</h2>
           </div>
           
           {searchQuery && (

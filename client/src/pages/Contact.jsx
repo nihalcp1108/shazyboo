@@ -30,8 +30,8 @@ const Contact = () => {
     {
       icon: <FaPhone />,
       title: 'Phone',
-      details: ['+91 9567 16 17 16', '+91 9567 655 615', '+91 9778 034 171'],
-      description: 'Mon-Sat from 10am to 7pm 🕐',
+      details: ['+91 9567 16 17 16', '+91 9567 655 615'],
+      description: 'Available 24/7 for your adorable needs! 📞',
       color: 'from-pink-400 to-rose-400',
       bgColor: 'bg-pink-50'
     },

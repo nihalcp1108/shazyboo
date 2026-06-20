@@ -39,7 +39,7 @@ async function create() {
     console.log(' - Email: cpnihal35@gmail.com');
     console.log(' - Password: password123');
     console.log(' - Phone: 9567 16 1716');
-    
+
     await mongoose.connection.close();
   } catch (err) {
     console.error('Error:', err.message);
