@@ -97,12 +97,13 @@ app.use('/api/upload', protect, uploadRoutes);
 app.use('/api/contact', contactRoutes);
 
 // ================= HEALTH =================
-app.get('/health', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Server running',
-        env: process.env.NODE_ENV
-    });
+app.get('/test-email-config', (req, res) => {
+  res.json({
+    EMAIL_HOST: process.env.EMAIL_HOST,
+    EMAIL_PORT: process.env.EMAIL_PORT,
+    EMAIL_USER: process.env.EMAIL_USER ? 'SET' : 'NOT SET',
+    EMAIL_PASS: process.env.EMAIL_PASS ? 'SET' : 'NOT SET'
+  });
 });
 
 // ================= SERVER =================
