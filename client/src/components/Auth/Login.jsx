@@ -257,14 +257,6 @@ const Login = () => {
               </p>
             </div>
 
-            {/* Special Note for Admin */}
-            <div className="mt-4 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-200">
-              <p className="text-sm text-blue-600 text-center">
-                <span className="font-bold">👑 Admin Note:</span> 
-                Use <code className="bg-blue-100 px-2 py-1 rounded mx-1">shazyboo.info@gmail.com</code> or <code className="bg-blue-100 px-2 py-1 rounded mx-1">shazybooinfo@gmail.com</code>
-                to login as admin (auto-verified) 🎯
-              </p>
-            </div>
           </form>
         </div>
 

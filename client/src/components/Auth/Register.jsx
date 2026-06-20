@@ -288,15 +288,6 @@ const Register = () => {
                 </Link>
               </p>
             </div>
-
-            {/* Admin Note */}
-            <div className="mt-4 p-3 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg border border-amber-200">
-              <p className="text-sm text-amber-700 text-center">
-                <span className="font-bold">👑 Admin Registration:</span> 
-                If you register with <code className="bg-amber-100 px-2 py-1 rounded">shazyboo.info@gmail.com</code>, 
-                you'll be automatically verified and logged in!
-              </p>
-            </div>
           </form>
         </div>
 
