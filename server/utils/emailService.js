@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+// nodemailer import removed (using Resend)
 
 // Email templates for ShazyBoo
 const emailTemplates = {
@@ -447,291 +447,36 @@ const emailTemplates = {
     `
 };
 
-// Create transporter
-let transporter = null;
-let initializingPromise = null;
+import { send as resendSend } from './resendService.js';
 
-const initializeTransporter = async () => {
-    if (transporter) return transporter;
-    if (initializingPromise) return initializingPromise;
+// Send email via Resend (fallback to console logging in dev)
+export const sendEmail = async ({ email, subject, html }) => {
+  console.log('\n📧📧📧 EMAIL SEND REQUEST 📧📧📧');
+  console.log('To:', email);
+  console.log('Subject:', subject);
 
-    initializingPromise = (async () => {
-        console.log('📧 Initializing email transporter...');
-        
-        let emailService = process.env.EMAIL_SERVICE?.trim().toLowerCase();
-        let emailHost = process.env.EMAIL_HOST?.trim();
-        let emailUser = process.env.EMAIL_USER?.trim();
-        let emailPass = process.env.EMAIL_PASS?.trim();
-        const sendGridApiKey = process.env.SENDGRID_API_KEY?.trim();
-        const emailPort = parseInt(process.env.EMAIL_PORT, 10) || 587;
-        const fromEmail = process.env.FROM_EMAIL?.trim() || emailUser;
+  const otpMatch = html.match(/\d{6}/);
+  if (otpMatch) console.log('🔢 OTP for testing:', otpMatch[0]);
+  console.log('HTML Preview:', html.substring(0, 200).trim().replace(/\s+/g, ' ') + '...');
+  console.log('📧📧📧 END EMAIL LOG 📧📧📧\n');
 
-        if (!emailService && sendGridApiKey) {
-            emailService = 'sendgrid';
-        }
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('⚠️ RESEND_API_KEY not set – email logged only (dev fallback)');
+    return { success: true, message: 'Email logged (Resend not configured)', ...(otpMatch && { otp: otpMatch[0] }) };
+  }
 
-        if (emailService === 'sendgrid') {
-            emailHost = emailHost || 'smtp.sendgrid.net';
-            emailUser = 'apikey';
-            emailPass = sendGridApiKey;
-        }
-
-        if (emailHost?.includes('gmail.com') && emailPass) {
-            const normalizedPass = emailPass.replace(/\s+/g, '');
-            if (normalizedPass !== emailPass) {
-                console.warn('⚠️ Gmail app password contained spaces; removed spaces for SMTP auth.');
-                emailPass = normalizedPass;
-            }
-        }
-
-        const isPlaceholder = (val) => {
-            if (!val) return true;
-            const lower = val.toLowerCase();
-            return lower.includes('<your_') || 
-                   lower.includes('your-') || 
-                   lower.includes('your_') || 
-                   lower.includes('example.com') || 
-                   lower.includes('<');
-        };
-
-        const hasRealEmailConfig = emailHost && emailUser && emailPass && 
-                                  !isPlaceholder(emailHost) && 
-                                  !isPlaceholder(emailUser) && 
-                                  !isPlaceholder(emailPass);
-        
-        if (!hasRealEmailConfig) {
-            if (process.env.NODE_ENV === 'production') {
-                throw new Error('Email service is not configured for production. Set EMAIL_HOST, EMAIL_USER, EMAIL_PASS, and optional EMAIL_PORT.');
-            }
-
-            console.warn('⚠️ Real SMTP credentials not configured (or placeholders detected). Creating Ethereal SMTP test account...');
-            try {
-                const testAccount = await nodemailer.createTestAccount();
-                console.log('✨ Ethereal SMTP test account generated successfully:');
-                console.log(`   User: ${testAccount.user}`);
-                console.log(`   Pass: ${testAccount.pass}`);
-                
-                transporter = nodemailer.createTransport({
-                    host: 'smtp.ethereal.email',
-                    port: 587,
-                    secure: false,
-                    auth: {
-                        user: testAccount.user,
-                        pass: testAccount.pass
-                    },
-                    tls: {
-                        rejectUnauthorized: false
-                    },
-                    connectionTimeout: 10000,
-                    greetingTimeout: 10000,
-                    socketTimeout: 10000
-                });
-                console.log('✅ Ethereal email transporter ready');
-                return transporter;
-            } catch (etherealError) {
-                console.error('❌ Failed to create Ethereal test account:', etherealError.message);
-                console.log('📧 Falling back to console logging only');
-                transporter = null;
-                return null;
-            }
-        }
-
-        const allowFallback = process.env.EMAIL_ALLOW_FALLBACK?.toLowerCase() === 'true';
-
-        const createConfig = (portOverride = null) => ({
-            host: emailHost,
-            port: portOverride || emailPort,
-            secure: (portOverride || emailPort) === 465,
-            requireTLS: (portOverride || emailPort) === 587 || (portOverride || emailPort) === 25,
-            auth: {
-                user: emailUser,
-                pass: emailPass
-            },
-            tls: {
-                rejectUnauthorized: false
-            },
-            ...((emailHost?.includes('gmail.com') || emailService === 'gmail') ? { service: 'gmail', authMethod: 'LOGIN' } : {}),
-            ...((emailHost?.includes('sendgrid.net') || emailService === 'sendgrid') ? { service: 'SendGrid' } : {}),
-            connectionTimeout: 10000,
-            greetingTimeout: 10000,
-            socketTimeout: 10000
-        });
-
-        const attemptTransport = async (config) => {
-            console.log('📧 Attempting SMTP transport with config:', {
-                host: config.host,
-                port: config.port,
-                secure: config.secure,
-                service: config.service || 'custom'
-            });
-
-            const transport = nodemailer.createTransport(config);
-            await new Promise((resolve, reject) => {
-                transport.verify((error, success) => {
-                    if (error) reject(error);
-                    else resolve(success);
-                });
-            });
-            return transport;
-        };
-
-        try {
-            const configs = [createConfig()];
-            if (emailHost.includes('gmail.com') && emailPort === 587) {
-                configs.push(createConfig(465));
-            }
-
-            let newTransporter = null;
-            let lastError = null;
-
-            for (const config of configs) {
-                try {
-                    newTransporter = await attemptTransport(config);
-                    break;
-                } catch (verifyError) {
-                    lastError = verifyError;
-                    console.error(`❌ SMTP verify failed for port ${config.port}:`, verifyError.message);
-                }
-            }
-
-            if (!newTransporter) {
-                throw lastError;
-            }
-
-            console.log('✅ Real email service ready');
-            transporter = newTransporter;
-            return transporter;
-        } catch (error) {
-            console.error('❌ Real SMTP connection failed:', error.message);
-            if (process.env.NODE_ENV === 'production' && !allowFallback) {
-                throw new Error(`Production SMTP connection failed: ${error.message}`);
-            }
-            console.log('📧 Attempting Ethereal SMTP fallback...');
-            try {
-                const testAccount = await nodemailer.createTestAccount();
-                console.log('✨ Ethereal SMTP test account generated successfully (fallback):');
-                console.log(`   User: ${testAccount.user}`);
-                console.log(`   Pass: ${testAccount.pass}`);
-                
-                transporter = nodemailer.createTransport({
-                    host: 'smtp.ethereal.email',
-                    port: 587,
-                    secure: false,
-                    auth: {
-                        user: testAccount.user,
-                        pass: testAccount.pass
-                    },
-                    tls: {
-                        rejectUnauthorized: false
-                    },
-                    connectionTimeout: 10000,
-                    greetingTimeout: 10000,
-                    socketTimeout: 10000
-                });
-                return transporter;
-            } catch (etherealError) {
-                console.error('❌ Ethereal fallback failed:', etherealError.message);
-                console.log('📧 Falling back to console logging only');
-                transporter = null;
-                return null;
-            }
-        }
-    })();
-
-    return initializingPromise;
+  try {
+    const result = await resendSend({ to: email, subject, html });
+    console.log('✅ Email sent via Resend. Result ID:', result?.data?.id || result?.id);
+    return { success: true, message: 'Email sent via Resend', resendResult: result, ...(otpMatch && { otp: otpMatch[0] }) };
+  } catch (err) {
+    console.error('❌ Email send error (Resend):', err.message);
+    throw err;
+  }
 };
 
-// Send email function with console fallback
-export const sendEmail = async (options) => {
-    const { email, subject, html } = options;
-
-    console.log('\n📧📧📧 EMAIL SEND REQUEST 📧📧📧');
-    console.log('To:', email);
-    console.log('Subject:', subject);
-    
-    // Extract OTP from HTML for logging
-    const otpMatch = html.match(/\d{6}/);
-    if (otpMatch) {
-        console.log('🔢 OTP for testing:', otpMatch[0]);
-    }
-    
-    console.log('HTML Preview:', html.substring(0, 200).trim().replace(/\s+/g, ' ') + '...');
-    console.log('📧📧📧 END EMAIL LOG 📧📧📧\n');
-
-    // Ensure transporter is initialized
-    const activeTransporter = await initializeTransporter();
-
-    if (!activeTransporter) {
-        console.error('❌ No active email transporter available. Please configure SMTP settings.');
-        throw new Error('No email transporter available. Please configure EMAIL_HOST, EMAIL_USER, and EMAIL_PASS.');
-    }
-
-    try {
-        const fromEmail = process.env.FROM_EMAIL?.trim() || process.env.EMAIL_USER?.trim() || 'shazyboo.info@gmail.com';
-        const mailOptions = {
-            from: `"ShazyBoo 🎀" <${fromEmail}>`,
-            to: email,
-            subject: subject,
-            html: html,
-            text: html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
-        };
-
-        const info = await activeTransporter.sendMail(mailOptions);
-        console.log('✅ Email sent successfully! Message ID:', info.messageId);
-        console.log('📬 Accepted:', info.accepted);
-        console.log('🚫 Rejected:', info.rejected);
-        console.log('📩 Envelope:', info.envelope);
-        console.log('📜 Response:', info.response);
-
-        const result = {
-            success: true,
-            messageId: info.messageId,
-            accepted: info.accepted,
-            rejected: info.rejected,
-            envelope: info.envelope,
-            response: info.response,
-            message: 'Email sent successfully'
-        };
-
-        if (activeTransporter.options.host?.includes('ethereal.email')) {
-            const previewUrl = nodemailer.getTestMessageUrl(info);
-            console.log(`\n🔗🔗🔗 ETHEREAL EMAIL PREVIEW URL: ${previewUrl} 🔗🔗🔗\n`);
-            result.message = 'Email sent successfully via Ethereal';
-            result.previewUrl = previewUrl;
-        }
-
-        if (otpMatch) {
-            result.otp = otpMatch[0];
-        }
-
-        return result;
-    } catch (error) {
-        console.error('❌ Email send error:', error.message);
-        throw error;
-    }
-};
-
-// Test email function
+// Test email utility using the same flow
 export const testEmail = async (toEmail = null) => {
-    try {
-        console.log('🧪 Testing email service...');
-        
-        const testEmail = toEmail || process.env.EMAIL_USER || 'test@example.com';
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        
-        const result = await sendEmail({
-            email: testEmail,
-            subject: '🧪 Test Email from ShazyBoo Server',
-            html: emailTemplates.sendOTP(otp, 'ShazyBoo Test')
-        });
-        
-        console.log('🧪 Test result:', result);
-        return { ...result, testOtp: otp };
-    } catch (error) {
-        console.error('❌ Test email failed:', error);
-        return { success: false, error: error.message };
-    }
-};
 
 // Export templates
 export { emailTemplates };
