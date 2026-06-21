@@ -1,5 +1,5 @@
 // emailService.js - ES Module version
-import { send as resendSend } from './resendService.js';
+import nodemailer from "nodemailer";
 
 // Email templates for ShazyBoo
 export const emailTemplates = {
@@ -451,6 +451,16 @@ export const emailTemplates = {
 };
 
 // Send email via Resend (fallback to console logging in dev)
+// Initialize Gmail transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+// Send email via Gmail SMTP (fallback to console logging in dev)
 export const sendEmail = async ({ email, subject, html }) => {
   console.log('\n📧📧📧 EMAIL SEND REQUEST 📧📧📧');
   console.log('To:', email);
@@ -459,10 +469,38 @@ export const sendEmail = async ({ email, subject, html }) => {
   const otpMatch = html.match(/\d{6}/);
   if (otpMatch) console.log('🔢 OTP for testing:', otpMatch[0]);
   console.log('HTML Preview:', html.substring(0, 200).trim().replace(/\s+/g, ' ') + '...');
+
+  // If Gmail credentials not set, fallback to logging
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn('⚠️ EMAIL_USER or EMAIL_PASS not set – email logged only (dev fallback)');
+    return { success: true, message: 'Email logged (SMTP not configured)', ...(otpMatch && { otp: otpMatch[0] }) };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject,
+      html
+    });
+    console.log('✅ Email sent via Gmail. Message ID:', info.messageId);
+    return { success: true, message: 'Email sent via Gmail', info, ...(otpMatch && { otp: otpMatch[0] }) };
+  } catch (err) {
+    console.error('❌ Email send error (Gmail):', err.message);
+    throw err;
+  }
+};
+
+
+
+
+  const otpMatch = html.match(/\d{6}/);
+  if (otpMatch) console.log('🔢 OTP for testing:', otpMatch[0]);
+  console.log('HTML Preview:', html.substring(0, 200).trim().replace(/\s+/g, ' ') + '...');
   console.log('📧📧📧 END EMAIL LOG 📧📧📧\n');
 
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('⚠️ RESEND_API_KEY not set – email logged only (dev fallback)');
+
+
     return { success: true, message: 'Email logged (Resend not configured)', ...(otpMatch && { otp: otpMatch[0] }) };
   }
 

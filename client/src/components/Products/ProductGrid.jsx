@@ -75,7 +75,7 @@ const ProductGrid = ({ searchQuery, category, sortBy, filters }) => {
       setProducts(productsData)
       setPagination({
         total: paginationData.total || productsData.length,
-        pages: paginationData.pages || Math.ceil(productsData.length / 20),
+        pages: paginationData.pages || Math.ceil(productsData.length / 30),
         currentPage: paginationData.currentPage || 1
       })
       

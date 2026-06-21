@@ -44,7 +44,7 @@ const CategoryProductsPage = () => {
             setLoading(true);
             const params = {
                 page: currentPage,
-                limit: 20,
+                limit: 30,
                 sort: sortBy,
                 ...(priceRange.min && { minPrice: priceRange.min }),
                 ...(priceRange.max && { maxPrice: priceRange.max })
