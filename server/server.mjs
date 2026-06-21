@@ -33,39 +33,71 @@ import { protect } from './middlewares/auth.js';
 const app = express();
 
 app.set('trust proxy', 1);
-// ================= FIXED CORS =================
+// ================= CORS =================
 const allowedOrigins = [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    process.env.CLIENT_URL,
-    process.env.CORS_ORIGIN,
-    'https://shazyboo-df9m-git-completed-nihalcp1108s-projects.vercel.app'
+  'http://localhost:3000',
+  'http://localhost:5173',
+
+  process.env.CLIENT_URL,
+  process.env.CORS_ORIGIN,
+
+  'https://www.shazyboo.com',
+  'https://shazyboo.com',
+
+  'https://shazyboo-df9m.vercel.app',
+  'https://shazyboo-df9m-git-completed-nihalcp1108s-projects.vercel.app'
 ].filter(Boolean);
 
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests without origin (Postman, mobile apps)
+      if (!origin) {
+        return callback(null, true);
+      }
 
-        const isAllowed = allowedOrigins.includes(origin) ||
-                          origin.endsWith('.vercel.app') ||
-                          origin.endsWith('.onrender.com') ||
-                          origin.startsWith('http://localhost:');
+      // Exact matches
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
 
-        if (isAllowed) {
-            return callback(null, true);
-        }
+      // Allow all Vercel preview deployments
+      if (origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
 
-        console.warn('Blocked CORS origin:', origin);
-        return callback(new Error('CORS not allowed for this origin: ' + origin));
+      // Allow Render domains
+      if (origin.endsWith('.onrender.com')) {
+        return callback(null, true);
+      }
+
+      // Allow localhost
+      if (origin.startsWith('http://localhost:')) {
+        return callback(null, true);
+      }
+
+      console.log('❌ Blocked by CORS:', origin);
+
+      return callback(
+        new Error(`CORS not allowed for origin: ${origin}`),
+        false
+      );
     },
+
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
-}));
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'Authorization'
+    ]
+  })
+);
 
-// Pre-flight requests
+// Handle preflight requests
 app.options('*', cors());
-
 // ================= STATIC FILES =================
 const uploadsPath = path.resolve(__dirname, '../uploads');
 app.use('/uploads', express.static(uploadsPath));
