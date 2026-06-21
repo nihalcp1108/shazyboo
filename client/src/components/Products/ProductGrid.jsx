@@ -128,7 +128,7 @@ const ProductGrid = ({ searchQuery, category, sortBy, filters }) => {
       </div>
       
       {pagination.pages > 1 && (
-        <div className="flex justify-center mt-8 gap-2">
+        <div className="flex justify-center mt-8 gap-2 relative z-10">
           <button
             onClick={() => handlePageChange(pagination.currentPage - 1)}
             disabled={pagination.currentPage === 1}

@@ -56,7 +56,7 @@ function App() {
           <AuthProvider>
             <div className="min-h-screen flex flex-col overflow-x-hidden">
               <Header />
-              <main className="flex-grow">
+              <main className="flex-grow pb-20">
                 <Suspense fallback={<LoadingSpinner />}>
                   <Routes>
                     {/* Public Routes */}
