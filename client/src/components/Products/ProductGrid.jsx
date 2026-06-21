@@ -6,7 +6,9 @@ import { useDailyShuffle } from '../../utils/shuffle';
 const ProductGrid = ({ searchQuery, category, sortBy, filters }) => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [pagination, setPagination] = useState({ total: 0, pages: 0, currentPage: 1 })
+  const savedPage = typeof window !== 'undefined' ? sessionStorage.getItem('productGridPage') : null;
+  const initialPage = savedPage ? parseInt(savedPage, 10) : 1;
+  const [pagination, setPagination] = useState({ total: 0, pages: 0, currentPage: initialPage });
   const shuffledProducts = useDailyShuffle(products);
 
   useEffect(() => {
@@ -43,9 +45,9 @@ const ProductGrid = ({ searchQuery, category, sortBy, filters }) => {
         url += `&inStock=true`
       }
       
-      url += `&page=${pagination.currentPage}&limit=20`;
-      // Show 20 loading placeholders
-      const loadingPlaceholders = [...Array(20)];
+      url += `&page=${pagination.currentPage}&limit=30`;
+      // Show 30 loading placeholders
+      const loadingPlaceholders = [...Array(30)];
       
       const response = await api.get(url)
       
@@ -86,7 +88,8 @@ const ProductGrid = ({ searchQuery, category, sortBy, filters }) => {
   }
 
   const handlePageChange = (newPage) => {
-    setPagination(prev => ({ ...prev, currentPage: newPage }))
+    setPagination(prev => ({ ...prev, currentPage: newPage }));
+    sessionStorage.setItem('productGridPage', newPage);
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 

@@ -10,7 +10,7 @@ import { AuthProvider } from "./Context/AuthContext";
 import { CartProvider } from "./Context/CartContext";
 import { WishlistProvider } from "./Context/WishlistContext";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
-
+import { useLocation } from "react-router-dom";
 // Layout Components
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
@@ -118,7 +118,7 @@ function App() {
                   </Routes>
                 </Suspense>
               </main>
-              <Footer />
+              {location.pathname === '/' && <Footer />}
               <Toaster
                 position="top-right"
                 toastOptions={{

@@ -270,6 +270,8 @@ productSchema.virtual("mainCategoryInfo", {
 });
 
 // Index for search
+productSchema.index({ slug: 1 });
+productSchema.index({ category: 1, price: 1 });
 productSchema.index({ name: "text", description: "text", tags: "text" });
 
 const Product = mongoose.model("Product", productSchema);
