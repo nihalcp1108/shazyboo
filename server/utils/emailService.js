@@ -492,28 +492,6 @@ export const sendEmail = async ({ email, subject, html }) => {
 };
 
 
-
-
-  const otpMatch = html.match(/\d{6}/);
-  if (otpMatch) console.log('🔢 OTP for testing:', otpMatch[0]);
-  console.log('HTML Preview:', html.substring(0, 200).trim().replace(/\s+/g, ' ') + '...');
-  console.log('📧📧📧 END EMAIL LOG 📧📧📧\n');
-
-
-
-    return { success: true, message: 'Email logged (Resend not configured)', ...(otpMatch && { otp: otpMatch[0] }) };
-  }
-
-  try {
-    const result = await resendSend({ to: email, subject, html });
-    console.log('✅ Email sent via Resend. Result ID:', result?.data?.id || result?.id);
-    return { success: true, message: 'Email sent via Resend', resendResult: result, ...(otpMatch && { otp: otpMatch[0] }) };
-  } catch (err) {
-    console.error('❌ Email send error (Resend):', err.message);
-    throw err;
-  }
-};
-
 // Test email utility using the same flow
 export const testEmail = async (toEmail = null) => {
   try {

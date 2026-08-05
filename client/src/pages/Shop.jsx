@@ -1,6 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
 import ProductGrid from '../components/Products/ProductGrid'
-import { FaSearch, FaHeart, FaMagic } from 'react-icons/fa'
 
 const Shop = () => {
   const [searchParams] = useSearchParams()
@@ -10,11 +9,10 @@ const Shop = () => {
     <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-12 text-center">
-          <div className="inline-flex items-center justify-center bg-white/50 backdrop-blur-sm rounded-full px-6 py-3 mb-6 shadow-md border border-white/30">
-            <FaSearch className="mr-3 text-xl" style={{ color: 'var(--kiddex-blue)' }} />
-           <h2 className="fredoka text-3xl font-normal tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-fuchsia-500 to-rose-400">
-  {searchQuery ? 'Search Results' : "✨Shop Your Cute Collection's 💖"}
-</h2>
+          <div className="inline-flex items-center justify-center bg-white/50 backdrop-blur-sm rounded-full px-4 sm:px-6 py-2.5 sm:py-3 mb-6 shadow-md border border-white/30 max-w-full">
+            <h2 className="fredoka text-lg sm:text-2xl md:text-3xl font-normal tracking-tight sm:tracking-normal whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-fuchsia-500 to-rose-400 text-center leading-tight">
+              {searchQuery ? 'Search Results' : 'Shop Your Collection'}
+            </h2>
           </div>
           
           {searchQuery && (

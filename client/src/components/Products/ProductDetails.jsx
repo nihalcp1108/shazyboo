@@ -254,9 +254,45 @@ const ProductDetail = () => {
     return [{ url: getFallbackImage() }]
   }, [product])
 
+  const thumbnailRefs = useRef([])
+  const loadedUrlsRef = useRef(new Set())
+
+  // Preload all product gallery images for instant switching without lag
   useEffect(() => {
-    setMainImageLoading(true)
-  }, [selectedImage, images.length])
+    if (images && images.length > 0) {
+      images.forEach((img) => {
+        if (img?.url) {
+          const imageObj = new Image()
+          imageObj.src = img.url
+          imageObj.onload = () => loadedUrlsRef.current.add(img.url)
+        }
+      })
+    }
+  }, [images])
+
+  // Auto-scroll active thumbnail into view
+  useEffect(() => {
+    if (thumbnailRefs.current[selectedImage]) {
+      thumbnailRefs.current[selectedImage]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      })
+    }
+  }, [selectedImage])
+
+  const handleSelectImage = (index) => {
+    setSelectedImage(index)
+    const targetUrl = images[index]?.url
+    if (targetUrl && loadedUrlsRef.current.has(targetUrl)) {
+      setMainImageLoading(false)
+    }
+  }
+
+  const handleMainImageLoad = (url) => {
+    if (url) loadedUrlsRef.current.add(url)
+    setMainImageLoading(false)
+  }
 
   // Lightbox Functions
   const openLightbox = (index) => {
@@ -288,7 +324,7 @@ const ProductDetail = () => {
 
     const dx = Math.abs(currentX - touchStartXRef.current)
     const dy = Math.abs(currentY - touchStartYRef.current)
-    if (Math.max(dx, dy) > 10) {
+    if (Math.max(dx, dy) > 8) {
       isSwipingRef.current = true
     }
   }
@@ -298,7 +334,7 @@ const ProductDetail = () => {
 
     const currentX = e.clientX
     const distance = touchStartXRef.current - currentX
-    const minSwipeDistance = 50
+    const minSwipeDistance = 30
 
     if (Math.abs(distance) > minSwipeDistance) {
       if (distance > 0) {
@@ -662,25 +698,19 @@ const ProductDetail = () => {
                   </div>
                 )}
 
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={images[selectedImage]?.url || 'product-main'}
-                    src={images[selectedImage]?.url || getFallbackImage()}
-                    alt={product.name}
-                    className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 cursor-zoom-in"
-                    onClick={handleImageClick}
-                    onLoad={() => setMainImageLoading(false)}
-                    onError={(e) => {
-                      handleImageError(e)
-                      setMainImageLoading(false)
-                    }}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.35 }}
-                    draggable={false}
-                  />
-                </AnimatePresence>
+                <img
+                  key={images[selectedImage]?.url || 'product-main'}
+                  src={images[selectedImage]?.url || getFallbackImage()}
+                  alt={product.name}
+                  className="absolute inset-0 w-full h-full object-contain cursor-zoom-in transition-opacity duration-150 ease-out"
+                  onClick={handleImageClick}
+                  onLoad={() => handleMainImageLoad(images[selectedImage]?.url)}
+                  onError={(e) => {
+                    handleImageError(e)
+                    setMainImageLoading(false)
+                  }}
+                  draggable={false}
+                />
 
                 {images.length > 1 && (
                   <>
@@ -690,17 +720,12 @@ const ProductDetail = () => {
                       onTouchStart={(e) => e.stopPropagation()}
                       onClick={(e) => {
                         e.stopPropagation()
-                        setSelectedImage((prev) => {
-                          if (enableGalleryLoop) {
-                            return (prev - 1 + images.length) % images.length
-                          }
-                          return Math.max(prev - 1, 0)
-                        })
+                        handleSelectImage((selectedImage - 1 + images.length) % images.length)
                       }}
                       disabled={images.length <= 1}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 text-gray-800 shadow-lg p-3 hover:bg-white transition-opacity disabled:opacity-50"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 text-gray-800 shadow-md p-2.5 hover:bg-white hover:scale-110 active:scale-95 transition-all disabled:opacity-40"
                     >
-                      <FaChevronLeft className="text-xl" />
+                      <FaChevronLeft className="text-lg" />
                     </button>
 
                     <button
@@ -709,22 +734,17 @@ const ProductDetail = () => {
                       onTouchStart={(e) => e.stopPropagation()}
                       onClick={(e) => {
                         e.stopPropagation()
-                        setSelectedImage((prev) => {
-                          if (enableGalleryLoop) {
-                            return (prev + 1) % images.length
-                          }
-                          return Math.min(prev + 1, images.length - 1)
-                        })
+                        handleSelectImage((selectedImage + 1) % images.length)
                       }}
                       disabled={images.length <= 1}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 text-gray-800 shadow-lg p-3 hover:bg-white transition-opacity disabled:opacity-50"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-20 rounded-full bg-white/90 text-gray-800 shadow-md p-2.5 hover:bg-white hover:scale-110 active:scale-95 transition-all disabled:opacity-40"
                     >
-                      <FaChevronRight className="text-xl" />
+                      <FaChevronRight className="text-lg" />
                     </button>
                   </>
                 )}
 
-                <div className="absolute bottom-4 right-4 bg-black/70 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm flex items-center gap-2 opacity-100 transition-opacity duration-300 cursor-pointer">
+                <div className="absolute bottom-4 right-4 bg-black/70 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm flex items-center gap-2 opacity-90 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer">
                   <FaExpand className="text-sm" />
                   <span>Click to zoom</span>
                 </div>
@@ -734,7 +754,7 @@ const ProductDetail = () => {
               <button
                 type="button"
                 onClick={() => openLightbox(selectedImage)}
-                className="inline-flex items-center gap-2 rounded-full bg-pink-600 px-4 py-2 text-white shadow-lg hover:bg-pink-700 transition"
+                className="inline-flex items-center gap-2 rounded-full bg-pink-600 px-4 py-2 text-white shadow-md hover:bg-pink-700 active:scale-95 transition-all text-sm font-bold"
               >
                 <FaExpand />
                 Zoom Image
@@ -742,23 +762,24 @@ const ProductDetail = () => {
             </div>
 
             {images.length > 1 && (
-              <div className="flex items-center gap-3 overflow-x-auto hide-scroll pb-2 px-1 mt-3">
+              <div className="flex items-center gap-2.5 overflow-x-auto hide-scroll pb-2 px-1 mt-3">
                 {images.map((image, index) => (
                   <button
                     key={index}
+                    ref={(el) => (thumbnailRefs.current[index] = el)}
                     type="button"
-                    onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${
+                    onClick={() => handleSelectImage(index)}
+                    className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all duration-150 ${
                       selectedImage === index
-                        ? 'border-pink-500 shadow-lg scale-105'
-                        : 'border-transparent hover:border-pink-200'
+                        ? 'border-pink-500 shadow-md scale-105 ring-2 ring-pink-300'
+                        : 'border-transparent opacity-75 hover:opacity-100 hover:border-pink-200'
                     }`}
                   >
                     <img
                       src={image.url}
                       alt={`${product.name} ${index + 1}`}
                       className="w-full h-full object-cover"
-                      loading="lazy"
+                      loading="eager"
                       onError={handleImageError}
                     />
                   </button>
