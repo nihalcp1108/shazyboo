@@ -29,6 +29,7 @@ import mainCategoryRoutes from './routes/mainCategoryRoute.js';
 import contactRoutes from './routes/contactRoute.js';
 
 import { protect } from './middlewares/auth.js';
+import { getSitemap, getRobotsTxt } from './controllers/sitemapController.js';
 
 const app = express();
 
@@ -116,6 +117,9 @@ app.use('/api/', rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 1000
 }));
+// ================= SEO: SITEMAP & ROBOTS =================
+app.get('/sitemap.xml', getSitemap);
+app.get('/robots.txt', getRobotsTxt);
 
 // ================= ROUTES =================
 app.use('/api/auth', authRoutes);
