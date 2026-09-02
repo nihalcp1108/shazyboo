@@ -21,7 +21,8 @@
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.8.0",
     "react-konva": "^18.2.16",
-    "react-router-dom": "^6.8.1"
+   "react-router-dom": "^6.8.1",
+    "react-helmet-async": "^2.0.5"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.0",
