@@ -11,6 +11,8 @@ import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../Context/CartContext';
 import { getImageUrl } from '../utils/imageUtils';
+import { Helmet } from 'react-helmet-async';
+import { getMainCategoryMeta } from '../utils/seoHelpers';
 
 const MainCategoryProducts = () => {
     const { slug } = useParams();
@@ -175,7 +177,7 @@ const MainCategoryProducts = () => {
         );
     }
 
-    if (!category) {
+       if (!category) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50">
                 <div className="text-center">
@@ -190,8 +192,14 @@ const MainCategoryProducts = () => {
         );
     }
 
+    const { title, description } = getMainCategoryMeta(category);
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
+            <Helmet>
+                <title>{title}</title>
+                <meta name="description" content={description} />
+            </Helmet>
             {/* Hero Banner */}
             <div className="relative h-80 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600">

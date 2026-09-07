@@ -11,6 +11,8 @@ import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useCart } from '../Context/CartContext';
 import { getImageUrl } from '../utils/imageUtils';
+import { Helmet } from 'react-helmet-async';
+import { getMainCategoryMeta } from '../utils/seoHelpers';
 
 const MainCategory = () => {
     const { slug } = useParams();
@@ -176,9 +178,16 @@ const MainCategory = () => {
             </div>
         );
     }
+  
+    const { title, description } = getMainCategoryMeta(category);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+          
+            <Helmet>
+                <title>{title}</title>
+                <meta name="description" content={description} />
+            </Helmet>
             {/* Hero Banner */}
             <div className="relative h-80 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600">

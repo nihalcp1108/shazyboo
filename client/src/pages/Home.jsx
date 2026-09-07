@@ -24,6 +24,8 @@ import { useCart } from '../Context/CartContext';
 import { useAuth } from '../Context/AuthContext';
 import { useWishlist } from '../Context/WishlistContext';
 import { getImageUrl, handleImageError, getFallbackImage } from '../utils/imageUtils';
+import { Helmet } from 'react-helmet-async';
+import { getHomeMeta } from '../utils/seoHelpers';
 
 import hero1 from '../assets/hero(1).jpeg';
 import hero2 from '../assets/hero(2).jpeg';
@@ -692,6 +694,8 @@ const Home = () => {
     }
   };
 
+  const { title, description } = getHomeMeta();
+  
   const handleAddToCart = async (product, e) => {
     e?.preventDefault();
     e?.stopPropagation();
@@ -709,8 +713,12 @@ const Home = () => {
     }
   };
 
-  return (
+ return (
     <div className="pb-24 lg:pb-0" style={{ fontFamily: "'Nunito', sans-serif", background: 'var(--kiddex-bg)', minHeight: '100vh' }}>
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+      </Helmet>
       <FontStyle />
 
       <HeroSection />

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { FaSearch, FaStar, FaHeart, FaMagic, FaArrowRight, FaSpinner } from 'react-icons/fa';
 import { getImageUrl, handleImageError, getFallbackImage } from '../utils/imageUtils';
+import { Helmet } from 'react-helmet-async';
 
 const CategoriesPage = () => {
     const [categories, setCategories] = useState([]);
@@ -71,8 +72,12 @@ const CategoriesPage = () => {
         );
     }
 
-    return (
+        return (
         <div className="min-h-screen bg-gradient-to-b from-pink-50 to-purple-50 pt-20">
+            <Helmet>
+                <title>Shop All Categories – Cute Stationery, Bags & Gifts | Shazyboo</title>
+                <meta name="description" content="Browse all categories at Shazyboo — cute bags, kawaii stationery, plush toys, desk accessories and more. Find your favorite category and shop online." />
+            </Helmet>
             {/* Featured Categories */}
             {featuredCategories.length > 0 && (
                 <section className="py-12">

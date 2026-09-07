@@ -13,6 +13,8 @@ import { useAuth } from '../../Context/AuthContext'
 import { useWishlist } from '../../Context/WishlistContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getImageUrl, handleImageError, getFallbackImage } from '../../utils/imageUtils'
+import { Helmet } from 'react-helmet-async'
+import { getProductMeta } from '../../utils/seoHelpers'
 
 const ProductDetail = () => {
   const { id } = useParams()
@@ -649,6 +651,7 @@ const ProductDetail = () => {
     )
   }
 
+  const { title, description } = getProductMeta(product)
   const basePrice = product.discountPrice > 0 ? product.discountPrice : product.price
   const finalPrice = basePrice + colorPrice
   const discountPercentage = product.discountPrice > 0 
@@ -660,8 +663,12 @@ const ProductDetail = () => {
   const availableStock = selectedColorData ? colorStock : product.stock
   const hasColors = product.colors && Array.isArray(product.colors) && product.colors.length > 0
 
-  return (
+    return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+      </Helmet>
       <style>{`
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
