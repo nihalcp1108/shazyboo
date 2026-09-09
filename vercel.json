@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/sitemap.xml",
+      "destination": "https://shazyboo.onrender.com/sitemap.xml"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "https://shazyboo.onrender.com/robots.txt"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },
@@ -9,12 +17,5 @@
       "destination": "/index.html"
     }
   ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server.mjs"
-    }
-  ],
   "outputDirectory": "client/dist"
 }
-
