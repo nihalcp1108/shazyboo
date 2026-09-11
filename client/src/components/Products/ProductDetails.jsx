@@ -668,6 +668,7 @@ const ProductDetail = () => {
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
+           <link rel="canonical" href={`https://shazyboo.com${window.location.pathname}`} />
       </Helmet>
       <style>{`
         .hide-scroll::-webkit-scrollbar { display: none; }

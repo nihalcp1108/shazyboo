@@ -77,6 +77,7 @@ const CategoriesPage = () => {
             <Helmet>
                 <title>Shop All Categories – Cute Stationery, Bags & Gifts | Shazyboo</title>
                 <meta name="description" content="Browse all categories at Shazyboo — cute bags, kawaii stationery, plush toys, desk accessories and more. Find your favorite category and shop online." />
+                <link rel="canonical" href={`https://shazyboo.com${window.location.pathname}`} />
             </Helmet>
             {/* Featured Categories */}
             {featuredCategories.length > 0 && (
