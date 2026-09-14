@@ -19,9 +19,10 @@ import ScrollToTop from "./components/layout/ScrollToTop";
 
 // Pages
 import Home from "./pages/Home";
+import Shop from "./pages/Shop";
+import MainCategory from "./pages/MainCategory";
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
-const Shop = lazy(() => import("./pages/Shop"));
 const CategoriesPage = lazy(() => import("./pages/CategoriesPage"));
 const CategoryProductsPage = lazy(() => import("./pages/CategoryProductsPage"));
 const CartPage = lazy(() => import("./pages/CartPage"));
@@ -36,7 +37,6 @@ const UserProfile = lazy(() => import("./pages/UserProfile"));
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
 const OrdersPage = lazy(() => import("./pages/OrdersPage"));
-const MainCategory = lazy(() => import("./pages/MainCategory"));
 const MainCategoryProducts = lazy(() => import("./pages/MainCategoryProducts"));
 const ProductDetail = lazy(() => import("./components/Products/ProductDetails"));
 
