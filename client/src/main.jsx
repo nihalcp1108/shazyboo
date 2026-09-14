@@ -31,10 +31,20 @@ export async function prerender(data) {
   const titleEl = helmet.title.toComponent()[0]
   const title = titleEl?.props?.children ?? undefined
 
+  const toElementDescriptor = (el) => {
+    const props = {}
+    for (const [key, value] of Object.entries(el.props || {})) {
+      if (value !== undefined && value !== null) {
+        props[key] = String(value)
+      }
+    }
+    return { type: el.type, props }
+  }
+
   const elements = new Set([
     ...helmet.meta.toComponent(),
     ...helmet.link.toComponent(),
-  ].map((el) => ({ type: el.type, props: el.props })))
+  ].map(toElementDescriptor))
 
   return {
     html,
