@@ -1,8 +1,23 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { vitePrerenderPlugin } from 'vite-prerender-plugin'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    vitePrerenderPlugin({
+      renderTarget: '#root',
+      prerenderScript: new URL('./src/main.jsx', import.meta.url).pathname,
+      additionalPrerenderRoutes: [
+        '/',
+        '/shop',
+        '/main-category/learn-play',
+        '/main-category/cozy-desk',
+        '/main-category/toys',
+        '/main-category/bags',
+      ],
+    }),
+  ],
   server: {
     port: 3000,
     proxy: {
