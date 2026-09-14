@@ -16,12 +16,32 @@ if (typeof document !== 'undefined') {
 
 export async function prerender(data) {
   const { renderToString } = await import('react-dom/server')
+  const helmetContext = {}
+
   const html = renderToString(
     <StrictMode>
-      <HelmetProvider>
+      <HelmetProvider context={helmetContext}>
         <App url={data.url} />
       </HelmetProvider>
     </StrictMode>
   )
-  return { html }
+
+  const { helmet } = helmetContext
+
+  const titleEl = helmet.title.toComponent()[0]
+  const title = titleEl?.props?.children ?? undefined
+
+  const elements = new Set([
+    ...helmet.meta.toComponent(),
+    ...helmet.link.toComponent(),
+  ].map((el) => ({ type: el.type, props: el.props })))
+
+  return {
+    html,
+    head: {
+      lang: 'en',
+      title,
+      elements,
+    },
+  }
 }
