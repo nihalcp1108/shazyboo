@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { 
   FaArrowLeft, FaStar, FaShoppingCart, FaFilter, FaSpinner, 
   FaHeart, FaRegHeart, FaEye, FaChevronLeft, 
@@ -29,6 +29,7 @@ const MainCategory = () => {
     const [itemsPerPage] = useState(20);
     const [quickViewProduct, setQuickViewProduct] = useState(null);
     const { addToCart } = useCart();
+    const location = useLocation();
 
     const API_URL = import.meta.env.VITE_API_URL || '/api';
     const BASE_URL = API_URL.replace('/api', '');
@@ -156,6 +157,10 @@ const MainCategory = () => {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50">
+                <Helmet>
+                    <title>Shazyboo – Cute Stationery, Bags & Gifts Online India</title>
+                    <link rel="canonical" href={`https://shazyboo.com${location.pathname}`} />
+                </Helmet>
                 <div className="text-center">
                     <FaSpinner className="animate-spin h-16 w-16 text-pink-500 mx-auto mb-4" />
                     <p className="text-gray-600 font-medium">Loading amazing products...</p>
@@ -187,7 +192,7 @@ const MainCategory = () => {
             <Helmet>
                 <title>{title}</title>
                 <meta name="description" content={description} />
-                <link rel="canonical" href={`https://shazyboo.com${window.location.pathname}`} />
+                <link rel="canonical" href={`https://shazyboo.com${location.pathname}`} />
             </Helmet>
             {/* Hero Banner */}
             <div className="relative h-80 overflow-hidden">
