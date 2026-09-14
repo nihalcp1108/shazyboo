@@ -6,6 +6,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
+import { StaticRouter } from "react-router-dom/server";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./Context/AuthContext";
 import { CartProvider } from "./Context/CartContext";
@@ -158,7 +159,7 @@ function AppContent() {
 
 function App({ url }) {
   const RouterComponent = typeof window === 'undefined'
-    ? require('react-router-dom/server').StaticRouter
+    ? StaticRouter
     : Router;
   const routerProps = typeof window === 'undefined' ? { location: url } : {};
 
