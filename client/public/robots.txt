@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /cart
+Disallow: /checkout
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-otp
+Disallow: /profile
+Disallow: /my-orders
+Disallow: /order-confirmation
+
+Sitemap: https://shazyboo.com/sitemap.xml
