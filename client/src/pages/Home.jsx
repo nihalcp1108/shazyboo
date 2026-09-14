@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   FaArrowRight,
   FaStar,
@@ -549,6 +549,7 @@ const Home = () => {
   const REPEAT_SECONDS = 24 * 3600; // 24 hours
 
   const [timeLeft, setTimeLeft] = useState(() => {
+    if (typeof window === 'undefined') return INITIAL_SECONDS;
     const storedDeadline = localStorage.getItem('flashSaleDeadline');
     const now = Date.now();
     if (storedDeadline) {
@@ -620,6 +621,7 @@ const Home = () => {
 
   const { addToCart } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetchHomeData();
@@ -718,7 +720,7 @@ const Home = () => {
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
-        <link rel="canonical" href={`https://shazyboo.com${window.location.pathname}`} />
+        <link rel="canonical" href={`https://shazyboo.com${location.pathname}`} />
       </Helmet>
       <FontStyle />
 
