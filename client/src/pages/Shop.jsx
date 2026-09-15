@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async'
 import { useSearchParams } from 'react-router-dom'
 import ProductGrid from '../components/Products/ProductGrid'
 
@@ -7,6 +8,15 @@ const Shop = () => {
 
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Shop All Products – Cute Stationery, Bags &amp; Gifts | Shazyboo</title>
+        <meta
+          name="description"
+          content="Browse the full Shazyboo collection — kawaii stationery, tote bags, plush toys and desk accessories. Affordable, adorable finds with free shipping across India."
+        />
+        <link rel="canonical" href="https://shazyboo.com/shop" />
+      </Helmet>
+
       <div className="container mx-auto px-4 py-8">
         <div className="mb-12 text-center">
           <div className="inline-flex items-center justify-center bg-white/50 backdrop-blur-sm rounded-full px-4 sm:px-6 py-2.5 sm:py-3 mb-6 shadow-md border border-white/30 max-w-full">

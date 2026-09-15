@@ -13,15 +13,16 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems] = useState(() => {
-        try {
-            const savedCart = localStorage.getItem('cart');
-            return savedCart ? JSON.parse(savedCart) : [];
-        } catch (error) {
-            console.error('Error loading cart:', error);
-            return [];
-        }
-    });
+   const [cartItems, setCartItems] = useState(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+        const savedCart = localStorage.getItem('cart');
+        return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+        console.error('Error loading cart:', error);
+        return [];
+    }
+});
     const [loading, setLoading] = useState(false);
     const [cartTotal, setCartTotal] = useState(0);
     const [cartCount, setCartCount] = useState(0);
